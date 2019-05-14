@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../libAUA.a  Test/CMakeFiles/AUA.Test.dir/tests.cpp.o
+/usr/bin/ranlib ../libAUA.a

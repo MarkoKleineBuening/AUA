@@ -1,0 +1,16 @@
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/CMakeFiles/rebuild_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/CMakeFiles/edit_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/CMakeFiles/intrinsics_gen.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/lib/CMakeFiles/rebuild_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/lib/CMakeFiles/edit_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/lib/AUA/CMakeFiles/rebuild_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/lib/AUA/CMakeFiles/AUA.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/lib/AUA/CMakeFiles/edit_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/lib/AUA/Test/CMakeFiles/rebuild_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/lib/AUA/Test/CMakeFiles/AUA.Test.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/lib/AUA/Test/CMakeFiles/edit_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/tools/CMakeFiles/rebuild_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/tools/CMakeFiles/edit_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/tools/AUA/CMakeFiles/rebuild_cache.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/tools/AUA/CMakeFiles/AUAExe.dir
+/storage/Studium/Bachelorarbeit/AUA/cmake/NiceMake/builds/tools/AUA/CMakeFiles/edit_cache.dir
