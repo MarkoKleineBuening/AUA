@@ -1,4 +1,4 @@
-# Test that nm_add_tool actually creates the desired tool
+# Alias that nm_add_tool actually creates the desired tool
 
 add_test(
   NAME build-tool

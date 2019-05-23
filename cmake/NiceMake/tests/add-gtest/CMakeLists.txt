@@ -1,4 +1,4 @@
-# Test that google test can be downloaded, built and linked
+# Alias that google test can be downloaded, built and linked
 
 add_test(
   NAME add-gtest

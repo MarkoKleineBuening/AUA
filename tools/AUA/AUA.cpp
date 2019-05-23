@@ -17,13 +17,19 @@
 #include <llvm/ADT/Optional.h>
 #include <llvm/ADT/StringRef.h>
 
-#include "Reference.h"
-#include "RefType.h"
+#include "AUA/Alias/Pointer.h"
 
-std::set<Reference> refs;
+std::map<std::string, Pointer*> pointers;
+std::map<std::string, VarRef*> vars;
 
 std::unique_ptr<llvm::Module> readInModule(llvm::LLVMContext &context, std::string inFile);
-void analyzeInstruction(llvm::Instruction *I);
+void analyzeInstruction(llvm::Instruction *I, llvm::Instruction *previous);
+void printPointerInfo();
+void printVarInfo();
+void printFullCurrentInfo();
+void handleAllocation(llvm::AllocaInst *allocaInst);
+void handleCopy(llvm::LoadInst* loadInst, llvm::StoreInst*);
+void handleAssignment(llvm::StoreInst *storeInst);
 
 int main(int argc, char **argv) {
     std::string inFile = argv[1];
@@ -32,43 +38,116 @@ int main(int argc, char **argv) {
 
     for (auto &F: module->getFunctionList()) {
 
+        llvm::Instruction* previous;
+
         for (llvm::inst_iterator I = inst_begin(F), E = inst_end(F); I != E; ++I) {
             llvm::Instruction *inst = &*I;
             llvm::outs() << *inst << "\n";
-            analyzeInstruction(inst);
+            analyzeInstruction(inst, previous);
+            previous = inst;
         }
     }
+
+    printFullCurrentInfo();
+
     return 0;
 }
 
-void analyzeInstruction(llvm::Instruction * I) {
+void analyzeInstruction(llvm::Instruction * I, llvm::Instruction *previous) {
 
     if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(I)) {
+        handleAllocation(allocaInst);
+    }
 
-        llvm::Type *type = allocaInst->getAllocatedType();
-        RefType refType;
+    if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(I)) {
 
-        if (type->isPointerTy()) {
-            llvm::outs() << (I->getName()) << " is a pointer!\n";
-            refType = STACK_PTR;
+        if(llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(previous)) {
+            handleCopy(loadInst, storeInst);
         } else {
-            llvm::outs() << (I->getName()) << " is not a pointer (local var)!\n";
-            refType = LOCAL_VAR;
+            handleAssignment(storeInst);
         }
 
-        llvm::Optional<uint64_t> optSize = allocaInst->getAllocationSizeInBits(* new llvm::DataLayout(* new llvm::StringRef()));
-        uint64_t size = (optSize.hasValue())? optSize.getValue() : 0;
+        printPointerInfo();
+    }
+}
 
-        std::string name = (I->getName());
-
-        Reference ref {size, refType, name};
+void printPointerInfo() {
+    llvm::outs() << "\n" << pointers.size() << " Pointers:\n";
+    for(std::pair<std::string, Pointer*> p : pointers) {
+        llvm::outs() << p.first << " points to: ";
+        for(VarRef* v : p.second->getVarRefs()) {
+            llvm::outs() << v->getName() << " ";
+        }
+        llvm::outs() << "\n";
     }
 
-    if (llvm::isa<llvm::StoreInst>(I)) {
-        llvm::StringRef destNameRef = I->getOperand(1)->getName();
+    llvm::outs() << "\n";
+}
 
-        llvm::outs() << destNameRef.data() << "\n";
+void printVarInfo() {
+    llvm::outs() << "\n" << vars.size() << " variables:\n";
+    for(std::pair<std::string, VarRef*> v : vars) {
+        llvm::outs() << v.first << "\n";
     }
+    llvm::outs() << "\n";
+}
+
+void printFullCurrentInfo() {
+
+    printPointerInfo();
+    printVarInfo();
+
+}
+
+void handleAllocation(llvm::AllocaInst *allocaInst) {
+
+    llvm::Type *type = allocaInst->getAllocatedType();
+    std::string name = (allocaInst->getName());
+
+    if (type->isPointerTy()) {
+
+        Pointer* p = new Pointer(0, name);
+        pointers.insert(std::pair<std::string, Pointer*> (name, p));
+
+    } else {
+
+        VarRef* v = new VarRef(0, name);
+        vars.insert(std::pair<std::string, VarRef*> (name, v));
+
+    }
+}
+
+void handleCopy(llvm::LoadInst* loadInst, llvm::StoreInst* storeInst) {
+
+    assert(loadInst->getName().data() == storeInst->getValueOperand()->getName().data());
+
+    llvm::PointerType* fromType = llvm::cast<llvm::PointerType>(loadInst->getPointerOperandType());
+    llvm::PointerType* toType = llvm::cast<llvm::PointerType>(storeInst->getPointerOperandType());
+
+    assert(fromType == toType);
+
+    if(!fromType->getElementType()->isPointerTy()){return;}
+
+    Pointer* copyFrom = pointers[loadInst->getPointerOperand()->getName()];
+    Pointer* copyTo = pointers[storeInst->getPointerOperand()->getName()];
+
+    copyTo->copyPointersFrom(copyFrom);
+
+}
+
+void handleAssignment(llvm::StoreInst *storeInst) {
+
+    llvm::Value* value = storeInst->getValueOperand();
+    llvm::Value* dest = storeInst->getPointerOperand();
+
+    if(!value->getType()->isPointerTy()) {return;}
+
+    llvm::PointerType* ptrType = llvm::cast<llvm::PointerType>(dest->getType());
+    if(!ptrType->getElementType()->isPointerTy()){return;}
+
+    VarRef* v = vars[value->getName()];
+
+    pointers[dest->getName()]->onlyPointTo(v);
 }
 
 /**

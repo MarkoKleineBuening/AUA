@@ -1,4 +1,4 @@
-# Test that third-party libraries are linked and their exported definitions
+# Alias that third-party libraries are linked and their exported definitions
 # are added to the target library 
 
 add_test(
