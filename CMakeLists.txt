@@ -11,6 +11,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 #nm_add_doxygen()
 
-add_subdirectory(lib)
+add_subdirectory(AUA)
 
 add_subdirectory(tools)

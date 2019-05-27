@@ -13,11 +13,13 @@ class VarRef {
 private:
     std::string name;
     int alignment;
+    int size;
 
 public:
-    VarRef(int alignment, std::string name);
+    VarRef(std::string name, int alignment, int size);
 
     std::string getName() {return name;};
+    int getSize() {return size;};
     bool operator <(const VarRef & other) const {return name < other.name;};
 };
 

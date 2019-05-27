@@ -1,4 +1,4 @@
-# Install script for directory: /storage/Studium/Bachelorarbeit/AUA
+# Install script for directory: /storage/Studium/Bachelorarbeit/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

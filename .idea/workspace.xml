@@ -3,56 +3,60 @@
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="AUA" targetName="intrinsics_gen" />
-      <config projectName="AUA" targetName="AUA.Alias.AbstractOps" />
       <config projectName="AUA" targetName="AUAExe" />
       <config projectName="AUA" targetName="AUA" />
-      <config projectName="AUA" targetName="AUA.Alias" />
     </generated>
   </component>
-  <component name="CMakeSettings">
+  <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
       <configuration PROFILE_NAME="Default" GENERATION_DIR="$PROJECT_DIR$/../AUABuild" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8255ad6c-36a6-44cf-923b-3e9ed5cc5abe" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/include/AUA/Alias/AbstractOps/PointerOperation.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/AUA/Alias/VarRef.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/PointerOperation.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/AUA/Alias/Pointer.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/AUA/Alias/VarRef.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AssignmentOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractPointer.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tools/src/PointerIrrelevantException.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdC/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdCXX/a.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cmake.check_cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.cxx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/cmake_install.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/AUA/Test/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/AUA/Test/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/add-gtest/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/add-gtest/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/build-tool/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/build-tool/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/lib/AUA/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/Test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/lib/AUA/Alias/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/Test/tests.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/AUA/AUA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tools/AUA/AUA.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/AUA/RefType.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/AUA/RefType.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/AUA/Reference.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/AUA/Reference.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/AUA/Alias/Pointer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/AUA/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/AUA/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/tools/AUA/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/tools/AUA/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/tools/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/tools/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/testsharedlib/Shared.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/testsharedlib/Shared.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/testsharedlib/objsharedlib/ObjShared.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/testsharedlib/objsharedlib/ObjShared.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/teststaticlib/Static.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/teststaticlib/Static.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/teststaticlib/objlib/Obj.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/teststaticlib/objlib/Obj.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/tools/run/Run.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/tools/run/Run.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AUA/Alias/AbstractOps/PointerOperation.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AUA/Alias/Pointer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/AUA/Alias/VarRef.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/PointerOperation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerOperation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/Pointer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/VarRef.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/AUA/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/AUA/AUA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tools/src/AUA.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/AUA/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tools/src/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tools/CMakeLists.txt" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/../AUABuild/" />
@@ -82,59 +86,47 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Default" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tools/AUA/AUA.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-14">
-              <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/include/AUA/Alias/AbstractOps/PointerOperation.h">
+        <entry file="file://$PROJECT_DIR$/tools/src/AUA.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/Pointer.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="34" column="3" selection-start-line="34" selection-start-column="3" selection-end-line="34" selection-end-column="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/AUA/Alias/Pointer.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="31" column="34" lean-forward="true" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
+            <state relative-caret-position="1362">
+              <caret line="117" column="98" lean-forward="true" selection-start-line="117" selection-start-column="98" selection-end-line="117" selection-end-column="98" />
               <folding>
-                <element signature="e#91#108#0" expanded="true" />
+                <element signature="e#0#19#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/VarRef.cpp">
+        <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="29" lean-forward="true" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
+            <state relative-caret-position="330">
+              <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
+              <folding>
+                <element signature="e#104#121#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/AUA/Alias/VarRef.h">
+        <entry file="file://$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="44" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
+            <state>
+              <caret line="6" column="36" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
+              <folding>
+                <element signature="e#46#82#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/AUA/CMakeLists.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -152,6 +144,13 @@
     <findStrings>
       <find>AUA.Test</find>
       <find>size</find>
+      <find>uint</find>
+      <find>Data</find>
+      <find>DataLayout</find>
+      <find>pointers</find>
+      <find>exec</find>
+      <find>[</find>
+      <find>print</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -163,38 +162,74 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tools/AUA/RefType.cpp" />
-        <option value="$PROJECT_DIR$/tools/AUA/RefType.h" />
-        <option value="$PROJECT_DIR$/tools/AUA/Reference.cpp" />
-        <option value="$PROJECT_DIR$/tools/AUA/Reference.h" />
-        <option value="$PROJECT_DIR$/lib/AUA/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/RefType.cpp" />
-        <option value="$PROJECT_DIR$/include/AUA/Alias/Reference.h" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/Reference.cpp" />
-        <option value="$PROJECT_DIR$/include/AUA/Alias/VarRef.h" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/VarRef.cpp" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/Pointer.cpp" />
-        <option value="$PROJECT_DIR$/include/AUA/Alias/Pointer.h" />
-        <option value="$PROJECT_DIR$/tools/AUA/AUA.cpp" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/Model/PtrInst.cpp" />
-        <option value="$PROJECT_DIR$/include/AUA/Alias/Model/PtrInst.h" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/Model/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/include/AUA/Alias/AbstractPointers/AbstractPointer.h" />
+        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractPointers/AbstractPointer.cpp" />
+        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractPointers/AbstractTarget.cpp" />
+        <option value="$PROJECT_DIR$/include/AUA/Alias/AbstractPointers/AbstractTarget.h" />
+        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/PointerOperation.cpp" />
         <option value="$PROJECT_DIR$/lib/AUA/Alias/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/include/AUA/Alias/AbstractOps/PointerOperation.h" />
+        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractPointers/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/include/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/include/AUA/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/include/AUA/Alias/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/lib/AUA/src/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/lib/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/lib/AUA/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/lib/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" />
+        <option value="$PROJECT_DIR$/lib/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" />
+        <option value="$PROJECT_DIR$/lib/AUA/src/Alias/AbstractPointers/VarRef.cpp" />
+        <option value="$PROJECT_DIR$/lib/AUA/src/Alias/AbstractOps/PointerOperation.cpp" />
+        <option value="$PROJECT_DIR$/src/Alias/AbstractPointers/AbstractPointer.cpp" />
+        <option value="$PROJECT_DIR$/src/Alias/AbstractPointers/VarRef.cpp" />
+        <option value="$PROJECT_DIR$/src/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/lib/src/Alias/AbstractPointers/AbstractPointer.cpp" />
+        <option value="$PROJECT_DIR$/tools/AUA/AUA.cpp" />
+        <option value="$PROJECT_DIR$/lib/src/Alias/AbstractPointers/AbstractTarget.cpp" />
+        <option value="$PROJECT_DIR$/lib/src/Alias/AbstractPointers/VarRef.cpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/AUA/src/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AllocType.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AllocationOp.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AllocationOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h" />
+        <option value="$PROJECT_DIR$/tools/src/PointerIrrelevantException.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AssignmentOp.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp" />
+        <option value="$PROJECT_DIR$/AUA/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/tools/src/AUA.cpp" />
       </list>
     </option>
   </component>
+  <component name="OCResolveContextSettings">
+    <option name="configuration" value="0-AUAExe" />
+  </component>
   <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="170" />
     <option name="y" value="27" />
     <option name="width" value="960" />
-    <option name="height" value="1053" />
+    <option name="height" value="789" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -205,16 +240,24 @@
             <path>
               <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
               <item name="include" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
               <item name="include" type="462c0819:PsiDirectoryNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
               <item name="include" type="462c0819:PsiDirectoryNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
@@ -223,36 +266,49 @@
             <path>
               <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
               <item name="include" type="462c0819:PsiDirectoryNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="Alias" type="462c0819:PsiDirectoryNode" />
+              <item name="AbstractOps" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="include" type="462c0819:PsiDirectoryNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="Alias" type="462c0819:PsiDirectoryNode" />
+              <item name="AbstractPointers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Alias" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Alias" type="462c0819:PsiDirectoryNode" />
               <item name="AbstractOps" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="AUA" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AUA" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Alias" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
-              <item name="AUA" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="AUA" type="462c0819:PsiDirectoryNode" />
-              <item name="Alias" type="462c0819:PsiDirectoryNode" />
-              <item name="AbstractOps" type="462c0819:PsiDirectoryNode" />
+              <item name="AbstractPointers" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
@@ -263,12 +319,13 @@
               <item name="AUA" type="b2602c69:ProjectViewProjectNode" />
               <item name="AUA" type="462c0819:PsiDirectoryNode" />
               <item name="tools" type="462c0819:PsiDirectoryNode" />
-              <item name="AUA" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -279,10 +336,10 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/include/AUA/Alias/Model" />
-      <recent name="$PROJECT_DIR$/include/AUA/Alias" />
-      <recent name="$PROJECT_DIR$/lib/AUA/Alias" />
-      <recent name="$PROJECT_DIR$/lib/AUA" />
+      <recent name="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps" />
+      <recent name="$PROJECT_DIR$/AUA/src/Alias/AbstractOps" />
+      <recent name="$PROJECT_DIR$/AUA/src/Alias" />
+      <recent name="$PROJECT_DIR$/lib" />
       <recent name="$PROJECT_DIR$/include/AUA" />
     </key>
   </component>
@@ -298,7 +355,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.AUAExe">
+  <component name="RunManager" selected="CMake Application.TestVarAndPointerCopying">
     <configuration name="AUA" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="AUA" TARGET_NAME="AUA" CONFIG_NAME="Default">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -309,12 +366,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AUA.Alias" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="AUA" TARGET_NAME="AUA.Alias" CONFIG_NAME="Default">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AUA.Alias.AbstractOps" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="AUA" TARGET_NAME="AUA.Alias.AbstractOps" CONFIG_NAME="Default">
+    <configuration name="TestVarAndPointerCopying" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="../TestFiles/pointerAndVarCopyingTest.bc" PASS_PARENT_ENVS_2="true" PROJECT_NAME="AUA" TARGET_NAME="AUAExe" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="AUA" RUN_TARGET_NAME="AUAExe">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -325,10 +377,9 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="CMake Application.TestVarAndPointerCopying" />
       <item itemvalue="CMake Application.intrinsics_gen" />
       <item itemvalue="CMake Application.AUA" />
-      <item itemvalue="CMake Application.AUA.Alias" />
-      <item itemvalue="CMake Application.AUA.Alias.AbstractOps" />
       <item itemvalue="CMake Application.AUAExe" />
     </list>
   </component>
@@ -346,8 +397,30 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1920" height="1053" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19818376" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15705128" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32894737" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32894737" />
+      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.27192983" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32894737" />
+      <window_info anchor="bottom" id="Database Changes" order="7" />
+      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="CMake" order="10" weight="0.24451755" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32894737" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" weight="0.32959402" />
+    </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28682926" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -366,26 +439,6 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Database" order="3" weight="0.32959402" />
-    </layout>
-    <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18482906" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32894737" />
-      <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="CMake" order="10" weight="0.24561404" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Database" order="3" />
     </layout-to-restore>
   </component>
   <component name="editorHistoryManager">
@@ -394,22 +447,6 @@
     <entry file="file://$PROJECT_DIR$/tools/AUA/Test.cpp" />
     <entry file="file://$PROJECT_DIR$/include/AUA/Alias/RefType.h" />
     <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/tests.cpp" />
-    <entry file="file://$PROJECT_DIR$/tools/AUA/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tools/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/RefType.cpp" />
     <entry file="file://$PROJECT_DIR$/../LLVM/llvm/include/llvm/IR/Instruction.h">
       <provider selected="true" editor-type-id="text-editor">
@@ -418,79 +455,312 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/PointerOperation.cpp">
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/AUA/include/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="23" selection-start-column="23" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/AUA/include/AUA/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="28" selection-start-column="28" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/AUA/Alias/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="1" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/AUA/src/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="33" selection-start-column="33" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
-          <caret line="4" column="10" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/AUA/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="42" selection-start-line="2" selection-start-column="42" selection-end-line="2" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/AUA/Alias/Pointer.h">
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerOperation.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="34" lean-forward="true" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
+        <state relative-caret-position="60">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmake/NiceMake/builds/CMakeCache.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="304" column="38" selection-start-line="304" selection-start-column="38" selection-end-line="304" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="21" selection-start-column="21" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="20" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="20" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="43" selection-start-line="1" selection-start-column="43" selection-end-line="1" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="14" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="54" selection-start-line="5" selection-start-column="54" selection-end-line="5" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/7/bits/stl_multiset.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="68" column="10" selection-start-line="68" selection-start-column="10" selection-end-line="68" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../LLVM/llvm/include/llvm/IR/Instructions.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="50" column="6" selection-start-line="50" selection-start-column="6" selection-end-line="50" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../LLVM/llvm/include/llvm/IR/DataLayout.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="194" column="11" selection-start-line="194" selection-start-column="11" selection-end-line="194" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AllocType.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="29" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="43" selection-start-line="25" selection-start-column="43" selection-end-line="25" selection-end-column="43" />
           <folding>
-            <element signature="e#91#108#0" expanded="true" />
+            <element signature="e#109#123#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/Pointer.cpp">
+    <entry file="file://$PROJECT_DIR$/tools/src/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="34" column="3" selection-start-line="34" selection-start-column="3" selection-end-line="34" selection-end-column="3" />
+        <state relative-caret-position="15">
+          <caret line="1" column="41" selection-start-line="1" selection-start-column="41" selection-end-line="1" selection-end-column="41" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/AUA/Alias/VarRef.h">
+    <entry file="file://$PROJECT_DIR$/tools/src/PointerIrrelevantException.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="44" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
+        <state relative-caret-position="120">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/VarRef.cpp">
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="29" lean-forward="true" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
+        <state relative-caret-position="150">
+          <caret line="10" column="23" lean-forward="true" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/AUA/AUA.cpp">
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractPointer.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-14">
-          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+        <state relative-caret-position="345">
+          <caret line="26" column="60" lean-forward="true" selection-start-line="26" selection-start-column="60" selection-end-line="26" selection-end-column="60" />
+          <folding>
+            <element signature="e#107#124#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/AUA/Alias/AbstractOps/PointerOperation.h">
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+          <caret line="12" column="56" lean-forward="true" selection-start-line="12" selection-start-column="56" selection-end-line="12" selection-end-column="56" />
+          <folding>
+            <element signature="e#46#63#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="7" lean-forward="true" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
+          <folding>
+            <element signature="e#108#125#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="29" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
+          <folding>
+            <element signature="e#116#152#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
+          <folding>
+            <element signature="e#90#126#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="31" lean-forward="true" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="46" lean-forward="true" selection-start-line="22" selection-start-column="46" selection-end-line="22" selection-end-column="46" />
+          <folding>
+            <element signature="e#46#93#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AssignmentOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="23" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
+          <folding>
+            <element signature="e#102#138#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="6" column="36" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
+          <folding>
+            <element signature="e#46#82#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
+          <folding>
+            <element signature="e#104#121#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/src/AUA.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1362">
+          <caret line="117" column="98" lean-forward="true" selection-start-line="117" selection-start-column="98" selection-end-line="117" selection-end-column="98" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
