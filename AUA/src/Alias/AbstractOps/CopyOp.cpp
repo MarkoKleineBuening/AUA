@@ -9,14 +9,14 @@ CopyOp::CopyOp(std::string fromName, std::string toName) {
     this->toName = toName;
 }
 
-Configuration CopyOp::execute(Configuration in) {
+Configuration* CopyOp::apply(Configuration* in) {
 
-    auto from = in.pointers[fromName];
-    auto to = in.pointers[toName];
+    auto from = in->pointers[fromName];
+    auto to = in->pointers[toName];
 
-    to->copyPointersFrom(from);
+    to->copyTargetsFrom(from);
 
-    in.pointers[to->getName()] = to;
+    in->pointers[to->getName()] = to;
 
     return in;
 

@@ -11,15 +11,15 @@
 class VarRef {
 
 private:
-    std::string name;
-    int alignment;
-    int size;
+    const std::string name;
+    const int alignment;
+    const int size;
 
 public:
-    VarRef(std::string name, int alignment, int size);
+    VarRef(std::string n, int a, int s) : name(n), alignment(a), size(s) {}
 
-    std::string getName() {return name;};
-    int getSize() {return size;};
+    const std::string getName() {return name;};
+    const int getSize() {return size;};
     bool operator <(const VarRef & other) const {return name < other.name;};
 };
 

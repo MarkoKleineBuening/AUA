@@ -18,7 +18,8 @@ public:
 
     std::map<std::string, AbstractPointer*> pointers;
     std::map<std::string, VarRef*> vars;
-    void merge(Configuration & other);
+    void merge(Configuration* other);
+    Configuration* getDeepCopy();
 
     void printFullInfo();
     void printPointerInfo();

@@ -8,19 +8,21 @@
 
 #include <string>
 #include <AUA/Alias/Configuration.h>
-#include "PointerOperation.h"
+#include "SinglePredAndSuccOp.h"
 
-class VarAllocationOp : public PointerOperation {
+class VarAllocationOp : public SinglePredAndSuccOp {
 
 private:
     std::string name;
     int size;
 
+protected:
+
+    Configuration* apply(Configuration* in) override;
+
 public:
 
     VarAllocationOp(std::string name, int size);
-
-    Configuration execute(Configuration in);
 
 };
 

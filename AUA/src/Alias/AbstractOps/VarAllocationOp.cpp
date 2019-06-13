@@ -10,11 +10,11 @@ VarAllocationOp::VarAllocationOp(std::string name, int size) {
     this->size = size;
 }
 
-Configuration VarAllocationOp::execute(Configuration in) {
+Configuration* VarAllocationOp::apply(Configuration* in) {
 
     VarRef* var = new VarRef(name, 0, size);
 
-    in.vars.insert_or_assign(name, var);
+    in->vars.insert_or_assign(name, var);
 
     return in;
 }

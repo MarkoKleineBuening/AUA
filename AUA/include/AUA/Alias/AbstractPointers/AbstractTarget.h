@@ -14,6 +14,10 @@ public:
 
     AbstractTarget(VarRef* base, int offset, int size);
 
+    bool operator <(const AbstractTarget & other) const;
+
+    std::string toString();
+
     VarRef* base;
     int byteOffset;
     int size;

@@ -14,49 +14,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8255ad6c-36a6-44cf-923b-3e9ed5cc5abe" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/AUA/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AssignmentOp.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractPointer.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tools/src/PointerIrrelevantException.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/DummyFinalOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/DummyInitialOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/JoinOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/SinglePredAndSuccOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/SplitOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/DummyFinalOp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/DummyInitialOp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/JoinOp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/SinglePredAndSuccOp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/SplitOp.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/AUA/Test/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/AUA/Test/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/AUA/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/AUA/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/lib/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/tools/AUA/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/tools/AUA/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/builds/tools/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/builds/tools/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/testsharedlib/Shared.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/testsharedlib/Shared.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/testsharedlib/objsharedlib/ObjShared.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/testsharedlib/objsharedlib/ObjShared.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/teststaticlib/Static.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/teststaticlib/Static.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/teststaticlib/objlib/Obj.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/lib/teststaticlib/objlib/Obj.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/tools/run/Run.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/NiceMake/tests/thirdparty-lib/project/tools/run/Run.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AUA/Alias/AbstractOps/PointerOperation.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AUA/Alias/Pointer.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/AUA/Alias/VarRef.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/PointerOperation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerOperation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/Pointer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/Alias/VarRef.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/AUA/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/AUA/AUA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tools/src/AUA.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/AUA/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tools/src/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tools/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AssignmentOp.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AssignmentOp.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractPointer.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractPointer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerOperation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerOperation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/src/AUA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tools/src/AUA.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/../AUABuild/" />
@@ -86,11 +74,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Default" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tools/src/AUA.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1362">
-              <caret line="117" column="98" lean-forward="true" selection-start-line="117" selection-start-column="98" selection-end-line="117" selection-end-column="98" />
+            <state relative-caret-position="330">
+              <caret line="320" column="17" selection-start-line="320" selection-start-column="17" selection-end-line="320" selection-end-column="17" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -99,12 +87,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h">
+        <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/JoinOp.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
+            <state relative-caret-position="249">
+              <caret line="32" column="23" selection-start-line="32" selection-start-column="23" selection-end-line="32" selection-end-column="23" />
               <folding>
-                <element signature="e#104#121#0" expanded="true" />
+                <element signature="e#46#83#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -113,8 +101,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="6" column="36" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
+            <state relative-caret-position="372">
+              <caret line="29" selection-start-line="29" selection-end-line="29" />
               <folding>
                 <element signature="e#46#82#0" expanded="true" />
               </folding>
@@ -123,10 +111,31 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AUA/CMakeLists.txt">
+        <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
+            <state relative-caret-position="270">
+              <caret line="18" column="27" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="47" column="46" lean-forward="true" selection-start-line="47" selection-start-column="46" selection-end-line="47" selection-end-column="46" />
+              <folding>
+                <element signature="e#46#63#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -151,6 +160,12 @@
       <find>exec</find>
       <find>[</find>
       <find>print</find>
+      <find>Da</find>
+      <find>getSuc</find>
+      <find>previous</find>
+      <find>bben</find>
+      <find>bbex</find>
+      <find>exce</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -162,26 +177,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/include/AUA/Alias/AbstractPointers/AbstractPointer.h" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractPointers/AbstractPointer.cpp" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractPointers/AbstractTarget.cpp" />
-        <option value="$PROJECT_DIR$/include/AUA/Alias/AbstractPointers/AbstractTarget.h" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/PointerOperation.cpp" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractPointers/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/lib/AUA/Alias/AbstractOps/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/include/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/include/AUA/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/include/AUA/Alias/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/lib/AUA/src/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/lib/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/lib/AUA/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/lib/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" />
-        <option value="$PROJECT_DIR$/lib/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" />
-        <option value="$PROJECT_DIR$/lib/AUA/src/Alias/AbstractPointers/VarRef.cpp" />
-        <option value="$PROJECT_DIR$/lib/AUA/src/Alias/AbstractOps/PointerOperation.cpp" />
-        <option value="$PROJECT_DIR$/src/Alias/AbstractPointers/AbstractPointer.cpp" />
-        <option value="$PROJECT_DIR$/src/Alias/AbstractPointers/VarRef.cpp" />
         <option value="$PROJECT_DIR$/src/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/lib/src/Alias/AbstractPointers/AbstractPointer.cpp" />
         <option value="$PROJECT_DIR$/tools/AUA/AUA.cpp" />
@@ -192,37 +187,56 @@
         <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/AUA/src/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/AUA/src/Alias/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" />
-        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp" />
-        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h" />
         <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AllocType.h" />
         <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AllocationOp.h" />
         <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AllocationOp.cpp" />
+        <option value="$PROJECT_DIR$/tools/src/PointerIrrelevantException.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/DummyHeaderOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/DummyHeaderOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/DummyOp.cpp" />
         <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp" />
         <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp" />
-        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h" />
-        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h" />
-        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h" />
-        <option value="$PROJECT_DIR$/tools/src/PointerIrrelevantException.h" />
-        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" />
-        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/SingleArgAndResOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/SingleArgAndResOp.h" />
         <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AssignmentOp.h" />
-        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp" />
-        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp" />
-        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h" />
-        <option value="$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerOperation.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/LoopToIfPass.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/DummyOp.h" />
         <option value="$PROJECT_DIR$/AUA/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/DummyFinalOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/SinglePredAndSuccOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/SplitOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/DummyFinalOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/DummyInitialOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/JoinOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/SinglePredAndSuccOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/SplitOp.h" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/DummyInitialOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractPointer.h" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp" />
         <option value="$PROJECT_DIR$/tools/src/AUA.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractOps/JoinOp.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp" />
+        <option value="$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp" />
       </list>
     </option>
   </component>
   <component name="OCResolveContextSettings">
-    <option name="configuration" value="0-AUAExe" />
+    <option name="configuration" value="0-AUA" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="170" />
     <option name="y" value="27" />
-    <option name="width" value="960" />
+    <option name="width" value="1124" />
     <option name="height" value="789" />
   </component>
   <component name="ProjectView">
@@ -336,9 +350,9 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps" />
       <recent name="$PROJECT_DIR$/AUA/src/Alias/AbstractOps" />
       <recent name="$PROJECT_DIR$/AUA/src/Alias" />
+      <recent name="$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps" />
       <recent name="$PROJECT_DIR$/lib" />
       <recent name="$PROJECT_DIR$/include/AUA" />
     </key>
@@ -377,10 +391,10 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="CMake Application.AUAExe" />
+      <item itemvalue="CMake Application.AUA" />
       <item itemvalue="CMake Application.TestVarAndPointerCopying" />
       <item itemvalue="CMake Application.intrinsics_gen" />
-      <item itemvalue="CMake Application.AUA" />
-      <item itemvalue="CMake Application.AUAExe" />
     </list>
   </component>
   <component name="SvnConfiguration">
@@ -399,16 +413,16 @@
     <frame x="0" y="27" width="1920" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15705128" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14850427" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32894737" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32894737" />
-      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.27192983" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.27192983" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32894737" />
+      <window_info anchor="bottom" id="TODO" order="6" visible="true" weight="0.33333334" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
@@ -442,71 +456,12 @@
     </layout-to-restore>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" />
-    <entry file="file://$PROJECT_DIR$/tools/AUA/Test.h" />
-    <entry file="file://$PROJECT_DIR$/tools/AUA/Test.cpp" />
-    <entry file="file://$PROJECT_DIR$/include/AUA/Alias/RefType.h" />
-    <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/tests.cpp" />
-    <entry file="file://$PROJECT_DIR$/lib/AUA/Alias/RefType.cpp" />
-    <entry file="file://$PROJECT_DIR$/../LLVM/llvm/include/llvm/IR/Instruction.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="57" column="2" selection-start-line="57" selection-start-column="2" selection-end-line="57" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/include/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="23" selection-start-column="23" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/include/AUA/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="28" selection-start-column="28" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/AUA/Alias/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="1" selection-start-line="3" selection-start-column="1" selection-end-line="3" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/src/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="33" selection-start-column="33" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/AUA/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerOperation.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/AUA/include/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/lib/AUA/include/AUA/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/include/AUA/Alias/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/lib/AUA/src/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/lib/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/lib/AUA/CMakeLists.txt" />
     <entry file="file://$PROJECT_DIR$/cmake/NiceMake/builds/CMakeCache.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
@@ -528,41 +483,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="20" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="43" selection-start-line="1" selection-start-column="43" selection-end-line="1" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="14" selection-start-line="1" selection-start-column="14" selection-end-line="1" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="54" selection-start-line="5" selection-start-column="54" selection-end-line="5" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/AUA/src/CMakeLists.txt" />
     <entry file="file:///usr/include/c++/7/bits/stl_multiset.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
@@ -584,44 +508,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AllocType.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="29" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="43" selection-start-line="25" selection-start-column="43" selection-end-line="25" selection-end-column="43" />
-          <folding>
-            <element signature="e#109#123#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AllocType.h" />
     <entry file="file://$PROJECT_DIR$/tools/src/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -636,130 +523,265 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="23" lean-forward="true" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractPointer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="26" column="60" lean-forward="true" selection-start-line="26" selection-start-column="60" selection-end-line="26" selection-end-column="60" />
-          <folding>
-            <element signature="e#107#124#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="12" column="56" lean-forward="true" selection-start-line="12" selection-start-column="56" selection-end-line="12" selection-end-column="56" />
-          <folding>
-            <element signature="e#46#63#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="7" lean-forward="true" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
-          <folding>
-            <element signature="e#108#125#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerAllocationOp.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="29" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
-          <folding>
-            <element signature="e#116#152#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
-          <folding>
-            <element signature="e#90#126#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="31" lean-forward="true" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="46" lean-forward="true" selection-start-line="22" selection-start-column="46" selection-end-line="22" selection-end-column="46" />
-          <folding>
-            <element signature="e#46#93#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="120">
+          <caret line="8" column="36" selection-start-line="8" selection-start-column="36" selection-end-line="8" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/AssignmentOp.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="23" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
+        <state relative-caret-position="165">
+          <caret line="11" column="47" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="47" />
           <folding>
             <element signature="e#102#138#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp">
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/CopyOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/VarAllocationOp.h">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret line="6" column="36" selection-start-line="6" selection-start-column="36" selection-end-line="6" selection-end-column="36" />
+          <caret column="2" lean-forward="true" selection-start-column="2" selection-end-column="2" />
           <folding>
-            <element signature="e#46#82#0" expanded="true" />
+            <element signature="e#108#125#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/LoopToIfPass.h" />
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/LoopToIfPass.cpp" />
     <entry file="file://$PROJECT_DIR$/AUA/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
+        <state relative-caret-position="210">
+          <caret line="14" column="48" selection-start-line="14" selection-start-column="48" selection-end-line="14" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/PointerOperation.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="50" column="67" selection-start-line="50" selection-start-column="67" selection-end-line="50" selection-end-column="67" />
+          <folding>
+            <element signature="e#109#123#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/DummyFinalOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="28" column="64" selection-start-line="28" selection-start-column="64" selection-end-line="28" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/DummyFinalOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="40" column="41" selection-start-line="40" selection-start-column="41" selection-end-line="40" selection-end-column="41" />
+          <folding>
+            <element signature="e#46#83#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/SinglePredAndSuccOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="30" column="36" selection-start-line="30" selection-start-column="36" selection-end-line="30" selection-end-column="36" />
+          <folding>
+            <element signature="e#46#83#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/SinglePredAndSuccOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" selection-start-line="27" selection-end-line="27" />
+          <folding>
+            <element signature="e#116#152#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/SplitOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="26" column="61" selection-start-line="26" selection-start-column="61" selection-end-line="26" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/JoinOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/SplitOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="511">
+          <caret line="50" column="36" selection-start-line="50" selection-start-column="36" selection-end-line="50" selection-end-column="36" />
+          <folding>
+            <element signature="e#46#83#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/Configuration.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="25" lean-forward="true" selection-start-line="22" selection-start-column="25" selection-end-line="22" selection-end-column="25" />
+        <state relative-caret-position="315">
+          <caret line="21" column="22" selection-start-line="21" selection-start-column="22" selection-end-line="21" selection-end-column="22" />
           <folding>
             <element signature="e#104#121#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/VarRef.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/VarRef.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="47" lean-forward="true" selection-start-line="20" selection-start-column="47" selection-end-line="20" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/CopyOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="37" lean-forward="true" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/VarAllocationOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerAllocationOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="49" lean-forward="true" selection-start-line="15" selection-start-column="49" selection-end-line="15" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/PointerOperation.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="7" selection-start-line="13" selection-start-column="7" selection-end-line="13" selection-end-column="7" />
+          <folding>
+            <element signature="e#46#97#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/AssignmentOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="49" lean-forward="true" selection-start-line="22" selection-start-column="49" selection-end-line="22" selection-end-column="49" />
+          <folding>
+            <element signature="e#46#93#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractPointer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="34" column="35" selection-start-line="34" selection-start-column="35" selection-end-line="34" selection-end-column="35" />
+          <folding>
+            <element signature="e#107#124#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractPointers/AbstractTarget.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="27" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/include/AUA/Alias/AbstractOps/DummyInitialOp.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="2" selection-start-column="2" selection-end-column="2" />
+          <folding>
+            <element signature="e#106#142#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/DummyInitialOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="21" column="25" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
+          <folding>
+            <element signature="e#46#83#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tools/src/AUA.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1362">
-          <caret line="117" column="98" lean-forward="true" selection-start-line="117" selection-start-column="98" selection-end-line="117" selection-end-column="98" />
+        <state relative-caret-position="330">
+          <caret line="320" column="17" selection-start-line="320" selection-start-column="17" selection-end-line="320" selection-end-column="17" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractOps/JoinOp.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="249">
+          <caret line="32" column="23" selection-start-line="32" selection-start-column="23" selection-end-line="32" selection-end-column="23" />
+          <folding>
+            <element signature="e#46#83#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/Configuration.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
+          <folding>
+            <element signature="e#46#82#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractTarget.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="1" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AUA/src/Alias/AbstractPointers/AbstractPointer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="47" column="46" lean-forward="true" selection-start-line="47" selection-start-column="46" selection-end-line="47" selection-end-column="46" />
+          <folding>
+            <element signature="e#46#63#0" expanded="true" />
           </folding>
         </state>
       </provider>

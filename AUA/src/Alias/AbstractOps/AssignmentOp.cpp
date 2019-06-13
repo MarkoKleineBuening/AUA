@@ -11,16 +11,16 @@ AssignmentOp::AssignmentOp(std::string ptrName, std::string varName) {
 
 }
 
-Configuration AssignmentOp::execute(Configuration in) {
+Configuration* AssignmentOp::apply(Configuration* in) {
 
-    auto pointer = in.pointers[pointerName];
-    auto targetVar = in.vars[varName];
+    auto pointer = in->pointers[pointerName];
+    auto targetVar = in->vars[varName];
 
-    AbstractTarget* target = new AbstractTarget(targetVar, 0, targetVar->getSize());
+    AbstractTarget target = AbstractTarget(targetVar, 0, targetVar->getSize());
 
     pointer->onlyPointTo(target);
 
-    in.pointers[pointer->getName()] = pointer;
+//    in->pointers[pointer->getName()] = pointer;
 
     return in;
 

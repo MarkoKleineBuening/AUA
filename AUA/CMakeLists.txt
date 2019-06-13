@@ -11,6 +11,11 @@ nm_add_library(AUA STATIC
         src/Alias/AbstractOps/PointerAllocationOp.cpp
         src/Alias/AbstractOps/VarAllocationOp.cpp
         src/Alias/AbstractOps/CopyOp.cpp
+        src/Alias/AbstractOps/DummyFinalOp.cpp
+        src/Alias/AbstractOps/DummyInitialOp.cpp
+        src/Alias/AbstractOps/SinglePredAndSuccOp.cpp
+        src/Alias/AbstractOps/JoinOp.cpp
+        src/Alias/AbstractOps/SplitOp.cpp
 
 )
 

@@ -9,11 +9,11 @@ PointerAllocationOp::PointerAllocationOp(std::string name) {
 
 }
 
-Configuration PointerAllocationOp::execute(Configuration in) {
+Configuration* PointerAllocationOp::apply(Configuration* in) {
 
     AbstractPointer* pointer = new AbstractPointer(0, name);
 
-    in.pointers.insert_or_assign(name, pointer);
+    in->pointers.insert_or_assign(name, pointer);
 
     return in;
 

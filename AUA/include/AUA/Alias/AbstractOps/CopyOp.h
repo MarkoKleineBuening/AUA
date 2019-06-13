@@ -7,19 +7,22 @@
 
 
 #include <AUA/Alias/Configuration.h>
-#include "PointerOperation.h"
+#include "SinglePredAndSuccOp.h"
 
-class CopyOp : public PointerOperation{
+class CopyOp : public SinglePredAndSuccOp {
 
 private:
     std::string fromName;
     std::string toName;
 
+
+protected:
+
+    Configuration* apply(Configuration* in) override;
+
 public:
 
     CopyOp(std::string fromName, std::string toName);
-
-    Configuration execute(Configuration in);
 
 };
 

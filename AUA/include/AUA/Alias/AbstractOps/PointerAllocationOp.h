@@ -7,19 +7,23 @@
 
 
 #include <AUA/Alias/Configuration.h>
-#include "PointerOperation.h"
+#include "SinglePredAndSuccOp.h"
 
-class PointerAllocationOp : public PointerOperation {
+class PointerAllocationOp : public SinglePredAndSuccOp {
 
 private:
 
     std::string name;
 
+
+protected:
+
+    Configuration* apply(Configuration* in) override;
+
 public:
 
     PointerAllocationOp(std::string name);
 
-    Configuration execute(Configuration in);
 };
 
 

@@ -12,3 +12,20 @@ AbstractTarget::AbstractTarget(VarRef * b, int os, int s) {
     size = s;
 
 }
+
+bool AbstractTarget::operator<(const AbstractTarget &other) const {
+
+    if (!(*(this->base) < *(other.base)) && !(*(other.base) < *(this->base))) {
+
+        return this->byteOffset < other.byteOffset;
+
+    }
+
+    return *(this->base) < *(other.base);
+
+}
+
+
+std::string AbstractTarget::toString() {
+ return "(" + this->base->getName() + ", " +  std::to_string(this->byteOffset) + ", " + std::to_string(this->size) + ")";
+}
