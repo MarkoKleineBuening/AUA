@@ -6,21 +6,24 @@
 #define AUA_VARREF_H
 
 #include <string>
+#include "AbstractReference.h"
 
 
-class VarRef {
+class VarRef : public AbstractReference{
 
 private:
-    const std::string name;
-    const int alignment;
+
     const int size;
 
 public:
-    VarRef(std::string n, int a, int s) : name(n), alignment(a), size(s) {}
 
-    const std::string getName() {return name;};
+    VarRef(std::string n, int a, int s);
+
+
+    const int getLevel() override {return 0;};
+
+
     const int getSize() {return size;};
-    bool operator <(const VarRef & other) const {return name < other.name;};
 };
 
 

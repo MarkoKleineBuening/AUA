@@ -10,20 +10,26 @@
 #include "VarRef.h"
 #include "AbstractTarget.h"
 
-class AbstractPointer {
+class AbstractPointer : public AbstractReference {
 
 private:
 
-    int alignment;
-    std::string name;
+    const int level;
     std::set<AbstractTarget> targets;
 
 public:
 
-    AbstractPointer(int alignment, std::string name);
+    /**
+     * Constructor for a pointer with given alignment, alphanumerical name and level. Initially the pointer will not reference any targets.
+     * @param a the alignment of the pointer.
+     * @param n the name of the pointer.
+     * @param l the level of the pointer.
+     */
+    AbstractPointer(std::string n, int a, int l);
 
-    int getAlignment() {return alignment;};
-    std::string getName() {return name;};
+
+    const int getLevel() override {return level;};
+
     std::set<AbstractTarget> getTargets(){return targets;};
 
     AbstractPointer* getCopy();
@@ -31,12 +37,13 @@ public:
     bool equals(AbstractPointer* other) {return name == other->getName();};
     bool operator <(const AbstractPointer & other) const {return name < other.name;};
 
-    void onlyPointTo(AbstractTarget var);
-    void alsoPointTo(AbstractTarget var);
+    void onlyPointTo(AbstractTarget target);
+    void alsoPointTo(AbstractTarget target);
     void copyTargetsFrom(AbstractPointer *other);
     void mergeTargets(AbstractPointer* other);
 
 
+    void setTargets(std::set<AbstractTarget> set);
 };
 
 

@@ -12,15 +12,15 @@ struct AbstractTarget {
 
 public:
 
-    AbstractTarget(VarRef* base, int offset, int size);
+    AbstractTarget(AbstractReference* base, int offset, int size);
 
     bool operator <(const AbstractTarget & other) const;
 
     std::string toString();
 
-    VarRef* base;
-    int byteOffset;
-    int size;
+    AbstractReference* base;
+    const int byteOffset;
+    const int size;
 
 };
 

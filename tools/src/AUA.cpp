@@ -44,8 +44,6 @@ DummyInitialOp* initialOp = new DummyInitialOp();
  */
 DummyFinalOp* finalOp = new DummyFinalOp();
 
-//std::map<std::string, PointerOperation*> bbEntryOps;
-//std::map<std::string, PointerOperation*> bbExitOps;
 
 std::map<std::string, bool> loopLatchFound;
 std::map<std::string, JoinOp*> loopJoinOps;
@@ -61,7 +59,7 @@ PointerOperation *abstractIfRejoinBlock(llvm::BasicBlock *BB);
 
 PointerOperation* abstractInstruction(llvm::Instruction *I, llvm::Instruction *previous);
 PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst);
-PointerOperation* handleCopy(llvm::LoadInst* loadInst, llvm::StoreInst*);
+PointerOperation* handleCopy(std::list<llvm::LoadInst *> loadInstructions, llvm::StoreInst *storeInst);
 PointerOperation* handleAssignment(llvm::StoreInst *storeInst);
 
 PointerOperation *abstractIfBranchBlock(llvm::BasicBlock *BB);
@@ -89,25 +87,6 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-
-
-//PointerOperation* backtrackToLoopBodyBeginning(llvm::BasicBlock* current, llvm::BasicBlock* loopCondBB) {
-//
-//    for(llvm::BasicBlock* pred : llvm::predecessors(current)){
-//
-//        if (pred == loopCondBB) {
-//            return bbEntryOps[current->getName()];
-//        }
-//
-//        if (PointerOperation* recursiveRes = backtrackToLoopBodyBeginning(pred, loopCondBB)) {
-//            return recursiveRes;
-//        }
-//    }
-//
-//    return nullptr;
-//
-//}
-
 
 
 
@@ -178,60 +157,6 @@ PointerOperation *abstractBasicBlock(llvm::BasicBlock *BB) {
 
     last->linkSuccessor(succOp);
     return first;
-
-}
-
-/**
- * Abstracts all pointer relevant instructions from BB into PointerOperations and attaches the resulting CFG to the given previous PointerOperation. It ignores all control flow instructions.
- * @param BB the BasicBlock whose instructions to abstract.
- * @param predExitOp the PointerOperation preceeding this block.
- * @return the first and last PointerOperation abstracted from this block if any or nullptr if none were abstracted from this block.
- */
-std::pair<PointerOperation *, PointerOperation *> * abstractBlockInstructions(llvm::BasicBlock *BB) {
-
-    llvm::Instruction* previous;
-
-    PointerOperation* first = nullptr;
-    PointerOperation* last = nullptr;
-
-    for (llvm::BasicBlock::iterator BBI = BB->begin(), BBE = BB->end();
-         BBI != BBE;
-         ++BBI) {
-
-        llvm::Instruction *inst = &*BBI;
-
-        const char *termMsg = (inst->isTerminator()) ? " (Terminator)" : "";
-        llvm::outs() << *inst << termMsg << "\n";
-
-        try {
-
-            PointerOperation *op = abstractInstruction(inst, previous);
-
-            if (first == nullptr) {
-
-                first = op;
-            } else {
-
-                last->linkSuccessor(op);
-            }
-
-            last = op;
-
-        } catch (PointerIrrelevantException &e) {
-            // instruction wasn't relevant for pointers. Continue with next instruction.
-        }
-
-        previous = inst;
-    }
-
-
-    if (first != nullptr && last != nullptr) {
-        llvm::outs() << "Block " << BB->getName() << " has PointerOperations.\n";
-        return new std::pair<PointerOperation*, PointerOperation*>(first, last);
-    }
-
-    llvm::outs() << "Block " << BB->getName() << " has no PointerOperations.\n";
-    return nullptr;
 
 }
 
@@ -367,26 +292,107 @@ PointerOperation *abstractIfRejoinBlock(llvm::BasicBlock *BB) {
 
 }
 
-PointerOperation* abstractInstruction(llvm::Instruction *I, llvm::Instruction *previous) {
+/**
+ * Abstracts all pointer relevant instructions from BB into PointerOperations and attaches the resulting CFG to the given previous PointerOperation. It ignores all control flow instructions.
+ * @param BB the BasicBlock whose instructions to abstract.
+ * @param predExitOp the PointerOperation preceeding this block.
+ * @return the first and last PointerOperation abstracted from this block if any or nullptr if none were abstracted from this block.
+ */
+std::pair<PointerOperation *, PointerOperation *> * abstractBlockInstructions(llvm::BasicBlock *BB) {
 
 
-        if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(I)) {
-            return handleAllocation(allocaInst);
-        }
+    PointerOperation* first = nullptr;
+    PointerOperation* last = nullptr;
 
-        if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(I)) {
+    std::list<llvm::LoadInst*> previousLoads;
 
-            if(llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(previous)) {
-                return handleCopy(loadInst, storeInst);
+    for (llvm::BasicBlock::iterator BBI = BB->begin(), BBE = BB->end();
+         BBI != BBE;
+         ++BBI) {
+
+        llvm::Instruction *inst = &*BBI;
+
+        const char *termMsg = (inst->isTerminator()) ? " (Terminator)" : "";
+        llvm::outs() << *inst << termMsg << "\n";
+
+        try {
+
+            PointerOperation* op;
+
+            if (llvm::LoadInst* loadInst = llvm::dyn_cast<llvm::LoadInst>(inst)) {
+
+                previousLoads.push_back(loadInst);
+                continue;
+
             } else {
-                return handleAssignment(storeInst);
+
+
+
+                if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(inst)) {
+                    op = handleAllocation(allocaInst);
+                } else if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
+
+                    if(previousLoads.size() > 0) {
+                        op = handleCopy(previousLoads, storeInst);
+                    } else {
+                        op = handleAssignment(storeInst);
+                    }
+
+                } else {
+                    throw PointerIrrelevantException();
+                }
+
+                previousLoads.clear();
             }
 
-        }
 
-        throw PointerIrrelevantException();
+            if (first == nullptr) {
+
+                first = op;
+            } else {
+
+                last->linkSuccessor(op);
+            }
+
+            last = op;
+
+        } catch (PointerIrrelevantException &e) {
+            // instruction wasn't relevant for pointers. Continue with next instruction.
+            previousLoads.clear();
+        }
+    }
+
+
+    if (first != nullptr && last != nullptr) {
+        llvm::outs() << "Block " << BB->getName() << " has PointerOperations.\n";
+        return new std::pair<PointerOperation*, PointerOperation*>(first, last);
+    }
+
+    llvm::outs() << "Block " << BB->getName() << " has no PointerOperations.\n";
+    return nullptr;
 
 }
+
+//PointerOperation* abstractInstruction(llvm::Instruction *I, llvm::Instruction *previous) {
+//
+//
+//        if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(I)) {
+//            return handleAllocation(allocaInst);
+//        }
+//
+//        if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(I)) {
+//
+//            if(llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(previous)) {
+//                return handleCopy(loadInst, storeInst);
+//            } else {
+//                return handleAssignment(storeInst);
+//            }
+//
+//        }
+//
+//        throw PointerIrrelevantException();
+//
+//}
 
 PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst) {
 
@@ -397,13 +403,23 @@ PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst) {
 
     if (type->isPointerTy()) {
 
-        allocOp = new PointerAllocationOp(name);
+        int ptrLevel = 0;
+
+        while(type->isPointerTy()) {
+
+            llvm::PointerType* ptrType = llvm::dyn_cast<llvm::PointerType>(type);
+            assert(ptrType != nullptr);
+            type = ptrType->getElementType();
+            ++ptrLevel;
+        }
+
+        allocOp = new PointerAllocationOp(name, ptrLevel, allocaInst);
 
     } else {
 
         int size = (int) ceil(((double) allocaInst->getAllocationSizeInBits(llvm::DataLayout(llvm::StringRef())).getValue())/8.0);
 
-        allocOp = new VarAllocationOp(name, size);
+        allocOp = new VarAllocationOp(name, size, allocaInst);
 
     }
 
@@ -412,25 +428,34 @@ PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst) {
 
 /**
  * handles copy instructions. Throws PointerIrrelevantException.
- * @param loadInst the load instruction of the copy
+ * @param loadInstructions the load instruction of the copy
  * @param storeInst the store instruction of the copy
  * @return the resulting Copy Pointer Operation
  */
-PointerOperation* handleCopy(llvm::LoadInst* loadInst, llvm::StoreInst* storeInst) {
+PointerOperation* handleCopy(std::list<llvm::LoadInst *> loadInstructions, llvm::StoreInst *storeInst) {
+
+    llvm::LoadInst* loadInst;
+
+    for (auto LI = loadInstructions.begin(), LI2 = ++LI , LE = loadInstructions.end();
+        LI != LE && LI2 != LE;
+        ++LI, ++LI2
+    ) {
+        loadInst = *LI;
+        llvm::LoadInst* nextLoadInst = *LI2;
+
+        assert(loadInst->getName() == nextLoadInst->getPointerOperand()->getName());
+    }
 
     assert(loadInst->getName().data() == storeInst->getValueOperand()->getName().data());
 
-    llvm::PointerType* fromType = llvm::cast<llvm::PointerType>(loadInst->getPointerOperandType());
-    llvm::PointerType* toType = llvm::cast<llvm::PointerType>(storeInst->getPointerOperandType());
+    int derefDepth = loadInstructions.size() - 1;
 
-    assert(fromType == toType);
 
-    if(!fromType->getElementType()->isPointerTy()){throw PointerIrrelevantException();}
 
-    std::string fromName = loadInst->getPointerOperand()->getName();
+    std::string fromName = loadInstructions.front()->getPointerOperand()->getName();
     std::string toName = storeInst->getPointerOperand()->getName();
 
-    CopyOp* copyOp = new CopyOp(fromName, toName);
+    CopyOp* copyOp = new CopyOp(fromName, toName, derefDepth, storeInst, loadInstructions);
 
     return copyOp;
 }
@@ -445,7 +470,7 @@ PointerOperation* handleAssignment(llvm::StoreInst *storeInst) {
     llvm::PointerType* ptrType = llvm::cast<llvm::PointerType>(dest->getType());
     if(!ptrType->getElementType()->isPointerTy()){throw PointerIrrelevantException();}
 
-    AssignmentOp* assignOp = new AssignmentOp(dest->getName(), value->getName());
+    AssignmentOp* assignOp = new AssignmentOp(dest->getName(), value->getName(), storeInst);
 
     return assignOp;
 }

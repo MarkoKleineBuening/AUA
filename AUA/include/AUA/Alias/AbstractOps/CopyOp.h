@@ -7,23 +7,28 @@
 
 
 #include <AUA/Alias/Configuration.h>
+#include <llvm/IR/Instructions.h>
 #include "SinglePredAndSuccOp.h"
 
 class CopyOp : public SinglePredAndSuccOp {
 
 private:
-    std::string fromName;
-    std::string toName;
-
+    const std::string fromName;
+    const std::string toName;
+    const int derefDepth;
+    const llvm::StoreInst* storeInstruction;
+    const std::list<llvm::LoadInst*> loadInstructions;
 
 protected:
 
     Configuration* apply(Configuration* in) override;
 
+    std::vector<llvm::Instruction *> getAssocInstructions() override;
+
 public:
 
-    CopyOp(std::string fromName, std::string toName);
-
+    CopyOp(std::string fromName, std::string toName, int derefDepth, llvm::StoreInst *storeInst,
+           const std::list<llvm::LoadInst*>);
 };
 
 

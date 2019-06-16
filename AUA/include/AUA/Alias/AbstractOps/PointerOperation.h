@@ -6,8 +6,10 @@
 #define AUA_POINTEROPERATION_H
 
 #include <map>
+#include <list>
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
 #include <AUA/Alias/Configuration.h>
+#include <llvm/IR/Instruction.h>
 
 /**
  * Abstract class for abstracting llvm instructions to operations that influence pointers.
@@ -15,6 +17,12 @@
 class PointerOperation {
 
 protected:
+
+    /**
+     * Returns an array of llvm instructions associated with this PointerOperation. Used to return llvm instructions that influenced a pointer.
+     * @return the llvm instructions associated with this PointerOperation.
+     */
+    virtual std::vector<llvm::Instruction*> getAssocInstructions() = 0;
 
     /**
      * Consume the result Configuration of this PointerOperation.
@@ -32,7 +40,7 @@ protected:
 
 public:
 
-    /**
+/**
      * Executes this operation on a given configuration and executes all following PointerOperations if any exist.
      * @param in the configuration to work on.
      */

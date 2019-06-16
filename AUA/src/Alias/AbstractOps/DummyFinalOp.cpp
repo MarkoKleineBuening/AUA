@@ -49,3 +49,7 @@ std::set<PointerOperation*> DummyFinalOp::getPredecessors() {
     return resultSet;
 
 }
+
+std::vector<llvm::Instruction *> DummyFinalOp::getAssocInstructions() {
+    return std::vector<llvm::Instruction *>();
+}

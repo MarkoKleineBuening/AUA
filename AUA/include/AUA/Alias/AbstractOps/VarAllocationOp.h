@@ -9,20 +9,24 @@
 #include <string>
 #include <AUA/Alias/Configuration.h>
 #include "SinglePredAndSuccOp.h"
+#include <llvm/IR/Instructions.h>
 
 class VarAllocationOp : public SinglePredAndSuccOp {
 
 private:
-    std::string name;
-    int size;
+    const std::string name;
+    const int size;
+    const llvm::AllocaInst* allocaInst;
 
 protected:
 
     Configuration* apply(Configuration* in) override;
 
+    std::vector<llvm::Instruction *> getAssocInstructions() override;
+
 public:
 
-    VarAllocationOp(std::string name, int size);
+    VarAllocationOp(std::string name, int size, const llvm::AllocaInst *allocaInst);
 
 };
 

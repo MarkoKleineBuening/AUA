@@ -17,6 +17,8 @@ protected:
 
     Configuration* apply(Configuration* in) override;
 
+    std::vector<llvm::Instruction *> getAssocInstructions() override;
+
 public:
 
     SplitOp();

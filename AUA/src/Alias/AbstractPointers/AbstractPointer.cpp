@@ -6,51 +6,46 @@
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
 #include <llvm/Support/FileSystem.h>
 
-/**
- * Constructor for a pointer with given alignment and alphanumerical name. Initially the pointer will not reference any VarRefs.
- * @param a the alignment of the pointer.
- * @param n the name of the pointer.
- */
-AbstractPointer::AbstractPointer(int a, std::string n) {
-    alignment = a;
-    name = n;
-}
+
+AbstractPointer::AbstractPointer(std::string n, int a, int l) : AbstractReference(n, a), level(l) {}
 
 /**
- * Makes the pointer point exclusively to the given VarRef. All previous pointers to VarRefs are removed.
- * @param var the VarRef to make this Pointer exclusively point to.
+ * Makes the pointer point exclusively to the given target. All previous pointers to targets are removed.
+ * @param target the target to make this Pointer exclusively point to.
  */
-void AbstractPointer::onlyPointTo(AbstractTarget var) {
+void AbstractPointer::onlyPointTo(AbstractTarget target) {
+
+    assert(target.base->getLevel() == this->level - 1);
+
     targets.clear();
-    targets.insert(var);
+    targets.insert(target);
 }
 
 /**
- * Adds a pointer to a VarRef to this Pointer. Keeps previous pointers to VarRefs.
- * @param var the VarRef to add a pointer to.
+ * Adds a pointer to a target to this Pointer. Keeps previous pointers to targets.
+ * @param target the target to add a pointer to.
  */
-void AbstractPointer::alsoPointTo(AbstractTarget var) {
-    targets.insert(var);
+void AbstractPointer::alsoPointTo(AbstractTarget target) {
+
+    assert(target.base->getLevel() == this->level - 1);
+
+    targets.insert(target);
 }
 
 /**
- * Drops all previous pointers to VarRefs from this Pointer and copies the pointers from another given Pointer.
- * @param other the Pointer to copy all pointers to VarRefs from.
+ * Drops all previous pointers to targets from this Pointer and copies the pointers from another given Pointer.
+ * @param other the Pointer to copy all pointers to targets from.
  */
 void AbstractPointer::copyTargetsFrom(AbstractPointer *other) {
+
+    assert(this->level == other->level);
+
     targets = other->targets;
 }
 
 void AbstractPointer::mergeTargets(AbstractPointer *other) {
 
-//    for (AbstractTarget target : other->getTargets()) {
-//
-//        for (auto target2 : this->targets) {
-//
-//            llvm::outs() << target.toString() << " < " << target2.toString()   << " : " << (target < target2) << "\n";
-//
-//        }
-//    }
+    assert(this->level == other->level);
 
     targets.merge(other->getTargets());
 
@@ -59,10 +54,20 @@ void AbstractPointer::mergeTargets(AbstractPointer *other) {
 
 AbstractPointer* AbstractPointer::getCopy() {
 
-        AbstractPointer* copy = new AbstractPointer(this->alignment, this->name);
+        AbstractPointer* copy = new AbstractPointer(this->name, this->alignment, this->level);
         copy->copyTargetsFrom(this);
 
         return copy;
+
+}
+
+void AbstractPointer::setTargets(std::set<AbstractTarget> newTargets) {
+
+    for (auto target : newTargets) {
+        assert(target.base->getLevel() == this->level - 1);
+    }
+
+    this->targets = newTargets;
 
 }
 

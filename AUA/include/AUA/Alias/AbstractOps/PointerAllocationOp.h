@@ -8,21 +8,27 @@
 
 #include <AUA/Alias/Configuration.h>
 #include "SinglePredAndSuccOp.h"
+#include <llvm/IR/Instructions.h>
+
 
 class PointerAllocationOp : public SinglePredAndSuccOp {
 
 private:
 
-    std::string name;
+    const std::string name;
+    const int level;
+    const llvm::AllocaInst* allocInst;
 
 
 protected:
 
     Configuration* apply(Configuration* in) override;
 
+    std::vector<llvm::Instruction *> getAssocInstructions() override;
+
 public:
 
-    PointerAllocationOp(std::string name);
+    PointerAllocationOp(std::string n, int l, const llvm::AllocaInst *allocInst);
 
 };
 

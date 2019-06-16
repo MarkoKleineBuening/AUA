@@ -49,3 +49,4 @@ std::set<PointerOperation*> SinglePredAndSuccOp::getSuccessors() {
     return resultSet;
 
 }
+

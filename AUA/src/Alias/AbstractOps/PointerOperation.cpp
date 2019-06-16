@@ -13,3 +13,4 @@ void PointerOperation::consume(Configuration* result) {
 
     // TODO add consumer that extracts aliases from Configuration. Best in parallel.
 }
+

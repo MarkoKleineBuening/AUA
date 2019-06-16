@@ -5,3 +5,4 @@
 
 #include <AUA/Alias/AbstractPointers/VarRef.h>
 
+VarRef::VarRef(std::string n, int a, int s) : AbstractReference(n,a), size(s) {}

@@ -5,13 +5,8 @@
 
 #include <AUA/Alias/AbstractPointers/AbstractTarget.h>
 
-AbstractTarget::AbstractTarget(VarRef * b, int os, int s) {
+AbstractTarget::AbstractTarget(AbstractReference * b, int os, int s) : base(b), byteOffset(os), size(s) {}
 
-    base = b;
-    byteOffset = os;
-    size = s;
-
-}
 
 bool AbstractTarget::operator<(const AbstractTarget &other) const {
 
@@ -27,5 +22,7 @@ bool AbstractTarget::operator<(const AbstractTarget &other) const {
 
 
 std::string AbstractTarget::toString() {
- return "(" + this->base->getName() + ", " +  std::to_string(this->byteOffset) + ", " + std::to_string(this->size) + ")";
+
+    std::string typeMsg = (base->getLevel() == 0)? "var" : "ptr lvl " + std::to_string(base->getLevel());
+    return "(" + this->base->getName() + ", " +  std::to_string(this->byteOffset) + ", " + std::to_string(this->size) + ", " + typeMsg + ")";
 }

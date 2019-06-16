@@ -52,3 +52,7 @@ std::set<PointerOperation*> DummyInitialOp::getPredecessors() {
     return std::set<PointerOperation*>();
 
 }
+
+std::vector<llvm::Instruction *> DummyInitialOp::getAssocInstructions() {
+    return std::vector<llvm::Instruction *>();
+}

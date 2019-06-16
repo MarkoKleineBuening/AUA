@@ -66,7 +66,7 @@ void Configuration::printPointerInfo() {
 
     llvm::outs() << "\n" << pointers.size() << " Pointers:\n";
     for(std::pair<std::string, AbstractPointer*> p : pointers) {
-        llvm::outs() << p.first << " points to: ";
+        llvm::outs() << p.first << " (level " << p.second->getLevel() << ") points to: ";
         for(AbstractTarget t : p.second->getTargets()) {
             llvm::outs() << t.toString() << " ";
         }

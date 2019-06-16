@@ -7,23 +7,27 @@
 
 
 #include <AUA/Alias/Configuration.h>
+#include <llvm/IR/Instructions.h>
 #include "SinglePredAndSuccOp.h"
 
 class AssignmentOp : public SinglePredAndSuccOp {
 
 private:
 
-    std::string pointerName;
-    std::string varName;
+    const std::string pointerName;
+    const std::string targetName;
+    const llvm::StoreInst* storeInstruction;
 
 
 protected:
 
     Configuration* apply(Configuration* in) override;
 
+    std::vector<llvm::Instruction *> getAssocInstructions() override;
+
 public:
 
-    AssignmentOp(std::string ptrName, std::string varName);
+    AssignmentOp(std::string ptrName, std::string varName, llvm::StoreInst *storeInst);
 
 };
 

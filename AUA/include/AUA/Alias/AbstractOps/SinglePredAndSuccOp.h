@@ -22,6 +22,7 @@ protected:
 
 public:
 
+
     void execute(Configuration *in) override;
 
     void linkSuccessor(PointerOperation* successor) override;
