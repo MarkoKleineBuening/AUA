@@ -6,7 +6,7 @@
 #define AUA_COPYOP_H
 
 
-#include <AUA/Alias/Configuration.h>
+#include <AUA/Alias/AbstractPointers/Configuration.h>
 #include <llvm/IR/Instructions.h>
 #include "SinglePredAndSuccOp.h"
 
@@ -23,7 +23,7 @@ protected:
 
     Configuration* apply(Configuration* in) override;
 
-    std::vector<llvm::Instruction *> getAssocInstructions() override;
+    std::set<llvm::Instruction *> getAssocInstructions() override;
 
 public:
 

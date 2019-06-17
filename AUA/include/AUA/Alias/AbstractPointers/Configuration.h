@@ -8,11 +8,16 @@
 
 #include <string>
 #include <map>
+#include <list>
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
+#include "Alias.h"
+
 
 class Configuration {
 
 private:
+
+    std::list<Alias> calculateAliases();
 
 public:
 
@@ -24,6 +29,10 @@ public:
     void printFullInfo();
     void printPointerInfo();
     void printVarInfo();
+    void printAliasInfo();
+
+    void printFullInfoVerbose();
+    void printPointerInfoVerbose();
 
 };
 

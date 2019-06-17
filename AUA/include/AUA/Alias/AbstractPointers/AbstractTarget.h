@@ -16,7 +16,15 @@ public:
 
     bool operator <(const AbstractTarget & other) const;
 
-    std::string toString();
+    bool operator>(const AbstractTarget &rhs) const;
+
+    bool operator<=(const AbstractTarget &rhs) const;
+
+    bool operator>=(const AbstractTarget &rhs) const;
+
+    bool operator==(const AbstractTarget &rhs) const;
+
+    const std::string toString() const;
 
     AbstractReference* base;
     const int byteOffset;

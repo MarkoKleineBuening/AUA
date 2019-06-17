@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by mlaupichler on 27.05.19.
 //
@@ -6,7 +8,7 @@
 #include <assert.h>
 
 AssignmentOp::AssignmentOp(std::string ptrName, std::string varName, llvm::StoreInst *storeInst)
-        : pointerName(ptrName), targetName(varName), storeInstruction(storeInst) {}
+        : pointerName(std::move(ptrName)), targetName(std::move(varName)), storeInstruction(storeInst) {}
 
 Configuration* AssignmentOp::apply(Configuration* in) {
 
@@ -34,13 +36,15 @@ Configuration* AssignmentOp::apply(Configuration* in) {
     AbstractTarget* target = new AbstractTarget(targetBase, 0, size);
     pointer->onlyPointTo(*target);
 
+    pointer->setOnlyAssocInst((llvm::Instruction*) storeInstruction);
+
     return in;
 
 }
 
-std::vector<llvm::Instruction *> AssignmentOp::getAssocInstructions() {
-    std::vector<llvm::Instruction *> result;
-    result.push_back((llvm::Instruction*) storeInstruction);
+std::set<llvm::Instruction *> AssignmentOp::getAssocInstructions() {
+    std::set<llvm::Instruction *> result;
+    result.insert((llvm::Instruction*) storeInstruction);
 
     return result;
 }

@@ -20,7 +20,8 @@ Configuration* DummyFinalOp::apply(Configuration* in) {
 void DummyFinalOp::execute(Configuration *in) {
 
     llvm::outs() << "\nResult is: \n";
-    this->consume(in);
+
+    in->printFullInfoVerbose();
 }
 
 void DummyFinalOp::addPredecessor(PointerOperation *predecessor) {
@@ -50,6 +51,6 @@ std::set<PointerOperation*> DummyFinalOp::getPredecessors() {
 
 }
 
-std::vector<llvm::Instruction *> DummyFinalOp::getAssocInstructions() {
-    return std::vector<llvm::Instruction *>();
+std::set<llvm::Instruction *> DummyFinalOp::getAssocInstructions() {
+    return std::set<llvm::Instruction *>();
 }

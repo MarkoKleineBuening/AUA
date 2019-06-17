@@ -68,6 +68,6 @@ std::set<PointerOperation*> JoinOp::getSuccessors() {
 
 }
 
-std::vector<llvm::Instruction *> JoinOp::getAssocInstructions() {
-    return std::vector<llvm::Instruction *>();
+std::set<llvm::Instruction *> JoinOp::getAssocInstructions() {
+    return std::set<llvm::Instruction *>();
 }

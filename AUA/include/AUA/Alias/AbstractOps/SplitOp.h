@@ -17,7 +17,7 @@ protected:
 
     Configuration* apply(Configuration* in) override;
 
-    std::vector<llvm::Instruction *> getAssocInstructions() override;
+    std::set<llvm::Instruction *> getAssocInstructions() override;
 
 public:
 

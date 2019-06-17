@@ -6,7 +6,7 @@
 #define AUA_SINGLEPREDANDSUCCOP_H
 
 
-#include <AUA/Alias/Configuration.h>
+#include <AUA/Alias/AbstractPointers/Configuration.h>
 #include "PointerOperation.h"
 
 /**

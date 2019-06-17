@@ -8,7 +8,7 @@
 #include <map>
 #include <list>
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
-#include <AUA/Alias/Configuration.h>
+#include <AUA/Alias/AbstractPointers/Configuration.h>
 #include <llvm/IR/Instruction.h>
 
 /**
@@ -22,7 +22,7 @@ protected:
      * Returns an array of llvm instructions associated with this PointerOperation. Used to return llvm instructions that influenced a pointer.
      * @return the llvm instructions associated with this PointerOperation.
      */
-    virtual std::vector<llvm::Instruction*> getAssocInstructions() = 0;
+    virtual std::set<llvm::Instruction*> getAssocInstructions() = 0;
 
     /**
      * Consume the result Configuration of this PointerOperation.

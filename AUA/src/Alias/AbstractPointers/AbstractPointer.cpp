@@ -43,9 +43,11 @@ void AbstractPointer::copyTargetsFrom(AbstractPointer *other) {
     targets = other->targets;
 }
 
-void AbstractPointer::mergeTargets(AbstractPointer *other) {
+void AbstractPointer::merge(AbstractPointer *other) {
 
     assert(this->level == other->level);
+
+    assocInsts.merge(other->getAssocInsts());
 
     targets.merge(other->getTargets());
 
@@ -56,6 +58,7 @@ AbstractPointer* AbstractPointer::getCopy() {
 
         AbstractPointer* copy = new AbstractPointer(this->name, this->alignment, this->level);
         copy->copyTargetsFrom(this);
+        copy->assocInsts = this->assocInsts;
 
         return copy;
 
@@ -69,6 +72,31 @@ void AbstractPointer::setTargets(std::set<AbstractTarget> newTargets) {
 
     this->targets = newTargets;
 
+}
+
+std::set<llvm::Instruction *> AbstractPointer::getAssocInsts() {
+    return assocInsts;
+}
+
+void AbstractPointer::addAssocInst(llvm::Instruction *inst) {
+
+    assocInsts.insert(inst);
+
+}
+
+void AbstractPointer::addAllAssocInsts(std::set<llvm::Instruction *> insts) {
+
+    assocInsts.merge(insts);
+
+}
+
+void AbstractPointer::setAssocInsts(const std::set<llvm::Instruction *> &assocInsts) {
+    AbstractPointer::assocInsts = assocInsts;
+}
+
+void AbstractPointer::setOnlyAssocInst(llvm::Instruction *assocInst) {
+    assocInsts.clear();
+    assocInsts.insert(assocInst);
 }
 
 

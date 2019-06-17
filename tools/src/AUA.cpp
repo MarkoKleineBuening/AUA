@@ -25,7 +25,7 @@
 
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
 #include <AUA/Alias/AbstractOps/AssignmentOp.h>
-#include <AUA/Alias/Configuration.h>
+#include <AUA/Alias/AbstractPointers/Configuration.h>
 #include <AUA/Alias/AbstractOps/PointerAllocationOp.h>
 #include <AUA/Alias/AbstractOps/VarAllocationOp.h>
 #include <AUA/Alias/AbstractOps/CopyOp.h>
@@ -326,20 +326,22 @@ std::pair<PointerOperation *, PointerOperation *> * abstractBlockInstructions(ll
 
             } else {
 
+                if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
 
-
-                if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(inst)) {
-                    op = handleAllocation(allocaInst);
-                } else if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
-
-                    if(previousLoads.size() > 0) {
+                    if(!previousLoads.empty()) {
                         op = handleCopy(previousLoads, storeInst);
                     } else {
                         op = handleAssignment(storeInst);
                     }
 
                 } else {
-                    throw PointerIrrelevantException();
+
+                    if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(inst)) {
+                        op = handleAllocation(allocaInst);
+                    } else {
+
+                        throw PointerIrrelevantException();
+                    }
                 }
 
                 previousLoads.clear();

@@ -10,19 +10,34 @@ AbstractTarget::AbstractTarget(AbstractReference * b, int os, int s) : base(b), 
 
 bool AbstractTarget::operator<(const AbstractTarget &other) const {
 
-    if (!(*(this->base) < *(other.base)) && !(*(other.base) < *(this->base))) {
+    if (*(this->base) < *(other.base))
+        return true;
+    if (*(other.base) < *(this->base))
+        return false;
 
-        return this->byteOffset < other.byteOffset;
-
-    }
-
-    return *(this->base) < *(other.base);
+    return this->byteOffset < other.byteOffset;
 
 }
 
 
-std::string AbstractTarget::toString() {
+const std::string AbstractTarget::toString() const {
 
     std::string typeMsg = (base->getLevel() == 0)? "var" : "ptr lvl " + std::to_string(base->getLevel());
     return "(" + this->base->getName() + ", " +  std::to_string(this->byteOffset) + ", " + std::to_string(this->size) + ", " + typeMsg + ")";
+}
+
+bool AbstractTarget::operator>(const AbstractTarget &rhs) const {
+    return rhs < *this;
+}
+
+bool AbstractTarget::operator<=(const AbstractTarget &rhs) const {
+    return !(rhs < *this);
+}
+
+bool AbstractTarget::operator>=(const AbstractTarget &rhs) const {
+    return !(*this < rhs);
+}
+
+bool AbstractTarget::operator==(const AbstractTarget &rhs) const {
+    return ((*this <= rhs) && (*this >= rhs));
 }

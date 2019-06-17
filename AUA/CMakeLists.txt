@@ -1,7 +1,7 @@
 nm_add_library(AUA STATIC
 
-        src/Alias/Configuration.cpp
-
+        src/Alias/AbstractPointers/Configuration.cpp
+        src/Alias/AbstractPointers/Alias.cpp
         src/Alias/AbstractPointers/AbstractPointer.cpp
         src/Alias/AbstractPointers/AbstractTarget.cpp
         src/Alias/AbstractPointers/VarRef.cpp

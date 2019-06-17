@@ -6,7 +6,7 @@
 #define AUA_POINTERALLOCATIONOP_H
 
 
-#include <AUA/Alias/Configuration.h>
+#include <AUA/Alias/AbstractPointers/Configuration.h>
 #include "SinglePredAndSuccOp.h"
 #include <llvm/IR/Instructions.h>
 
@@ -24,7 +24,7 @@ protected:
 
     Configuration* apply(Configuration* in) override;
 
-    std::vector<llvm::Instruction *> getAssocInstructions() override;
+    std::set<llvm::Instruction *> getAssocInstructions() override;
 
 public:
 

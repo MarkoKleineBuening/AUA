@@ -15,6 +15,8 @@ Configuration* CopyOp::apply(Configuration* in) {
     auto from = in->pointers[fromName];
     auto to = in->pointers[toName];
 
+    std::set<llvm::Instruction*> allAssocInsts = from->getAssocInsts();
+
 
     assert(from->getLevel() == to->getLevel() + derefDepth);
 
@@ -33,6 +35,7 @@ Configuration* CopyOp::apply(Configuration* in) {
 
             assert(lowerPointer != nullptr);
 
+            allAssocInsts.merge(lowerPointer->getAssocInsts());
             lowerTargets.merge(lowerPointer->getTargets());
         }
 
@@ -42,15 +45,20 @@ Configuration* CopyOp::apply(Configuration* in) {
 
     to->setTargets(upperTargets);
 
+    allAssocInsts.insert((llvm::Instruction*) storeInstruction);
+    allAssocInsts.insert(loadInstructions.begin(), loadInstructions.end());
+
+    to->setAssocInsts(allAssocInsts);
+
     return in;
 
 }
 
-std::vector<llvm::Instruction *> CopyOp::getAssocInstructions() {
+std::set<llvm::Instruction *> CopyOp::getAssocInstructions() {
 
-    std::vector<llvm::Instruction *> result;
-    result.push_back((llvm::Instruction*) storeInstruction);
-    result.insert(result.end(), loadInstructions.begin(), loadInstructions.end());
+    std::set<llvm::Instruction *> result;
+    result.insert((llvm::Instruction*) storeInstruction);
+    result.insert(loadInstructions.begin(), loadInstructions.end());
 
     return result;
 

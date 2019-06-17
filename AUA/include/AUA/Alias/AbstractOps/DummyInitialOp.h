@@ -6,7 +6,7 @@
 #define AUA_DUMMYINITIALOP_H
 
 
-#include <AUA/Alias/Configuration.h>
+#include <AUA/Alias/AbstractPointers/Configuration.h>
 #include "PointerOperation.h"
 
 class DummyInitialOp : public PointerOperation {
@@ -19,7 +19,7 @@ protected:
 
     Configuration* apply(Configuration* in) override;
 
-    std::vector<llvm::Instruction *> getAssocInstructions() override;
+    std::set<llvm::Instruction *> getAssocInstructions() override;
 
 public:
 

@@ -11,6 +11,7 @@ PointerAllocationOp::PointerAllocationOp(std::string n, int l, const llvm::Alloc
 Configuration* PointerAllocationOp::apply(Configuration* in) {
 
     AbstractPointer* pointer = new AbstractPointer(name, 0, level);
+    pointer->setOnlyAssocInst((llvm::Instruction*) allocInst);
 
     in->pointers.insert_or_assign(name, pointer);
 
@@ -18,9 +19,9 @@ Configuration* PointerAllocationOp::apply(Configuration* in) {
 
 }
 
-std::vector<llvm::Instruction *> PointerAllocationOp::getAssocInstructions() {
-    std::vector<llvm::Instruction *> result;
-    result.push_back((llvm::Instruction*) allocInst);
+std::set<llvm::Instruction *> PointerAllocationOp::getAssocInstructions() {
+    std::set<llvm::Instruction *> result;
+    result.insert((llvm::Instruction*) allocInst);
 
     return result;
 }
