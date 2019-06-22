@@ -29,7 +29,7 @@ public:
      */
     AbstractPointer(std::string n, int a, int l);
 
-    const int getLevel() override {return level;};
+    const int getPointerLevel() override {return level;};
 
 
     std::set<AbstractTarget> getTargets(){return targets;};

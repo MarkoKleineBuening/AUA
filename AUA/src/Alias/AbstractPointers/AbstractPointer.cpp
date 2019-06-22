@@ -15,7 +15,7 @@ AbstractPointer::AbstractPointer(std::string n, int a, int l) : AbstractReferenc
  */
 void AbstractPointer::onlyPointTo(AbstractTarget target) {
 
-    assert(target.base->getLevel() == this->level - 1);
+    assert(target.base->getPointerLevel() == this->level - 1);
 
     targets.clear();
     targets.insert(target);
@@ -27,7 +27,7 @@ void AbstractPointer::onlyPointTo(AbstractTarget target) {
  */
 void AbstractPointer::alsoPointTo(AbstractTarget target) {
 
-    assert(target.base->getLevel() == this->level - 1);
+    assert(target.base->getPointerLevel() == this->level - 1);
 
     targets.insert(target);
 }
@@ -67,7 +67,7 @@ AbstractPointer* AbstractPointer::getCopy() {
 void AbstractPointer::setTargets(std::set<AbstractTarget> newTargets) {
 
     for (auto target : newTargets) {
-        assert(target.base->getLevel() == this->level - 1);
+        assert(target.base->getPointerLevel() == this->level - 1);
     }
 
     this->targets = newTargets;

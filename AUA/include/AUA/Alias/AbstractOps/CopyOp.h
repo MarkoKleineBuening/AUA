@@ -8,13 +8,14 @@
 
 #include <AUA/Alias/AbstractPointers/Configuration.h>
 #include <llvm/IR/Instructions.h>
+#include <AUA/Alias/AbstractPointers/Finders/PointerFinder.h>
 #include "SinglePredAndSuccOp.h"
 
 class CopyOp : public SinglePredAndSuccOp {
 
 private:
-    const std::string fromName;
-    const std::string toName;
+    const PointerFinder* fromFinder;
+    const PointerFinder* toFinder;
     const int derefDepth;
     const llvm::StoreInst* storeInstruction;
     const std::list<llvm::LoadInst*> loadInstructions;
@@ -27,8 +28,8 @@ protected:
 
 public:
 
-    CopyOp(std::string fromName, std::string toName, int derefDepth, llvm::StoreInst *storeInst,
-           const std::list<llvm::LoadInst*>);
+    CopyOp(PointerFinder *fromFinder, PointerFinder *toFinder, int derefDepth, llvm::StoreInst *storeInst,
+           const std::list<llvm::LoadInst *> loadInsts);
 };
 
 

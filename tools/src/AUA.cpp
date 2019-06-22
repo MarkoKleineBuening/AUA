@@ -33,6 +33,14 @@
 #include <AUA/Alias/AbstractOps/JoinOp.h>
 #include <AUA/Alias/AbstractOps/SplitOp.h>
 #include <AUA/Alias/AbstractOps/DummyInitialOp.h>
+#include <AUA/Alias/AbstractOps/CompositeAllocationOp.h>
+#include <AUA/Alias/AbstractPointers/Finders/MemberPointerFinder.h>
+#include <AUA/Alias/AbstractPointers/Finders/NonMemberPointerFinder.h>
+#include <AUA/Alias/AbstractPointers/Finders/MemberTargetFinder.h>
+#include <AUA/Alias/AbstractPointers/Finders/NonMemberTargetFinder.h>
+
+
+llvm::DataLayout* dataLayout;
 
 /**
  * Used to start the chain of PointerOperations. Is the only PointerOperation allowed to have no predecessors.
@@ -57,10 +65,11 @@ PointerOperation *abstractBasicBlock(llvm::BasicBlock *BB);
 PointerOperation *abstractLoopConditionBlock(llvm::BasicBlock *BB);
 PointerOperation *abstractIfRejoinBlock(llvm::BasicBlock *BB);
 
-PointerOperation* abstractInstruction(llvm::Instruction *I, llvm::Instruction *previous);
+PointerOperation* abstractInstruction(llvm::Instruction *I);
 PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst);
-PointerOperation* handleCopy(std::list<llvm::LoadInst *> loadInstructions, llvm::StoreInst *storeInst);
+PointerOperation *handleCopy(llvm::StoreInst *storeInst);
 PointerOperation* handleAssignment(llvm::StoreInst *storeInst);
+int getMemberIdx(llvm::GetElementPtrInst* gepInst);
 
 PointerOperation *abstractIfBranchBlock(llvm::BasicBlock *BB);
 
@@ -72,6 +81,7 @@ int main(int argc, char **argv) {
     llvm::LLVMContext context;
     llvm::Module *module = readInModule(context,inFile).release();
 
+    dataLayout = new llvm::DataLayout(module);
 
     for (auto &F: module->getFunctionList()) {
 
@@ -304,7 +314,6 @@ std::pair<PointerOperation *, PointerOperation *> * abstractBlockInstructions(ll
     PointerOperation* first = nullptr;
     PointerOperation* last = nullptr;
 
-    std::list<llvm::LoadInst*> previousLoads;
 
     for (llvm::BasicBlock::iterator BBI = BB->begin(), BBE = BB->end();
          BBI != BBE;
@@ -317,36 +326,7 @@ std::pair<PointerOperation *, PointerOperation *> * abstractBlockInstructions(ll
 
         try {
 
-            PointerOperation* op;
-
-            if (llvm::LoadInst* loadInst = llvm::dyn_cast<llvm::LoadInst>(inst)) {
-
-                previousLoads.push_back(loadInst);
-                continue;
-
-            } else {
-
-                if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
-
-                    if(!previousLoads.empty()) {
-                        op = handleCopy(previousLoads, storeInst);
-                    } else {
-                        op = handleAssignment(storeInst);
-                    }
-
-                } else {
-
-                    if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(inst)) {
-                        op = handleAllocation(allocaInst);
-                    } else {
-
-                        throw PointerIrrelevantException();
-                    }
-                }
-
-                previousLoads.clear();
-            }
-
+            PointerOperation* op = abstractInstruction(inst);
 
             if (first == nullptr) {
 
@@ -360,7 +340,6 @@ std::pair<PointerOperation *, PointerOperation *> * abstractBlockInstructions(ll
 
         } catch (PointerIrrelevantException &e) {
             // instruction wasn't relevant for pointers. Continue with next instruction.
-            previousLoads.clear();
         }
     }
 
@@ -375,26 +354,27 @@ std::pair<PointerOperation *, PointerOperation *> * abstractBlockInstructions(ll
 
 }
 
-//PointerOperation* abstractInstruction(llvm::Instruction *I, llvm::Instruction *previous) {
-//
-//
-//        if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(I)) {
-//            return handleAllocation(allocaInst);
-//        }
-//
-//        if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(I)) {
-//
-//            if(llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(previous)) {
-//                return handleCopy(loadInst, storeInst);
-//            } else {
-//                return handleAssignment(storeInst);
-//            }
-//
-//        }
-//
-//        throw PointerIrrelevantException();
-//
-//}
+PointerOperation* abstractInstruction(llvm::Instruction *inst) {
+
+    if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
+
+        llvm::Value* fromValue = storeInst->getValueOperand();
+
+        if(llvm::isa<llvm::LoadInst>(fromValue)) {
+            return handleCopy(storeInst);
+        } else {
+            return handleAssignment(storeInst);
+        }
+
+    }
+
+    if(llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(inst)) {
+        return handleAllocation(allocaInst);
+    }
+
+    throw PointerIrrelevantException();
+
+}
 
 PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst) {
 
@@ -417,9 +397,14 @@ PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst) {
 
         allocOp = new PointerAllocationOp(name, ptrLevel, allocaInst);
 
+    } else if (type->isStructTy() || type->isArrayTy()) {
+
+        llvm::CompositeType* compType = llvm::cast<llvm::CompositeType>(type);
+        allocOp = new CompositeAllocationOp(compType, dataLayout, name, allocaInst);
+
     } else {
 
-        int size = (int) ceil(((double) allocaInst->getAllocationSizeInBits(llvm::DataLayout(llvm::StringRef())).getValue())/8.0);
+        int size = dataLayout->getTypeAllocSize(type);
 
         allocOp = new VarAllocationOp(name, size, allocaInst);
 
@@ -434,47 +419,105 @@ PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst) {
  * @param storeInst the store instruction of the copy
  * @return the resulting Copy Pointer Operation
  */
-PointerOperation* handleCopy(std::list<llvm::LoadInst *> loadInstructions, llvm::StoreInst *storeInst) {
+PointerOperation *handleCopy(llvm::StoreInst *storeInst) {
 
-    llvm::LoadInst* loadInst;
+    std::list<llvm::LoadInst*> loadInstructions;
+    llvm::Value* fromValue = storeInst->getValueOperand();
 
-    for (auto LI = loadInstructions.begin(), LI2 = ++LI , LE = loadInstructions.end();
-        LI != LE && LI2 != LE;
-        ++LI, ++LI2
-    ) {
-        loadInst = *LI;
-        llvm::LoadInst* nextLoadInst = *LI2;
+    while(llvm::LoadInst* loadInst = llvm::dyn_cast<llvm::LoadInst>(fromValue)) {
 
-        assert(loadInst->getName() == nextLoadInst->getPointerOperand()->getName());
+        loadInstructions.push_front(loadInst);
+        fromValue = loadInst->getPointerOperand();
+
     }
-
-    assert(loadInst->getName().data() == storeInst->getValueOperand()->getName().data());
 
     int derefDepth = loadInstructions.size() - 1;
 
+    llvm::Value* toValue = storeInst->getPointerOperand();
 
+    PointerFinder *fromFinder = nullptr;
+    PointerFinder *toFinder = nullptr;
 
-    std::string fromName = loadInstructions.front()->getPointerOperand()->getName();
-    std::string toName = storeInst->getPointerOperand()->getName();
+    if (llvm::GetElementPtrInst* fromGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(fromValue)) {
 
-    CopyOp* copyOp = new CopyOp(fromName, toName, derefDepth, storeInst, loadInstructions);
+        std::string fromCompName = fromGEPInst->getPointerOperand()->getName();
+        int fromMemberIdx = getMemberIdx(fromGEPInst);
+
+        fromFinder = new MemberPointerFinder(fromCompName, fromMemberIdx);
+    } else {
+        fromFinder = new NonMemberPointerFinder(fromValue->getName());
+    }
+
+    if (llvm::GetElementPtrInst* toGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(toValue)) {
+
+        std::string toCompName = toGEPInst->getPointerOperand()->getName();
+        int toMemberIdx = getMemberIdx(toGEPInst);
+
+        toFinder = new MemberPointerFinder(toCompName, toMemberIdx);
+    } else {
+        toFinder = new NonMemberPointerFinder(toValue->getName());
+    }
+
+    assert(fromFinder != nullptr);
+    assert(toFinder != nullptr);
+
+    CopyOp* copyOp = new CopyOp(fromFinder, toFinder, derefDepth, storeInst, loadInstructions);
 
     return copyOp;
 }
 
+int getMemberIdx(llvm::GetElementPtrInst* gepInst) {
+
+    int opCount = gepInst->getNumOperands();
+    llvm::ConstantInt *CI = llvm::cast<llvm::ConstantInt>(gepInst->getOperand(opCount - 1));
+    assert(CI != nullptr);
+    int memberIdx = CI->getZExtValue();
+
+    return memberIdx;
+
+}
+
 PointerOperation* handleAssignment(llvm::StoreInst *storeInst) {
 
-    llvm::Value* value = storeInst->getValueOperand();
-    llvm::Value* dest = storeInst->getPointerOperand();
+    llvm::Value* targetValue = storeInst->getValueOperand();
+    llvm::Value* pointerValue = storeInst->getPointerOperand();
 
-    if(!value->getType()->isPointerTy()) {throw PointerIrrelevantException();}
 
-    llvm::PointerType* ptrType = llvm::cast<llvm::PointerType>(dest->getType());
+    if(!targetValue->getType()->isPointerTy()) {throw PointerIrrelevantException();}
+
+    llvm::PointerType* ptrType = llvm::cast<llvm::PointerType>(pointerValue->getType());
     if(!ptrType->getElementType()->isPointerTy()){throw PointerIrrelevantException();}
 
-    AssignmentOp* assignOp = new AssignmentOp(dest->getName(), value->getName(), storeInst);
 
-    return assignOp;
+    PointerFinder* pointerFinder;
+    TargetFinder* targetFinder;
+
+    if (llvm::GetElementPtrInst* pointerGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(pointerValue)) {
+
+        std::string pointerCompName = pointerGEPInst->getPointerOperand()->getName();
+        int pointerMemberIdx = getMemberIdx(pointerGEPInst);
+
+        pointerFinder = new MemberPointerFinder(pointerCompName, pointerMemberIdx);
+    } else {
+        pointerFinder = new NonMemberPointerFinder(pointerValue->getName());
+    }
+
+    if(llvm::GetElementPtrInst* targetGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(targetValue)) {
+
+        std::string targetCompName = targetGEPInst->getPointerOperand()->getName();
+        int targetMemberIdx = getMemberIdx(targetGEPInst);
+
+        targetFinder = new MemberTargetFinder(targetCompName, targetMemberIdx);
+    } else {
+        targetFinder = new NonMemberTargetFinder(targetValue->getName());
+    }
+
+    assert(pointerFinder != nullptr);
+    assert(targetFinder != nullptr);
+
+    AssignmentOp* assignmentOp = new AssignmentOp(pointerFinder, targetFinder, storeInst);
+
+    return assignmentOp;
 }
 
 /**

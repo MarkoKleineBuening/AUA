@@ -28,7 +28,7 @@ protected:
 
 public:
 
-    PointerAllocationOp(std::string n, int l, const llvm::AllocaInst *allocInst);
+    PointerAllocationOp(std::string name, int level, const llvm::AllocaInst *allocInst);
 
 };
 

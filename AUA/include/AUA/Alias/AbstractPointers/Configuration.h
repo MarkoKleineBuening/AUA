@@ -11,6 +11,7 @@
 #include <list>
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
 #include "Alias.h"
+#include "CompositeRef.h"
 
 
 class Configuration {
@@ -19,21 +20,25 @@ private:
 
     std::list<Alias> calculateAliases();
 
-public:
+    std::set<AbstractPointer *> getAllMemberPointers();
+    std::set<AbstractPointer *> getAllPointers();
 
+public:
     std::map<std::string, AbstractPointer*> pointers;
     std::map<std::string, VarRef*> vars;
+    std::map<std::string, CompositeRef*> composites;
     void merge(Configuration* other);
-    Configuration* getDeepCopy();
 
+    Configuration* getDeepCopy();
     void printFullInfo();
     void printPointerInfo();
     void printVarInfo();
+    void printCompositeInfo();
+
     void printAliasInfo();
-
     void printFullInfoVerbose();
-    void printPointerInfoVerbose();
 
+    void printPointerInfoVerbose();
 };
 
 

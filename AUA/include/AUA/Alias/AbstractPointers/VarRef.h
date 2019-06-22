@@ -20,7 +20,7 @@ public:
     VarRef(std::string n, int a, int s);
 
 
-    const int getLevel() override {return 0;};
+    const int getPointerLevel() override {return 0;};
 
 
     const int getSize() {return size;};

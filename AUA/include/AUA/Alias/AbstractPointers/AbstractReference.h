@@ -26,7 +26,7 @@ public:
      * Returns level of reference in pointer hierarchy starting at 0 for variables.
      * @return the level.
      */
-    virtual const int getLevel() = 0;
+    virtual const int getPointerLevel() = 0;
 
 
     bool operator <(const AbstractReference & other) const {return this->name < other.name;};

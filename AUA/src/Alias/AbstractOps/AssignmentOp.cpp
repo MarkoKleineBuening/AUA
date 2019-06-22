@@ -7,34 +7,21 @@
 #include <AUA/Alias/AbstractOps/AssignmentOp.h>
 #include <assert.h>
 
-AssignmentOp::AssignmentOp(std::string ptrName, std::string varName, llvm::StoreInst *storeInst)
-        : pointerName(std::move(ptrName)), targetName(std::move(varName)), storeInstruction(storeInst) {}
+
+
+AssignmentOp::AssignmentOp(const PointerFinder *pointerFinder, const TargetFinder *targetFinder,
+                           const llvm::StoreInst *storeInstruction)
+        : pointerFinder(pointerFinder), targetFinder(targetFinder), storeInstruction(storeInstruction) {}
+
 
 Configuration* AssignmentOp::apply(Configuration* in) {
 
-    auto pointer = in->pointers[pointerName];
+    AbstractPointer* pointer = pointerFinder->findPointer(in);
+    AbstractTarget target = targetFinder->findTarget(in);
 
-    int targetLevel = pointer->getLevel() - 1;
-    AbstractReference* targetBase;
-    int size;
+    assert(target.base->getPointerLevel() == pointer->getPointerLevel() - 1);
 
-    if (targetLevel == 0) {
-
-        VarRef* targetVar = in->vars[targetName];
-        size = targetVar->getSize();
-        targetBase = targetVar;
-
-    } else {
-
-        targetBase = in->pointers[targetName];
-        size = 0;
-
-    }
-
-    assert(targetBase->getLevel() == pointer->getLevel() - 1);
-
-    AbstractTarget* target = new AbstractTarget(targetBase, 0, size);
-    pointer->onlyPointTo(*target);
+    pointer->onlyPointTo(target);
 
     pointer->setOnlyAssocInst((llvm::Instruction*) storeInstruction);
 

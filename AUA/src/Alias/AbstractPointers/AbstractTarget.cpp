@@ -22,7 +22,7 @@ bool AbstractTarget::operator<(const AbstractTarget &other) const {
 
 const std::string AbstractTarget::toString() const {
 
-    std::string typeMsg = (base->getLevel() == 0)? "var" : "ptr lvl " + std::to_string(base->getLevel());
+    std::string typeMsg = (base->getPointerLevel() == 0)? "var" : "ptr lvl " + std::to_string(base->getPointerLevel());
     return "(" + this->base->getName() + ", " +  std::to_string(this->byteOffset) + ", " + std::to_string(this->size) + ", " + typeMsg + ")";
 }
 

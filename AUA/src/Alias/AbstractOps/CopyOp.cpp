@@ -6,19 +6,21 @@
 #include <llvm/Support/FileSystem.h>
 #include <llvm/IR/Instructions.h>
 
-CopyOp::CopyOp(std::string fromName, std::string toName, int derefDepth, llvm::StoreInst *storeInst,
-               const std::list<llvm::LoadInst*> loadInsts) : fromName(fromName), toName(toName), derefDepth(derefDepth), storeInstruction(storeInst), loadInstructions(loadInsts) {}
+CopyOp::CopyOp(PointerFinder *fromFinder, PointerFinder *toFinder, int derefDepth, llvm::StoreInst *storeInst,
+               const std::list<llvm::LoadInst *> loadInsts) : fromFinder(fromFinder), toFinder(toFinder), derefDepth(derefDepth), storeInstruction(storeInst), loadInstructions(loadInsts) {}
 
 Configuration* CopyOp::apply(Configuration* in) {
 
+    assert(fromFinder != nullptr);
+    assert(toFinder != nullptr);
 
-    auto from = in->pointers[fromName];
-    auto to = in->pointers[toName];
+    auto from = fromFinder->findPointer(in);
+    auto to = toFinder->findPointer(in);
 
     std::set<llvm::Instruction*> allAssocInsts = from->getAssocInsts();
 
 
-    assert(from->getLevel() == to->getLevel() + derefDepth);
+    assert(from->getPointerLevel() == to->getPointerLevel() + derefDepth);
 
     std::set<AbstractTarget> upperTargets = from->getTargets();
 
@@ -28,7 +30,7 @@ Configuration* CopyOp::apply(Configuration* in) {
 
         for (AbstractTarget target : upperTargets) {
 
-            assert(target.base->getLevel() > 0 && target.base->getLevel() == from->getLevel() - (i + 1));
+            assert(target.base->getPointerLevel() > 0 && target.base->getPointerLevel() == from->getPointerLevel() - (i + 1));
 
             //technically unsafe. Covered by assertion above
             AbstractPointer* lowerPointer = in->pointers[target.base->getName()];
