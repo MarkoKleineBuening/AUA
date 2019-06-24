@@ -70,6 +70,8 @@ PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst);
 PointerOperation *handleCopy(llvm::StoreInst *storeInst);
 PointerOperation* handleAssignment(llvm::StoreInst *storeInst);
 int getMemberIdx(llvm::GetElementPtrInst* gepInst);
+std::pair<PointerFinder *, std::list<llvm::GetElementPtrInst *>> getPointerFinder(llvm::Value *pointerValue);
+std::pair<TargetFinder *, std::list<llvm::GetElementPtrInst *>> getTargetFinder(llvm::Value *targetValue);
 
 PointerOperation *abstractIfBranchBlock(llvm::BasicBlock *BB);
 
@@ -413,6 +415,61 @@ PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst) {
     return allocOp;
 }
 
+std::pair<PointerFinder *, std::list<llvm::GetElementPtrInst *>> getPointerFinder(llvm::Value *pointerValue) {
+
+    std::list<llvm::GetElementPtrInst*> gepInstructions;
+
+    if (! llvm::isa<llvm::GetElementPtrInst>(pointerValue)) {
+        return std::pair(new NonMemberPointerFinder(pointerValue->getName()), gepInstructions);
+    }
+
+    std::list<int> memberIndices;
+
+    while (llvm::GetElementPtrInst* gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(pointerValue)) {
+
+        gepInstructions.push_front(gepInst);
+        int memberIdx = getMemberIdx(gepInst);
+        memberIndices.push_front(memberIdx);
+
+        pointerValue = gepInst->getPointerOperand();
+
+    }
+
+    std::string rootCompName = gepInstructions.front()->getPointerOperand()->getName();
+    auto finder = new MemberPointerFinder(rootCompName, memberIndices);
+
+    return std::pair(finder, gepInstructions);
+
+}
+
+std::pair<TargetFinder *, std::list<llvm::GetElementPtrInst *>> getTargetFinder(llvm::Value *targetValue) {
+
+    std::list<llvm::GetElementPtrInst*> gepInstructions;
+
+    if (! llvm::isa<llvm::GetElementPtrInst>(targetValue)) {
+        return std::pair(new NonMemberTargetFinder(targetValue->getName()), gepInstructions);
+    }
+
+    std::list<int> memberIndices;
+
+    while (llvm::GetElementPtrInst* gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(targetValue)) {
+
+        gepInstructions.push_front(gepInst);
+        int memberIdx = getMemberIdx(gepInst);
+        memberIndices.push_front(memberIdx);
+
+        targetValue = gepInst->getPointerOperand();
+
+    }
+
+    std::string rootCompName = gepInstructions.front()->getPointerOperand()->getName();
+    auto finder = new MemberTargetFinder(rootCompName, memberIndices);
+
+    return std::pair(finder, gepInstructions);
+
+}
+
+
 /**
  * handles copy instructions. Throws PointerIrrelevantException.
  * @param loadInstructions the load instruction of the copy
@@ -421,9 +478,9 @@ PointerOperation* handleAllocation(llvm::AllocaInst *allocaInst) {
  */
 PointerOperation *handleCopy(llvm::StoreInst *storeInst) {
 
-    std::list<llvm::LoadInst*> loadInstructions;
     llvm::Value* fromValue = storeInst->getValueOperand();
 
+    std::list<llvm::LoadInst*> loadInstructions;
     while(llvm::LoadInst* loadInst = llvm::dyn_cast<llvm::LoadInst>(fromValue)) {
 
         loadInstructions.push_front(loadInst);
@@ -437,31 +494,47 @@ PointerOperation *handleCopy(llvm::StoreInst *storeInst) {
 
     PointerFinder *fromFinder = nullptr;
     PointerFinder *toFinder = nullptr;
+    std::list<llvm::GetElementPtrInst*> gepInstructions;
 
-    if (llvm::GetElementPtrInst* fromGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(fromValue)) {
 
-        std::string fromCompName = fromGEPInst->getPointerOperand()->getName();
-        int fromMemberIdx = getMemberIdx(fromGEPInst);
+    auto fromFinderPair = getPointerFinder(fromValue);
+    fromFinder = fromFinderPair.first;
+    gepInstructions = fromFinderPair.second;
 
-        fromFinder = new MemberPointerFinder(fromCompName, fromMemberIdx);
-    } else {
-        fromFinder = new NonMemberPointerFinder(fromValue->getName());
-    }
 
-    if (llvm::GetElementPtrInst* toGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(toValue)) {
+    auto toFinderPair  = getPointerFinder(toValue);
+    toFinder = toFinderPair.first;
+    gepInstructions.insert(gepInstructions.end(), toFinderPair.second.begin(), toFinderPair.second.end());
 
-        std::string toCompName = toGEPInst->getPointerOperand()->getName();
-        int toMemberIdx = getMemberIdx(toGEPInst);
+//    if (llvm::GetElementPtrInst* fromGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(fromValue)) {
+//
+//        gepInstructions.push_back(fromGEPInst);
+//
+//        std::string fromCompName = fromGEPInst->getPointerOperand()->getName();
+//        int fromMemberIdx = getMemberIdx(fromGEPInst);
+//
+//        fromFinder = new MemberPointerFinder(fromCompName, fromMemberIdx);
+//    } else {
+//        fromFinder = new NonMemberPointerFinder(fromValue->getName());
+//    }
 
-        toFinder = new MemberPointerFinder(toCompName, toMemberIdx);
-    } else {
-        toFinder = new NonMemberPointerFinder(toValue->getName());
-    }
+//    if (llvm::GetElementPtrInst* toGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(toValue)) {
+//
+//        gepInstructions.push_back(toGEPInst);
+//
+//        std::string toCompName = toGEPInst->getPointerOperand()->getName();
+//        int toMemberIdx = getMemberIdx(toGEPInst);
+//
+//        toFinder = new MemberPointerFinder(toCompName, toMemberIdx);
+//    } else {
+//        toFinder = new NonMemberPointerFinder(toValue->getName());
+//    }
 
     assert(fromFinder != nullptr);
     assert(toFinder != nullptr);
 
-    CopyOp* copyOp = new CopyOp(fromFinder, toFinder, derefDepth, storeInst, loadInstructions);
+    CopyOp* copyOp = new CopyOp(fromFinder, toFinder, derefDepth, storeInst, loadInstructions,
+                                gepInstructions);
 
     return copyOp;
 }
@@ -491,31 +564,47 @@ PointerOperation* handleAssignment(llvm::StoreInst *storeInst) {
 
     PointerFinder* pointerFinder;
     TargetFinder* targetFinder;
+    std::list<llvm::GetElementPtrInst*> gepInstructions;
 
-    if (llvm::GetElementPtrInst* pointerGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(pointerValue)) {
 
-        std::string pointerCompName = pointerGEPInst->getPointerOperand()->getName();
-        int pointerMemberIdx = getMemberIdx(pointerGEPInst);
+    auto targetFinderPair = getTargetFinder(targetValue);
+    targetFinder = targetFinderPair.first;
+    gepInstructions = targetFinderPair.second;
 
-        pointerFinder = new MemberPointerFinder(pointerCompName, pointerMemberIdx);
-    } else {
-        pointerFinder = new NonMemberPointerFinder(pointerValue->getName());
-    }
 
-    if(llvm::GetElementPtrInst* targetGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(targetValue)) {
+    auto pointerFinderPair  = getPointerFinder(pointerValue);
+    pointerFinder = pointerFinderPair.first;
+    gepInstructions.insert(gepInstructions.end(), pointerFinderPair.second.begin(), pointerFinderPair.second.end());
 
-        std::string targetCompName = targetGEPInst->getPointerOperand()->getName();
-        int targetMemberIdx = getMemberIdx(targetGEPInst);
-
-        targetFinder = new MemberTargetFinder(targetCompName, targetMemberIdx);
-    } else {
-        targetFinder = new NonMemberTargetFinder(targetValue->getName());
-    }
+//    if (llvm::GetElementPtrInst* pointerGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(pointerValue)) {
+//
+//        gepInstructions.push_back(pointerGEPInst);
+//
+//        std::string pointerCompName = pointerGEPInst->getPointerOperand()->getName();
+//        int pointerMemberIdx = getMemberIdx(pointerGEPInst);
+//
+//        pointerFinder = new MemberPointerFinder(pointerCompName, pointerMemberIdx);
+//    } else {
+//        pointerFinder = new NonMemberPointerFinder(pointerValue->getName());
+//    }
+//
+//    if(llvm::GetElementPtrInst* targetGEPInst = llvm::dyn_cast<llvm::GetElementPtrInst>(targetValue)) {
+//
+//        gepInstructions.push_back(targetGEPInst);
+//
+//        std::string targetCompName = targetGEPInst->getPointerOperand()->getName();
+//        int targetMemberIdx = getMemberIdx(targetGEPInst);
+//
+//        targetFinder = new MemberTargetFinder(targetCompName, targetMemberIdx);
+//    } else {
+//        targetFinder = new NonMemberTargetFinder(targetValue->getName());
+//    }
 
     assert(pointerFinder != nullptr);
     assert(targetFinder != nullptr);
 
-    AssignmentOp* assignmentOp = new AssignmentOp(pointerFinder, targetFinder, storeInst);
+    AssignmentOp* assignmentOp = new AssignmentOp(pointerFinder, targetFinder, storeInst,
+                                                  gepInstructions);
 
     return assignmentOp;
 }

@@ -7,7 +7,10 @@
 #include <llvm/IR/Instructions.h>
 
 CopyOp::CopyOp(PointerFinder *fromFinder, PointerFinder *toFinder, int derefDepth, llvm::StoreInst *storeInst,
-               const std::list<llvm::LoadInst *> loadInsts) : fromFinder(fromFinder), toFinder(toFinder), derefDepth(derefDepth), storeInstruction(storeInst), loadInstructions(loadInsts) {}
+               const std::list<llvm::LoadInst *> loadInsts,
+               const std::list<llvm::GetElementPtrInst *> gepInstructions)
+        : fromFinder(fromFinder), toFinder(toFinder), derefDepth(derefDepth), storeInstruction(storeInst), loadInstructions(loadInsts),
+          gepInstructions(gepInstructions) {}
 
 Configuration* CopyOp::apply(Configuration* in) {
 
@@ -47,8 +50,9 @@ Configuration* CopyOp::apply(Configuration* in) {
 
     to->setTargets(upperTargets);
 
-    allAssocInsts.insert((llvm::Instruction*) storeInstruction);
+    allAssocInsts.insert(gepInstructions.begin(), gepInstructions.end());
     allAssocInsts.insert(loadInstructions.begin(), loadInstructions.end());
+    allAssocInsts.insert((llvm::Instruction*) storeInstruction);
 
     to->setAssocInsts(allAssocInsts);
 
@@ -59,8 +63,9 @@ Configuration* CopyOp::apply(Configuration* in) {
 std::set<llvm::Instruction *> CopyOp::getAssocInstructions() {
 
     std::set<llvm::Instruction *> result;
-    result.insert((llvm::Instruction*) storeInstruction);
+    result.insert(gepInstructions.begin(), gepInstructions.end());
     result.insert(loadInstructions.begin(), loadInstructions.end());
+    result.insert((llvm::Instruction*) storeInstruction);
 
     return result;
 

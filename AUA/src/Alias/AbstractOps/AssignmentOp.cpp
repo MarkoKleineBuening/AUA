@@ -10,8 +10,10 @@
 
 
 AssignmentOp::AssignmentOp(const PointerFinder *pointerFinder, const TargetFinder *targetFinder,
-                           const llvm::StoreInst *storeInstruction)
-        : pointerFinder(pointerFinder), targetFinder(targetFinder), storeInstruction(storeInstruction) {}
+                           const llvm::StoreInst *storeInstruction,
+                           const std::list<llvm::GetElementPtrInst *> gepInstructions)
+        : pointerFinder(pointerFinder), targetFinder(targetFinder), storeInstruction(storeInstruction),
+          gepInstructions(gepInstructions) {}
 
 
 Configuration* AssignmentOp::apply(Configuration* in) {
@@ -23,14 +25,16 @@ Configuration* AssignmentOp::apply(Configuration* in) {
 
     pointer->onlyPointTo(target);
 
-    pointer->setOnlyAssocInst((llvm::Instruction*) storeInstruction);
+    pointer->setAssocInsts(this->getAssocInstructions());
 
     return in;
 
 }
 
 std::set<llvm::Instruction *> AssignmentOp::getAssocInstructions() {
+
     std::set<llvm::Instruction *> result;
+    result.insert(gepInstructions.begin(), gepInstructions.end());
     result.insert((llvm::Instruction*) storeInstruction);
 
     return result;

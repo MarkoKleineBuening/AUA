@@ -5,6 +5,45 @@
 #include <llvm/IR/DerivedTypes.h>
 #include "AUA/Alias/AbstractPointers/CompositeRef.h"
 
+CompositeRef::CompositeRef(const std::string name, int alignment, llvm::CompositeType *type, llvm::DataLayout*& dl)
+        : AbstractReference(name, alignment) {
+
+    if (llvm::ArrayType* arrayType = llvm::dyn_cast<llvm::ArrayType>(type)) {
+        memberCount = arrayType->getNumElements();
+    } else if (llvm::StructType* structType = llvm::dyn_cast<llvm::StructType>(type)) {
+        memberCount = structType->getNumElements();
+    } else {
+        throw NoCompositeTypeException();
+    }
+
+    memberMeta.reserve(memberCount);
+
+    int os = 0;
+
+    for (int i = 0; i < memberCount; ++i) {
+
+        llvm::Type* memberType = type->getTypeAtIndex(i);
+        MemberMetaInfo* metaInfo = getMetaForType(memberType, os, dl);
+        os += metaInfo->size;
+
+        memberMeta.push_back(metaInfo);
+        assert(memberMeta.size() == i + 1);
+
+        if (llvm::CompositeType* compType = llvm::dyn_cast<llvm::CompositeType>(memberType)) {
+
+            CompositeRef* compMember = new CompositeRef(generateMemberName(i), 0, compType, dl);
+            composites[i] = compMember;
+
+        }
+
+    }
+
+    totalSize = dl->getTypeAllocSize(type);
+
+
+
+}
+
 const int CompositeRef::getPointerLevel() {
     return 0;
 }
@@ -84,49 +123,6 @@ AbstractTarget CompositeRef::getMemberTarget(int memberIdx) {
 
 }
 
-CompositeRef::CompositeRef(const std::string name, int alignment, llvm::CompositeType *type, llvm::DataLayout*& dl)
-        : AbstractReference(name, alignment) {
-
-    if (llvm::ArrayType* arrayType = llvm::dyn_cast<llvm::ArrayType>(type)) {
-        memberCount = arrayType->getNumElements();
-    } else if (llvm::StructType* structType = llvm::dyn_cast<llvm::StructType>(type)) {
-        memberCount = structType->getNumElements();
-    } else {
-        throw NoCompositeTypeException();
-    }
-
-    memberMeta.reserve(memberCount);
-
-    int os = 0;
-
-    for (int i = 0; i < memberCount; ++i) {
-
-        llvm::Type* memberType = type->getTypeAtIndex(i);
-        MemberMetaInfo* metaInfo = getMetaForType(memberType, os, dl);
-        os += metaInfo->size;
-
-        memberMeta.push_back(metaInfo);
-        assert(memberMeta.size() == i + 1);
-
-        if (llvm::CompositeType* compType = llvm::dyn_cast<llvm::CompositeType>(memberType)) {
-
-            CompositeRef* compMember = new CompositeRef(generateMemberName(i), 0, compType, dl);
-            composites[i] = compMember;
-
-        }
-
-    }
-
-    totalSize = os;
-
-    if (type->isSized()) {
-        assert(totalSize == (dl->getTypeAllocSize(type)));
-    }
-
-
-
-}
-
 MemberMetaInfo *CompositeRef::getMetaForType(llvm::Type *type, int offset, llvm::DataLayout *dl) {
 
     int size = dl->getTypeAllocSize(type);
@@ -148,6 +144,7 @@ MemberMetaInfo *CompositeRef::getMetaForType(llvm::Type *type, int offset, llvm:
     } else if (llvm::CompositeType* compType = llvm::dyn_cast<llvm::CompositeType>(type)) {
 
         t = COMP;
+        llvm::outs() << "Composite member has size " << size << ".\n";
 
     }
 
@@ -172,6 +169,31 @@ std::set<AbstractPointer *> CompositeRef::getAllPointerMembers() {
 
     return result;
 
+
+}
+
+std::set<CompositeRef *> CompositeRef::getAllCompositeMembers() {
+
+    std::set<CompositeRef*> result;
+
+    for (auto compPair : composites) {
+        result.insert(compPair.second);
+    }
+
+    return result;
+}
+
+std::set<AbstractPointer *> CompositeRef::getAllPointerMembersRecursively() {
+
+    auto result = getAllPointerMembers();
+
+    for (auto compPair : composites) {
+
+        result.merge(compPair.second->getAllPointerMembersRecursively());
+
+    }
+
+    return result;
 
 }
 

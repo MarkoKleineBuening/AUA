@@ -193,12 +193,13 @@ void Configuration::printPointerInfoVerbose() {
 
 }
 
+
 std::set<AbstractPointer *> Configuration::getAllMemberPointers() {
 
     std::set<AbstractPointer *> result;
 
     for (auto compPair : composites) {
-        result.merge(compPair.second->getAllPointerMembers());
+        result.merge(compPair.second->getAllPointerMembersRecursively());
     }
 
     return result;

@@ -4,15 +4,22 @@
 
 #include "AUA/Alias/AbstractPointers/Finders/MemberTargetFinder.h"
 
-MemberTargetFinder::MemberTargetFinder(const std::string &compositeName, const int memberIdx) : compositeName(
-        compositeName), memberIdx(memberIdx) {}
+MemberTargetFinder::MemberTargetFinder(const std::string &compositeName, const std::list<int> memberIndices) : compositeName(
+        compositeName), memberIndices(memberIndices) {}
 
 AbstractTarget MemberTargetFinder::findTarget(Configuration *conf) const {
 
-    assert(memberIdx >= 0);
+    assert(memberIndices.size() > 0);
 
     CompositeRef* comp = conf->composites[compositeName];
 
-    return comp->getMemberTarget(memberIdx);
+    for (auto LI = memberIndices.begin(), LE = memberIndices.end(); LI != --LE; ++LI) {
+
+        comp = comp->getCompositeMember(*LI);
+
+    }
+
+
+    return comp->getMemberTarget(memberIndices.back());
 
 }

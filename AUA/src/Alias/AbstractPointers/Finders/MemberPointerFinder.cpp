@@ -6,13 +6,21 @@
 
 AbstractPointer * MemberPointerFinder::findPointer(Configuration *configuration) const {
 
-    assert(memberIdx >= 0);
+    assert(memberIndices.size() > 0);
 
     CompositeRef* comp = configuration->composites[compositeName];
 
-    return comp->getPointerMember(memberIdx);
+    for (auto LI = memberIndices.begin(), LE = --memberIndices.end(); LI != LE; ++LI) {
+
+        comp = comp->getCompositeMember(*LI);
+        llvm::outs() << *LI << ", ";
+    }
+
+    llvm::outs() << memberIndices.back() << "\n";
+
+    return comp->getPointerMember(memberIndices.back());
 
 }
 
-MemberPointerFinder::MemberPointerFinder(const std::string compositeName, const int memberIdx)
-        : compositeName(compositeName), memberIdx(memberIdx) {}
+MemberPointerFinder::MemberPointerFinder(const std::string compositeName, const std::list<int> memberIndices)
+        : compositeName(compositeName), memberIndices(memberIndices) {}

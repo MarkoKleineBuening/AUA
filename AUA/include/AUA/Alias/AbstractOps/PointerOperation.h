@@ -5,8 +5,6 @@
 #ifndef AUA_POINTEROPERATION_H
 #define AUA_POINTEROPERATION_H
 
-#include <map>
-#include <list>
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
 #include <AUA/Alias/AbstractPointers/Configuration.h>
 #include <llvm/IR/Instruction.h>

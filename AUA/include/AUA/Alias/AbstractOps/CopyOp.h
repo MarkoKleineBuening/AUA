@@ -19,6 +19,7 @@ private:
     const int derefDepth;
     const llvm::StoreInst* storeInstruction;
     const std::list<llvm::LoadInst*> loadInstructions;
+    const std::list<llvm::GetElementPtrInst*> gepInstructions;
 
 protected:
 
@@ -29,7 +30,8 @@ protected:
 public:
 
     CopyOp(PointerFinder *fromFinder, PointerFinder *toFinder, int derefDepth, llvm::StoreInst *storeInst,
-           const std::list<llvm::LoadInst *> loadInsts);
+           const std::list<llvm::LoadInst *> loadInsts,
+           const std::list<llvm::GetElementPtrInst *> gepInstructions);
 };
 
 

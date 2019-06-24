@@ -13,11 +13,11 @@ class MemberPointerFinder : public PointerFinder {
 private:
 
     const std::string compositeName;
-    const int memberIdx;
+    const std::list<int> memberIndices;
 
 public:
 
-    MemberPointerFinder(const std::string compositeName, const int memberIdx);
+    MemberPointerFinder(const std::string compositeName, const std::list<int> memberIndices);
 
     AbstractPointer * findPointer(Configuration *configuration) const override;
 

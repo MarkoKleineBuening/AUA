@@ -20,6 +20,7 @@ private:
     const TargetFinder* targetFinder;
 
     const llvm::StoreInst* storeInstruction;
+    const std::list<llvm::GetElementPtrInst*> gepInstructions;
 
 protected:
 
@@ -36,7 +37,8 @@ public:
      * @param storeInstruction the llvm::StoreInst associated with this assignment
      */
     AssignmentOp(const PointerFinder *pointerFinder, const TargetFinder *targetFinder,
-                 const llvm::StoreInst *storeInstruction);
+                 const llvm::StoreInst *storeInstruction,
+                 const std::list<llvm::GetElementPtrInst *> gepInstructions);
 
 
 };

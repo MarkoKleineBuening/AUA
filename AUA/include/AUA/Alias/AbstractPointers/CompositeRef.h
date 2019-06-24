@@ -50,17 +50,9 @@ private:
 
     std::string generateMemberName(int idx);
 
-    /**
-     * Returns the composite object for the member at index memberIdx if this index corresponds to a composite type member.
-     * @param memberIdx the index of the desired composite member.
-     * @return the composite object for the member at index memberIdx if this index corresponds to a composite type member.
-     * @throws MemberNotFoundExeption if the given index does not correspond to a composite member.
-     */
-    CompositeRef* getCompositeMember(int memberIdx);
-
-
-
 public:
+
+
 
     CompositeRef(const std::string name, int alignment, llvm::CompositeType *type, llvm::DataLayout*& dl);
 
@@ -75,6 +67,15 @@ public:
     AbstractPointer* getPointerMember(int memberIdx);
 
     /**
+     * Returns the composite object for the member at index memberIdx if this index corresponds to a composite type member.
+     * @param memberIdx the index of the desired composite member.
+     * @return the composite object for the member at index memberIdx if this index corresponds to a composite type member.
+     * @throws MemberNotFoundExeption if the given index does not correspond to a composite member.
+     */
+    CompositeRef* getCompositeMember(int memberIdx);
+
+
+    /**
      * Generates and returns a target to the member at the given index.
      * @param memberIdx the index of the member to target.
      * @return an AbstractTarget object targeting the member at memberIdx.
@@ -85,7 +86,9 @@ public:
     int getMemberCount();
 
     std::set<AbstractPointer*> getAllPointerMembers();
+    std::set<CompositeRef*> getAllCompositeMembers();
 
+    std::set<AbstractPointer *> getAllPointerMembersRecursively();
 };
 
 class MemberNotFoundException : public std::exception {
