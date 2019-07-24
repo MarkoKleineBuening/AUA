@@ -14,24 +14,22 @@
 class CopyOp : public SinglePredAndSuccOp {
 
 private:
-    const PointerFinder* fromFinder;
-    const PointerFinder* toFinder;
-    const int derefDepth;
-    const llvm::StoreInst* storeInstruction;
-    const std::list<llvm::LoadInst*> loadInstructions;
-    const std::list<llvm::GetElementPtrInst*> gepInstructions;
+    const PointerFinder *fromFinder;
+    const PointerFinder *toFinder;
+    const llvm::StoreInst *storeInstruction;
+    const std::list<llvm::LoadInst *> loadInstructions;
+    const std::list<llvm::Instruction *> assocInsts;
 
 protected:
 
-    Configuration* apply(Configuration* in) override;
+    Configuration *apply(Configuration *in) override;
 
     std::set<llvm::Instruction *> getAssocInstructions() override;
 
 public:
 
-    CopyOp(PointerFinder *fromFinder, PointerFinder *toFinder, int derefDepth, llvm::StoreInst *storeInst,
-           const std::list<llvm::LoadInst *> loadInsts,
-           const std::list<llvm::GetElementPtrInst *> gepInstructions);
+    CopyOp(PointerFinder *fromFinder, PointerFinder *toFinder, llvm::StoreInst *storeInst,
+           std::list<llvm::LoadInst *> loadInsts, std::list<llvm::Instruction *> assocInsts);
 };
 
 

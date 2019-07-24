@@ -3,13 +3,13 @@
 //
 
 #include <llvm/Support/raw_ostream.h>
-#include "AUA/Alias/AbstractOps/DummyInitialOp.h"
+#include <AUA/Alias/AbstractOps/DummyInitialOp.h>
 
 DummyInitialOp::DummyInitialOp() {
 
 }
 
-Configuration* DummyInitialOp::apply(Configuration* in) {
+Configuration *DummyInitialOp::apply(Configuration *in) {
 
     //TODO Exception werfen
 
@@ -37,19 +37,19 @@ void DummyInitialOp::linkSuccessor(PointerOperation *successor) {
 
 }
 
-std::set<PointerOperation*> DummyInitialOp::getSuccessors() {
+std::set<PointerOperation *> DummyInitialOp::getSuccessors() {
 
-    std::set<PointerOperation*> resultSet;
+    std::set<PointerOperation *> resultSet;
     resultSet.insert(succ);
     return resultSet;
 
 }
 
-std::set<PointerOperation*> DummyInitialOp::getPredecessors() {
+std::set<PointerOperation *> DummyInitialOp::getPredecessors() {
 
 
     //TODO throw Exception
-    return std::set<PointerOperation*>();
+    return std::set<PointerOperation *>();
 
 }
 

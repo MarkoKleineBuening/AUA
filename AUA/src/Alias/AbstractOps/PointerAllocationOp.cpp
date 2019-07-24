@@ -4,14 +4,14 @@
 
 #include "AUA/Alias/AbstractOps/PointerAllocationOp.h"
 
-PointerAllocationOp::PointerAllocationOp(std::string n, int l, const llvm::AllocaInst *allocInst)
-        : name(n), level(l), allocInst(allocInst) {}
+PointerAllocationOp::PointerAllocationOp(std::string name, PointerFormat ptrFormat, const llvm::AllocaInst *allocInst)
+        : name(name), pointerFormat(ptrFormat), allocInst(allocInst) {}
 
 
-Configuration* PointerAllocationOp::apply(Configuration* in) {
+Configuration *PointerAllocationOp::apply(Configuration *in) {
 
-    AbstractPointer* pointer = new AbstractPointer(name, 0, level);
-    pointer->setOnlyAssocInst((llvm::Instruction*) allocInst);
+    AbstractPointer *pointer = new AbstractPointer(name, pointerFormat);
+    pointer->setOnlyAssocInst((llvm::Instruction *) allocInst);
 
     in->pointers.insert_or_assign(name, pointer);
 
@@ -21,7 +21,7 @@ Configuration* PointerAllocationOp::apply(Configuration* in) {
 
 std::set<llvm::Instruction *> PointerAllocationOp::getAssocInstructions() {
     std::set<llvm::Instruction *> result;
-    result.insert((llvm::Instruction*) allocInst);
+    result.insert((llvm::Instruction *) allocInst);
 
     return result;
 }

@@ -16,19 +16,19 @@ class PointerAllocationOp : public SinglePredAndSuccOp {
 private:
 
     const std::string name;
-    const int level;
-    const llvm::AllocaInst* allocInst;
+    const PointerFormat pointerFormat;
+    const llvm::AllocaInst *allocInst;
 
 
 protected:
 
-    Configuration* apply(Configuration* in) override;
+    Configuration *apply(Configuration *in) override;
 
     std::set<llvm::Instruction *> getAssocInstructions() override;
 
 public:
 
-    PointerAllocationOp(std::string name, int level, const llvm::AllocaInst *allocInst);
+    PointerAllocationOp(std::string name, PointerFormat ptrFormat, const llvm::AllocaInst *allocInst);
 
 };
 

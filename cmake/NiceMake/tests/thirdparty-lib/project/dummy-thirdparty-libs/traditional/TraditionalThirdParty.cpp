@@ -1,5 +1,5 @@
 #include "TraditionalThirdParty.h"
 
 int getMagicNumTraditional() {
-  return 3;
+    return 3;
 }

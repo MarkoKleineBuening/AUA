@@ -5,7 +5,7 @@
 
 #include <AUA/Alias/AbstractPointers/AbstractTarget.h>
 
-AbstractTarget::AbstractTarget(AbstractReference * b, int os, int s) : base(b), byteOffset(os), size(s) {}
+AbstractTarget::AbstractTarget(AbstractReference *b, int os, int s) : base(b), byteOffset(os), size(s) {}
 
 
 bool AbstractTarget::operator<(const AbstractTarget &other) const {
@@ -22,8 +22,9 @@ bool AbstractTarget::operator<(const AbstractTarget &other) const {
 
 const std::string AbstractTarget::toString() const {
 
-    std::string typeMsg = (base->getPointerLevel() == 0)? "var" : "ptr lvl " + std::to_string(base->getPointerLevel());
-    return "(" + this->base->getName() + ", " +  std::to_string(this->byteOffset) + ", " + std::to_string(this->size) + ", " + typeMsg + ")";
+    std::string typeMsg = (base->getPointerLevel() == 0) ? "var" : "ptr lvl " + std::to_string(base->getPointerLevel());
+    return "(" + this->base->getName() + ", " + std::to_string(this->byteOffset) + ", " + std::to_string(this->size) +
+           ", " + typeMsg + ")";
 }
 
 bool AbstractTarget::operator>(const AbstractTarget &rhs) const {

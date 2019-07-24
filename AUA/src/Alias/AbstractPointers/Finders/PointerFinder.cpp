@@ -3,3 +3,5 @@
 //
 
 #include "AUA/Alias/AbstractPointers/Finders/PointerFinder.h"
+
+PointerFinder::PointerFinder(const PointerFormat &expectedFormat) : expectedFormat(expectedFormat) {}

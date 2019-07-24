@@ -10,8 +10,10 @@
 #include <map>
 #include <list>
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
-#include "Alias.h"
-#include "CompositeRef.h"
+#include <AUA/Alias/AbstractPointers/AbstractComposite.h>
+#include <AUA/Alias/AbstractPointers/Alias.h>
+
+class GlobalConfiguration;
 
 
 class Configuration {
@@ -21,21 +23,35 @@ private:
     std::list<Alias> calculateAliases();
 
     std::set<AbstractPointer *> getAllMemberPointers();
+
     std::set<AbstractPointer *> getAllPointers();
 
 public:
-    std::map<std::string, AbstractPointer*> pointers;
-    std::map<std::string, VarRef*> vars;
-    std::map<std::string, CompositeRef*> composites;
-    void merge(Configuration* other);
 
-    Configuration* getDeepCopy();
+    static GlobalConfiguration *global;
+
+    std::map<std::string, AbstractPointer *> pointers;
+    std::map<std::string, AbstractVar *> vars;
+    std::map<std::string, AbstractComposite *> composites;
+
+    explicit Configuration();
+
+
+
+    void merge(Configuration *other);
+
+    Configuration *getDeepCopy();
+
     void printFullInfo();
+
     void printPointerInfo();
+
     void printVarInfo();
+
     void printCompositeInfo();
 
     void printAliasInfo();
+
     void printFullInfoVerbose();
 
     void printPointerInfoVerbose();

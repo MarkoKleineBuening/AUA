@@ -12,10 +12,10 @@ class SplitOp : public PointerOperation {
 
 protected:
 
-    PointerOperation* pred;
-    std::set<PointerOperation*> succ;
+    PointerOperation *pred;
+    std::set<PointerOperation *> succ;
 
-    Configuration* apply(Configuration* in) override;
+    Configuration *apply(Configuration *in) override;
 
     std::set<llvm::Instruction *> getAssocInstructions() override;
 
@@ -23,17 +23,17 @@ public:
 
     SplitOp();
 
-    void execute(Configuration* in) override;
+    void execute(Configuration *in) override;
 
-    void linkSuccessor(PointerOperation* successor) override;
+    void linkSuccessor(PointerOperation *successor) override;
+
     void addPredecessor(PointerOperation *predecessor) override;
 
-    std::set<PointerOperation*> getPredecessors() override;
-    std::set<PointerOperation*> getSuccessors() override;
+    std::set<PointerOperation *> getPredecessors() override;
+
+    std::set<PointerOperation *> getSuccessors() override;
 
 };
-
-
 
 
 #endif //AUA_SPLITOP_H

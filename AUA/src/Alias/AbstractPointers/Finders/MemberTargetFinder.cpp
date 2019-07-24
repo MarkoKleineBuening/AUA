@@ -1,25 +1,26 @@
+#include <utility>
+
 //
 // Created by mlaupichler on 22.06.19.
 //
 
 #include "AUA/Alias/AbstractPointers/Finders/MemberTargetFinder.h"
 
-MemberTargetFinder::MemberTargetFinder(const std::string &compositeName, const std::list<int> memberIndices) : compositeName(
-        compositeName), memberIndices(memberIndices) {}
+MemberTargetFinder::MemberTargetFinder(CompositeFinder *compositeFinder, int memberIndex) : compositeFinder(
+        compositeFinder), memberIndex(memberIndex) {}
 
-AbstractTarget MemberTargetFinder::findTarget(Configuration *conf) const {
+std::set<AbstractTarget> MemberTargetFinder::findTargets(Configuration *conf) const {
 
-    assert(memberIndices.size() > 0);
+    CompositeSetValue *composites = compositeFinder->findComposites(conf);
 
-    CompositeRef* comp = conf->composites[compositeName];
+    std::set<AbstractTarget> result;
 
-    for (auto LI = memberIndices.begin(), LE = memberIndices.end(); LI != --LE; ++LI) {
+    for (auto comp : composites->asSet()) {
 
-        comp = comp->getCompositeMember(*LI);
-
+        result.insert(comp->getMemberTarget(memberIndex));
     }
 
 
-    return comp->getMemberTarget(memberIndices.back());
+    return result;
 
 }

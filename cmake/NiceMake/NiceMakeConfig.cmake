@@ -25,19 +25,19 @@
 # shall not be used in advertising or otherwise to promote the sale, use or
 # other dealings in this Software without prior written authorization.
 
-if(NOT NM_NICEMAKECONFIG_CMAKE_INCLUDED)
+if (NOT NM_NICEMAKECONFIG_CMAKE_INCLUDED)
 
-  if (NOT NM_CONF_INCLUDE_DIR)
-    set(NM_CONF_INCLUDE_DIR "include")
-  endif()
+    if (NOT NM_CONF_INCLUDE_DIR)
+        set(NM_CONF_INCLUDE_DIR "include")
+    endif ()
 
-  if (NOT NM_CONF_LIB_DIR)
-    set(NM_CONF_LIB_DIR "lib")
-  endif()
+    if (NOT NM_CONF_LIB_DIR)
+        set(NM_CONF_LIB_DIR "lib")
+    endif ()
 
-  if (NOT NM_CONF_TOOLS_DIR)
-    set(NM_CONF_LIB_DIR "tools")
-  endif()
+    if (NOT NM_CONF_TOOLS_DIR)
+        set(NM_CONF_LIB_DIR "tools")
+    endif ()
 
-  set(NM_NICEMAKECONFIG_CMAKE_INCLUDED TRUE)
-endif()
+    set(NM_NICEMAKECONFIG_CMAKE_INCLUDED TRUE)
+endif ()

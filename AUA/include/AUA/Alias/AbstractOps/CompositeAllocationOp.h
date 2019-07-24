@@ -13,10 +13,10 @@
 
 class CompositeAllocationOp : public SinglePredAndSuccOp {
 
-    llvm::CompositeType* compType;
-    llvm::DataLayout* dl;
+    llvm::CompositeType *compType;
+    llvm::DataLayout *dl;
     std::string name;
-    llvm::AllocaInst* allocaInst;
+    llvm::AllocaInst *allocaInst;
 
 protected:
 
@@ -26,8 +26,8 @@ protected:
 
 public:
 
-    CompositeAllocationOp(llvm::CompositeType *compType,  llvm::DataLayout *dl,
-                           std::string name,  llvm::AllocaInst *allocaInst);
+    CompositeAllocationOp(llvm::CompositeType *compType, llvm::DataLayout *dl,
+                          std::string name, llvm::AllocaInst *allocaInst);
 
 };
 

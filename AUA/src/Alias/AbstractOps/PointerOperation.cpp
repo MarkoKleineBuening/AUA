@@ -7,7 +7,7 @@
 
 // PRIVATE
 
-void PointerOperation::consume(Configuration* result) {
+void PointerOperation::consume(Configuration *result) {
 
     result->printFullInfo();
 

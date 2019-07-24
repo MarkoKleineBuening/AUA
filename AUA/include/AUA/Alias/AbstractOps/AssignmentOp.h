@@ -16,15 +16,15 @@ class AssignmentOp : public SinglePredAndSuccOp {
 
 private:
 
-    const PointerFinder* pointerFinder;
-    const TargetFinder* targetFinder;
+    const PointerFinder *pointerFinder;
+    const TargetFinder *targetFinder;
 
-    const llvm::StoreInst* storeInstruction;
-    const std::list<llvm::GetElementPtrInst*> gepInstructions;
+    const llvm::StoreInst *storeInstruction;
+    const std::list<llvm::Instruction *> assocInsts;
 
 protected:
 
-    Configuration* apply(Configuration* in) override;
+    Configuration *apply(Configuration *in) override;
 
     std::set<llvm::Instruction *> getAssocInstructions() override;
 
@@ -38,7 +38,7 @@ public:
      */
     AssignmentOp(const PointerFinder *pointerFinder, const TargetFinder *targetFinder,
                  const llvm::StoreInst *storeInstruction,
-                 const std::list<llvm::GetElementPtrInst *> gepInstructions);
+                 std::list<llvm::Instruction *> assocInsts);
 
 
 };

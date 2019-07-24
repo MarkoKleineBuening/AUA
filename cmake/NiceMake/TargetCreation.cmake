@@ -25,66 +25,66 @@
 # shall not be used in advertising or otherwise to promote the sale, use or
 # other dealings in this Software without prior written authorization.
 
-if(NOT NM_TARGETCREATION_CMAKE_INCLUDED)
-  include(${CMAKE_CURRENT_LIST_DIR}/NiceMakeConfig.cmake)
-  include(${CMAKE_CURRENT_LIST_DIR}/detail/TargetProperties.cmake)
+if (NOT NM_TARGETCREATION_CMAKE_INCLUDED)
+    include(${CMAKE_CURRENT_LIST_DIR}/NiceMakeConfig.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/detail/TargetProperties.cmake)
 
-  set(NM_EMPTY_CPP_FILE ${CMAKE_CURRENT_LIST_DIR}/empty.cpp)
+    set(NM_EMPTY_CPP_FILE ${CMAKE_CURRENT_LIST_DIR}/empty.cpp)
 
-  include(${CMAKE_CURRENT_LIST_DIR}/CompilerFlags.cmake)
-  include(${CMAKE_CURRENT_LIST_DIR}/Platform.cmake)
-  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    include(${CMAKE_CURRENT_LIST_DIR}/CompilerFlags.cmake)
+    include(${CMAKE_CURRENT_LIST_DIR}/Platform.cmake)
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-  function(nm_add_library NAME KIND)
-    string(REPLACE "." "/" FOLDER_NAME ${NAME})
+    function(nm_add_library NAME KIND)
+        string(REPLACE "." "/" FOLDER_NAME ${NAME})
 
-    set(nm_target_include_dir "${PROJECT_SOURCE_DIR}/${NM_CONF_INCLUDE_DIR}/${FOLDER_NAME}")
-    file(GLOB LIBRARY_HEADERS "${nm_target_include_dir}/*.h"
-                              "${nm_target_include_dir}/*.hh"
-                              "${nm_target_include_dir}/*.hpp"
-                              "${nm_target_include_dir}/*.hxx"
-                              "${nm_target_include_dir}/*.H")
+        set(nm_target_include_dir "${PROJECT_SOURCE_DIR}/${NM_CONF_INCLUDE_DIR}/${FOLDER_NAME}")
+        file(GLOB LIBRARY_HEADERS "${nm_target_include_dir}/*.h"
+                "${nm_target_include_dir}/*.hh"
+                "${nm_target_include_dir}/*.hpp"
+                "${nm_target_include_dir}/*.hxx"
+                "${nm_target_include_dir}/*.H")
 
-    if(${KIND} STREQUAL "OBJECT-STATIC" OR ${KIND} STREQUAL "OBJECT-SHARED")
-      set(simple_kind "OBJECT")
-    else()
-      set(simple_kind ${KIND})
-    endif()
+        if (${KIND} STREQUAL "OBJECT-STATIC" OR ${KIND} STREQUAL "OBJECT-SHARED")
+            set(simple_kind "OBJECT")
+        else ()
+            set(simple_kind ${KIND})
+        endif ()
 
-    add_library(${NAME} ${simple_kind} ${LIBRARY_HEADERS} ${ARGN})
-    set_property(TARGET "${NAME}" PROPERTY FOLDER "Libraries/${FOLDER_NAME}")
-    set_property(TARGET "${NAME}" PROPERTY PROJECT_LABEL "Library")
+        add_library(${NAME} ${simple_kind} ${LIBRARY_HEADERS} ${ARGN})
+        set_property(TARGET "${NAME}" PROPERTY FOLDER "Libraries/${FOLDER_NAME}")
+        set_property(TARGET "${NAME}" PROPERTY PROJECT_LABEL "Library")
 
-    nm_detail_link_thirdpartylibs_to_lib(${NAME} ${simple_kind})
-    nm_detail_add_compile_options_to_lib(${NAME} ${KIND})
+        nm_detail_link_thirdpartylibs_to_lib(${NAME} ${simple_kind})
+        nm_detail_add_compile_options_to_lib(${NAME} ${KIND})
 
-    target_include_directories(${NAME} PUBLIC ${PROJECT_SOURCE_DIR}/${NM_CONF_INCLUDE_DIR})
-  endfunction()
+        target_include_directories(${NAME} PUBLIC ${PROJECT_SOURCE_DIR}/${NM_CONF_INCLUDE_DIR})
+    endfunction()
 
-  function(nm_add_dummy_library NAME)
-    nm_add_library(${NAME} STATIC ${NM_EMPTY_CPP_FILE})
-  endfunction()
+    function(nm_add_dummy_library NAME)
+        nm_add_library(${NAME} STATIC ${NM_EMPTY_CPP_FILE})
+    endfunction()
 
-  function(nm_add_header_only_library NAME KIND)
-    nm_add_library(${NAME} ${KIND} ${NM_EMPTY_CPP_FILE} ${ARGN})
-  endfunction()
+    function(nm_add_header_only_library NAME KIND)
+        nm_add_library(${NAME} ${KIND} ${NM_EMPTY_CPP_FILE} ${ARGN})
+    endfunction()
 
-  function(nm_add_tool NAME)
-    string(REPLACE "." "/" FOLDER_NAME ${NAME})
+    function(nm_add_tool NAME)
+        string(REPLACE "." "/" FOLDER_NAME ${NAME})
 
-    set(nm_target_include_dir "${PROJECT_SOURCE_DIR}/${NM_CONF_TOOLS_DIR}/${FOLDER_NAME}")
-    file(GLOB ${TOOL_HEADERS} "${nm_target_include_dir}/*.h")
+        set(nm_target_include_dir "${PROJECT_SOURCE_DIR}/${NM_CONF_TOOLS_DIR}/${FOLDER_NAME}")
+        file(GLOB ${TOOL_HEADERS} "${nm_target_include_dir}/*.h")
 
-    add_executable(${NAME} ${TOOL_HEADERS} ${ARGN})
-    set_property(TARGET "${NAME}" PROPERTY FOLDER "Tools/${FOLDER_NAME}")
-    set_property(TARGET "${NAME}" PROPERTY PROJECT_LABEL "Tool")
+        add_executable(${NAME} ${TOOL_HEADERS} ${ARGN})
+        set_property(TARGET "${NAME}" PROPERTY FOLDER "Tools/${FOLDER_NAME}")
+        set_property(TARGET "${NAME}" PROPERTY PROJECT_LABEL "Tool")
 
-    target_link_libraries(${NAME} PRIVATE ${NM_THIRDPARTY_LIBS})
-    target_compile_options(${NAME} PRIVATE ${NM_TOOL_COMPILE_OPTS})
-    target_compile_definitions(${NAME} PRIVATE ${NM_TOOL_COMPILE_DEFS})
-    target_include_directories(${NAME} PRIVATE ${PROJECT_SOURCE_DIR}/${NM_CONF_INCLUDE_DIR})
-    target_include_directories(${NAME} PRIVATE ${nm_target_include_dir})
-  endfunction()
+        target_link_libraries(${NAME} PRIVATE ${NM_THIRDPARTY_LIBS})
+        target_compile_options(${NAME} PRIVATE ${NM_TOOL_COMPILE_OPTS})
+        target_compile_definitions(${NAME} PRIVATE ${NM_TOOL_COMPILE_DEFS})
+        target_include_directories(${NAME} PRIVATE ${PROJECT_SOURCE_DIR}/${NM_CONF_INCLUDE_DIR})
+        target_include_directories(${NAME} PRIVATE ${nm_target_include_dir})
+    endfunction()
 
-  set(NM_TARGETCREATION_CMAKE_INCLUDED TRUE)
-endif()
+    set(NM_TARGETCREATION_CMAKE_INCLUDED TRUE)
+endif ()

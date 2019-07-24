@@ -1,5 +1,7 @@
 #include <utility>
 
+#include <utility>
+
 //
 // Created by mlaupichler on 27.05.19.
 //
@@ -8,24 +10,30 @@
 #include <assert.h>
 
 
-
 AssignmentOp::AssignmentOp(const PointerFinder *pointerFinder, const TargetFinder *targetFinder,
                            const llvm::StoreInst *storeInstruction,
-                           const std::list<llvm::GetElementPtrInst *> gepInstructions)
+                           std::list<llvm::Instruction *> assocInsts)
         : pointerFinder(pointerFinder), targetFinder(targetFinder), storeInstruction(storeInstruction),
-          gepInstructions(gepInstructions) {}
+          assocInsts(std::move(assocInsts)) {}
 
 
-Configuration* AssignmentOp::apply(Configuration* in) {
+Configuration *AssignmentOp::apply(Configuration *in) {
 
-    AbstractPointer* pointer = pointerFinder->findPointer(in);
-    AbstractTarget target = targetFinder->findTarget(in);
+    auto pointers = pointerFinder->findPointers(in);
+    std::set<AbstractTarget> targets = targetFinder->findTargets(in);
 
-    assert(target.base->getPointerLevel() == pointer->getPointerLevel() - 1);
+    if (pointers->size() == 1) {
 
-    pointer->onlyPointTo(target);
+        AbstractPointer *pointer = *pointers->asSet().begin();
+        pointer->setTargets(targets);
 
-    pointer->setAssocInsts(this->getAssocInstructions());
+    } else {
+
+        for (auto pointer : pointers->asSet()) {
+
+            pointer->addTargets(targets);
+        }
+    }
 
     return in;
 
@@ -34,8 +42,8 @@ Configuration* AssignmentOp::apply(Configuration* in) {
 std::set<llvm::Instruction *> AssignmentOp::getAssocInstructions() {
 
     std::set<llvm::Instruction *> result;
-    result.insert(gepInstructions.begin(), gepInstructions.end());
-    result.insert((llvm::Instruction*) storeInstruction);
+    result.insert(assocInsts.begin(), assocInsts.end());
+    result.insert((llvm::Instruction *) storeInstruction);
 
     return result;
 }

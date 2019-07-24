@@ -16,8 +16,8 @@ class SinglePredAndSuccOp : public PointerOperation {
 
 protected:
 
-    PointerOperation* pred;
-    PointerOperation* succ;
+    PointerOperation *pred;
+    PointerOperation *succ;
 
 
 public:
@@ -25,11 +25,13 @@ public:
 
     void execute(Configuration *in) override;
 
-    void linkSuccessor(PointerOperation* successor) override;
+    void linkSuccessor(PointerOperation *successor) override;
+
     void addPredecessor(PointerOperation *predecessor) override;
 
-    std::set<PointerOperation*> getPredecessors() override;
-    std::set<PointerOperation*> getSuccessors() override;
+    std::set<PointerOperation *> getPredecessors() override;
+
+    std::set<PointerOperation *> getSuccessors() override;
 
 
 };

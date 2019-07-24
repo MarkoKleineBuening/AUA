@@ -7,24 +7,25 @@
 
 
 #include "TargetFinder.h"
+#include "CompositeFinder.h"
 
 class MemberTargetFinder : public TargetFinder {
 
 private:
 
-    const std::string compositeName;
-    const std::list<int> memberIndices;
+    const CompositeFinder *compositeFinder;
+    const int memberIndex;
 
 public:
 
     /**
      * Creates a MemberTargetFinder holding the given information to find a target that is a member of a composite later.
-     * @param compositeName the composite of which the target is a member.
-     * @param memberIndices a list of indices, one for each level of recursive composites starting at the root composite (the one with the given name).
+     * @param compositeFinder the composite of which the target is a member.
+     * @param memberIndex a list of indices, one for each level of recursive composites starting at the root composite (the one with the given name).
      */
-    MemberTargetFinder(const std::string &compositeName, const std::list<int> memberIndices);
+    MemberTargetFinder(CompositeFinder *compositeFinder, int memberIndex);
 
-    AbstractTarget findTarget(Configuration *conf) const override;
+    std::set<AbstractTarget> findTargets(Configuration *conf) const override;
 
 };
 

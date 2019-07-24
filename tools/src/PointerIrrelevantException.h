@@ -8,7 +8,7 @@
 #include <exception>
 
 struct PointerIrrelevantException : public std::exception {
-    const char * what () const throw() {
+    const char *what() const throw() {
         return "The Instruction is irrelevant for pointers.";
     }
 };

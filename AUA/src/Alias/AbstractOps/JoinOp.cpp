@@ -7,7 +7,7 @@
 
 // PROTECTED
 
-Configuration* JoinOp::apply(Configuration *in) {
+Configuration *JoinOp::apply(Configuration *in) {
 
     return in;
 
@@ -16,17 +16,27 @@ Configuration* JoinOp::apply(Configuration *in) {
 
 // PUBLIC
 
-JoinOp::JoinOp() {
+JoinOp::JoinOp() : currentInput(nullptr) {
 
-    this->currentInput = new Configuration();
     this->numberOfExecuteCalls = 0;
 
 }
 
-void JoinOp::execute(Configuration* in) {
+void JoinOp::execute(Configuration *in) {
 
     ++numberOfExecuteCalls;
-    currentInput->merge(in);
+
+    if (currentInput == nullptr) {
+
+        assert(numberOfExecuteCalls == 1);
+        currentInput = in->getDeepCopy();
+
+    } else {
+
+        assert(numberOfExecuteCalls > 1);
+        currentInput->merge(in);
+    }
+
 
     if (numberOfExecuteCalls < pred.size()) return;
 
@@ -53,15 +63,15 @@ void JoinOp::linkSuccessor(PointerOperation *successor) {
 
 }
 
-std::set<PointerOperation*> JoinOp::getPredecessors() {
+std::set<PointerOperation *> JoinOp::getPredecessors() {
 
     return pred;
 
 }
 
-std::set<PointerOperation*> JoinOp::getSuccessors() {
+std::set<PointerOperation *> JoinOp::getSuccessors() {
 
-    std::set<PointerOperation*> resultSet;
+    std::set<PointerOperation *> resultSet;
     resultSet.insert(succ);
 
     return resultSet;

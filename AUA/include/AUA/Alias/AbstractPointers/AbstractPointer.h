@@ -8,54 +8,83 @@
 #include <string>
 #include <set>
 #include <llvm/IR/Instruction.h>
-#include "VarRef.h"
+#include <llvm/IR/DerivedTypes.h>
+#include "AbstractVar.h"
 #include "AbstractTarget.h"
+#include "PointerFormat.h"
+
 
 class AbstractPointer : public AbstractReference {
 
 private:
 
-    const int level;
+    PointerFormat format;
+
     std::set<AbstractTarget> targets;
-    std::set<llvm::Instruction*> assocInsts;
+    std::set<llvm::Instruction *> assocInsts;
 
 public:
 
     /**
-     * Constructor for a pointer with given alignment, alphanumerical name and level. Initially the pointer will not reference any targets.
-     * @param a the alignment of the pointer.
+     * Constructor for a pointer with given alphanumerical name and level. Initially the pointer will not reference any targets.
      * @param n the name of the pointer.
-     * @param l the level of the pointer.
+     * @param format the level of the pointer.
      */
-    AbstractPointer(std::string n, int a, int l);
+    AbstractPointer(std::string n, PointerFormat format);
 
-    const int getPointerLevel() override {return level;};
+    const int getPointerLevel() override { return format.level; };
+
+    const PointerFormat &getFormat() const;
+
+    std::set<AbstractTarget> getTargets() { return targets; };
+
+    /**
+     * Calculates all pointers this pointer points to at (this pointers level - derefDepth - 1)and returns their targets.
+     * @param derefDepth the number of times this pointer is virtually dereferenced to get the lower level pointers.
+     * @return the targets of the lower level pointers.
+     */
+    std::set<AbstractTarget> derefAndGetTargets(int derefDepth);
+
+    /**
+     * Calculates all pointers this pointer points to at (this pointers level - derefDepth - 1) and returns their targets.
+     * @param derefDepth the number of times this pointer is virtually dereferenced to get the lower level pointers.
+     * @param associatedInsts all associated instructions of pointers passed in dereferencing this pointer are added to the given set of instructions.
+     * @return the targets of the lower level pointers.
+     */
+    std::set<AbstractTarget> derefAndGetTargets(int derefDepth, std::set<llvm::Instruction *> *associatedInsts);
+
+    AbstractPointer *getCopy();
 
 
-    std::set<AbstractTarget> getTargets(){return targets;};
+    bool operator<(const AbstractPointer &other) const { return name < other.name; };
 
-    AbstractPointer* getCopy();
+    bool operator==(const AbstractPointer &other) const { return name == other.name; };
 
-
-    bool operator <(const AbstractPointer & other) const {return name < other.name;};
-    bool operator==(const AbstractPointer & other) const {return name == other.name;};
     void onlyPointTo(AbstractTarget target);
 
     void alsoPointTo(AbstractTarget target);
+
     void copyTargetsFrom(AbstractPointer *other);
-    void setTargets(std::set<AbstractTarget> set);
+
+    void setTargets(const std::set<AbstractTarget> &set);
+
+    void addTargets(std::set<AbstractTarget> targetsToAdd);
+
 
     void merge(AbstractPointer *other);
 
+    void setAssocInsts(const std::set<llvm::Instruction *> &newAssocInsts);
 
-    void setAssocInsts(const std::set<llvm::Instruction *> &assocInsts);
-    void setOnlyAssocInst(llvm::Instruction* assocInst);
-    void addAssocInst( llvm::Instruction* inst);
-    void addAllAssocInsts(std::set<llvm::Instruction*> insts);
+    void setOnlyAssocInst(llvm::Instruction *assocInst);
+
+    void addAssocInst(llvm::Instruction *inst);
+
+    void addAllAssocInsts(std::set<llvm::Instruction *> insts);
+
     std::set<llvm::Instruction *> getAssocInsts();
 };
 
-
+struct DerefPointerLevelException : public std::exception {};
 
 
 #endif //AUA_ABSTRACTPOINTER_H

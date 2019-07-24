@@ -1,5 +1,5 @@
 #include <ModernThirdParty.h>
 
 int getMagicNumModern() {
-  return 2;
+    return 2;
 }

@@ -27,28 +27,28 @@
 
 /* clang-format off */
 #if defined(NM_SHARED_LIB)
-    #if defined(_WIN32) || defined(__CYGWIN__)
-        #if defined(BUILDING_NM_SHARED_LIB)
-            #if defined(__GNUC__)
-                #define NM_PUBLIC_API __attribute__((dllexport))
-            #elif defined(_MSC_VER)
-                #define NM_PUBLIC_API __declspec(dllexport)
-            #endif
-        #else
-            #if defined(__GNUC__)
-                #define NM_PUBLIC_API __attribute__((dllimport))
-            #elif defined(_MSC_VER)
-                #define NM_PUBLIC_API __declspec(dllimport)
-            #endif
-        #endif
-    #elif defined(__GNUC__)
-        #define NM_PUBLIC_API __attribute__((visibility("default")))
-    #endif
-
-    #if !defined(NM_PUBLIC_API)
-        #warning "Unknown compiler. Not adding visibility information to exported symbols."
-    #endif
+#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(BUILDING_NM_SHARED_LIB)
+#if defined(__GNUC__)
+#define NM_PUBLIC_API __attribute__((dllexport))
+#elif defined(_MSC_VER)
+#define NM_PUBLIC_API __declspec(dllexport)
+#endif
 #else
-    #define NM_PUBLIC_API
+#if defined(__GNUC__)
+#define NM_PUBLIC_API __attribute__((dllimport))
+#elif defined(_MSC_VER)
+#define NM_PUBLIC_API __declspec(dllimport)
+#endif
+#endif
+#elif defined(__GNUC__)
+#define NM_PUBLIC_API __attribute__((visibility("default")))
+#endif
+
+#if !defined(NM_PUBLIC_API)
+#warning "Unknown compiler. Not adding visibility information to exported symbols."
+#endif
+#else
+#define NM_PUBLIC_API
 #endif
 /* clang-format on */

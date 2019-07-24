@@ -21,13 +21,13 @@ configuration:
 install:
   # With MSBuild:
   - ps: if($env:TARGET_GENERATOR -eq 'MSBuild') {
-          C:\msys64\usr\bin\env MSYSTEM=MINGW64 C:\msys64\usr\bin\bash.exe -l -c "cd C:/projects/repos && mkdir nicemake-test && cd nicemake-test && cmake -G 'Visual Studio 15 2017' ../nicemake/tests && ctest -C Debug --output-on-failure";
-        }
+      C:\msys64\usr\bin\env MSYSTEM=MINGW64 C:\msys64\usr\bin\bash.exe -l -c "cd C:/projects/repos && mkdir nicemake-test && cd nicemake-test && cmake -G 'Visual Studio 15 2017' ../nicemake/tests && ctest -C Debug --output-on-failure";
+      }
 
   # With Cygwin:
   - ps: if($env:TARGET_GENERATOR -eq 'CygwinMake') {
-          C:\cygwin64\bin\bash.exe -l -c "cd /cygdrive/c/projects/repos && mkdir nicemake-test && cd nicemake-test && cmake -G 'Unix Makefiles' ../nicemake/tests && ctest --output-on-failure";
-        }
+      C:\cygwin64\bin\bash.exe -l -c "cd /cygdrive/c/projects/repos && mkdir nicemake-test && cd nicemake-test && cmake -G 'Unix Makefiles' ../nicemake/tests && ctest --output-on-failure";
+      }
 
 build: false
 

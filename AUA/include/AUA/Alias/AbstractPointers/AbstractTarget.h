@@ -6,15 +6,15 @@
 #define AUA_ABSTRACTTARGET_H
 
 
-#include "VarRef.h"
+#include "AbstractVar.h"
 
 struct AbstractTarget {
 
 public:
 
-    AbstractTarget(AbstractReference* base, int offset, int size);
+    AbstractTarget(AbstractReference *base, int offset, int size);
 
-    bool operator <(const AbstractTarget & other) const;
+    bool operator<(const AbstractTarget &other) const;
 
     bool operator>(const AbstractTarget &rhs) const;
 
@@ -26,7 +26,7 @@ public:
 
     const std::string toString() const;
 
-    AbstractReference* base;
+    AbstractReference *base;
     const int byteOffset;
     const int size;
 

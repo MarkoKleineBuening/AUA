@@ -7,7 +7,7 @@
 
 // PROTECTED
 
-Configuration* SplitOp::apply(Configuration *in) {
+Configuration *SplitOp::apply(Configuration *in) {
 
     return in;
 
@@ -26,12 +26,11 @@ void SplitOp::execute(Configuration *in) {
     llvm::outs() << "Splitting.\n";
 
 
-
     this->consume(in);
 
-    for(PointerOperation* successor : succ) {
+    for (PointerOperation *successor : succ) {
 
-        Configuration* copyOfInput = in->getDeepCopy();
+        Configuration *copyOfInput = in->getDeepCopy();
 
         successor->execute(copyOfInput);
 
@@ -52,16 +51,16 @@ void SplitOp::linkSuccessor(PointerOperation *successor) {
 
 }
 
-std::set<PointerOperation*> SplitOp::getPredecessors() {
+std::set<PointerOperation *> SplitOp::getPredecessors() {
 
-    std::set<PointerOperation*> resultSet;
+    std::set<PointerOperation *> resultSet;
     resultSet.insert(pred);
 
     return resultSet;
 
 }
 
-std::set<PointerOperation*> SplitOp::getSuccessors() {
+std::set<PointerOperation *> SplitOp::getSuccessors() {
 
     return succ;
 

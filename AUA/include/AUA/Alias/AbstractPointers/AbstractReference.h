@@ -13,14 +13,13 @@ class AbstractReference {
 protected:
 
     const std::string name;
-    const int alignment;
 
-    AbstractReference(std::string n, int a): name(n), alignment(a) {};
+    AbstractReference(const std::string n) : name(n) {};
 
 public:
 
-    const std::string getName() const {return name;};
-    const int getAlignment() const {return alignment;};
+    const std::string getName() const { return name; };
+
 
     /**
      * Returns level of reference in pointer hierarchy starting at 0 for variables.
@@ -29,7 +28,7 @@ public:
     virtual const int getPointerLevel() = 0;
 
 
-    bool operator <(const AbstractReference & other) const {return this->name < other.name;};
+    bool operator<(const AbstractReference &other) const { return this->name < other.name; };
 
 
 };

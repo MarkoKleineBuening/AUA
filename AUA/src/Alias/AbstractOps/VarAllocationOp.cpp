@@ -7,9 +7,9 @@
 VarAllocationOp::VarAllocationOp(std::string name, int size, const llvm::AllocaInst *allocaInst)
         : name(name), size(size), allocaInst(allocaInst) {}
 
-Configuration* VarAllocationOp::apply(Configuration* in) {
+Configuration *VarAllocationOp::apply(Configuration *in) {
 
-    VarRef* var = new VarRef(name, 0, size);
+    AbstractVar *var = new AbstractVar(name, size);
 
     in->vars.insert_or_assign(name, var);
 
@@ -18,7 +18,7 @@ Configuration* VarAllocationOp::apply(Configuration* in) {
 
 std::set<llvm::Instruction *> VarAllocationOp::getAssocInstructions() {
     std::set<llvm::Instruction *> result;
-    result.insert((llvm::Instruction*) allocaInst);
+    result.insert((llvm::Instruction *) allocaInst);
 
     return result;
 }

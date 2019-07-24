@@ -4,23 +4,24 @@
 
 #include "AUA/Alias/AbstractPointers/Finders/MemberPointerFinder.h"
 
-AbstractPointer * MemberPointerFinder::findPointer(Configuration *configuration) const {
+PointerSetValue *MemberPointerFinder::findPointers(Configuration *configuration) const {
 
-    assert(memberIndices.size() > 0);
+    CompositeSetValue *composites = compositeFinder->findComposites(configuration);
 
-    CompositeRef* comp = configuration->composites[compositeName];
+    PointerSetValue *resultPointers = new PointerSetValue(expectedFormat);
 
-    for (auto LI = memberIndices.begin(), LE = --memberIndices.end(); LI != LE; ++LI) {
+    for (AbstractComposite *comp : composites->asSet()) {
 
-        comp = comp->getCompositeMember(*LI);
-        llvm::outs() << *LI << ", ";
+        AbstractPointer *pointer = comp->getPointerMember(memberIndex);
+        resultPointers->include(pointer);
+
     }
 
-    llvm::outs() << memberIndices.back() << "\n";
 
-    return comp->getPointerMember(memberIndices.back());
+    return resultPointers;
 
 }
 
-MemberPointerFinder::MemberPointerFinder(const std::string compositeName, const std::list<int> memberIndices)
-        : compositeName(compositeName), memberIndices(memberIndices) {}
+MemberPointerFinder::MemberPointerFinder(const CompositeFinder *compositeFinder, const int memberIndex,
+                                         const PointerFormat &expectedFormat)
+        : PointerFinder(expectedFormat), compositeFinder(compositeFinder), memberIndex(memberIndex) {}

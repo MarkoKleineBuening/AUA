@@ -12,13 +12,14 @@ std::list<Alias> Configuration::calculateAliases() {
 
     std::list<Alias> result;
 
-    std::set<AbstractPointer*> allPointers = getAllPointers();
+    std::set<AbstractPointer *> allPointers = getAllPointers();
 
-    for(auto primaryPointer : allPointers) {
+    for (auto primaryPointer : allPointers) {
 
         for (auto otherPointer : allPointers) {
 
-            if (primaryPointer == otherPointer || primaryPointer->getPointerLevel() != otherPointer->getPointerLevel()) {
+            if (primaryPointer == otherPointer ||
+                primaryPointer->getPointerLevel() != otherPointer->getPointerLevel()) {
                 continue;
             }
 
@@ -49,20 +50,43 @@ std::list<Alias> Configuration::calculateAliases() {
     return result;
 }
 
+std::set<AbstractPointer *> Configuration::getAllMemberPointers() {
+
+    std::set<AbstractPointer *> result;
+
+    for (auto compPair : composites) {
+        result.merge(compPair.second->getAllPointerMembersRecursively());
+    }
+
+    return result;
+
+}
+
+std::set<AbstractPointer *> Configuration::getAllPointers() {
+
+    std::set<AbstractPointer *> allPointers = getAllMemberPointers();
+    for (auto pointerEntry: pointers) {
+        allPointers.insert(pointerEntry.second);
+    }
+
+    return allPointers;
+
+}
+
 
 // PUBLIC
 
 /**
  * Merges this Configuration with another given Configuration.
- * Afterwards this Configuration holds all pointers and variables from both Configurations
+ * Afterwards this Configuration holds all pointers, composites and variables from both Configurations
  * and all pointers have the targets from both configurations.
  * @param other the Configuration to merge with.
  */
-void Configuration::merge(Configuration* other) {
+void Configuration::merge(Configuration *other) {
 
     // merge pointers
 
-    for(auto pointerEntry : other->pointers) {
+    for (auto pointerEntry : other->pointers) {
 
         if (this->pointers.find(pointerEntry.first) == this->pointers.end()) {
             this->pointers.insert(pointerEntry);
@@ -70,14 +94,34 @@ void Configuration::merge(Configuration* other) {
 
             std::string pointerName = pointerEntry.first;
 
-            AbstractPointer* pointerInThis = this->pointers.at(pointerName);
-            AbstractPointer* pointerInOther = pointerEntry.second;
+            AbstractPointer *pointerInThis = this->pointers.at(pointerName);
+            AbstractPointer *pointerInOther = pointerEntry.second;
 
 
             pointerInThis->merge(pointerInOther);
 
         }
     }
+
+
+    // merge composites
+    for (auto compositeEntry : other->composites) {
+
+        if (this->composites.find(compositeEntry.first) == this->composites.end()) {
+            this->composites.insert(compositeEntry);
+        } else {
+
+            std::string compositeName = compositeEntry.first;
+
+            AbstractComposite *compositeInThis = this->composites.at(compositeName);
+            AbstractComposite *compositeInOther = compositeEntry.second;
+
+
+            compositeInThis->merge(compositeInOther);
+
+        }
+    }
+
 
     //merge vars
 
@@ -86,14 +130,21 @@ void Configuration::merge(Configuration* other) {
 }
 
 
-Configuration* Configuration::getDeepCopy() {
+Configuration *Configuration::getDeepCopy() {
 
-    Configuration* copy = new Configuration();
+    Configuration *copy = new Configuration();
 
     // Get actual copies of pointers
-    for(auto pointerEntry : this->pointers) {
-        AbstractPointer* ptrCopy = pointerEntry.second->getCopy();
-        copy->pointers[pointerEntry.first] =  ptrCopy;
+    for (auto pointerEntry : this->pointers) {
+        AbstractPointer *ptrCopy = pointerEntry.second->getCopy();
+        copy->pointers[pointerEntry.first] = ptrCopy;
+
+    }
+
+    // Get actual copies of composites
+    for (auto compositeEntry : this->composites) {
+        AbstractComposite *compositeCopy = compositeEntry.second->getDeepCopy();
+        copy->composites[compositeEntry.first] = compositeCopy;
 
     }
 
@@ -113,12 +164,12 @@ void Configuration::printFullInfo() {
 
 void Configuration::printPointerInfo() {
 
-    std::set<AbstractPointer*> allPointers = getAllPointers();
+    std::set<AbstractPointer *> allPointers = getAllPointers();
 
     llvm::outs() << "\n" << allPointers.size() << " Pointers:\n";
-    for(auto p : allPointers) {
+    for (auto p : allPointers) {
         llvm::outs() << p->getName() << " (level " << p->getPointerLevel() << ") points to: ";
-        for(AbstractTarget t : p->getTargets()) {
+        for (AbstractTarget t : p->getTargets()) {
             llvm::outs() << t.toString() << " ";
         }
         llvm::outs() << "\n";
@@ -130,7 +181,7 @@ void Configuration::printPointerInfo() {
 void Configuration::printVarInfo() {
 
     llvm::outs() << "\n" << vars.size() << " variables:\n";
-    for(std::pair<std::string, VarRef*> v : vars) {
+    for (std::pair<std::string, AbstractVar *> v : vars) {
         llvm::outs() << v.first << " (size: " << v.second->getSize() << ")" << "\n";
     }
     llvm::outs() << "\n";
@@ -139,7 +190,7 @@ void Configuration::printVarInfo() {
 void Configuration::printCompositeInfo() {
 
     llvm::outs() << "\n" << composites.size() << " composites:\n";
-    for(std::pair<std::string, CompositeRef*> c : composites) {
+    for (std::pair<std::string, AbstractComposite *> c : composites) {
         llvm::outs() << c.first << " (" << c.second->getMemberCount() << " members)" << "\n";
     }
     llvm::outs() << "\n";
@@ -151,7 +202,7 @@ void Configuration::printAliasInfo() {
     auto aliases = calculateAliases();
 
     llvm::outs() << "\nThe potential aliases are: \n";
-    for(auto alias : aliases) {
+    for (auto alias : aliases) {
 
         llvm::outs() << "\n" << alias.to_String();
 
@@ -162,10 +213,15 @@ void Configuration::printAliasInfo() {
 
 void Configuration::printFullInfoVerbose() {
 
+
+    llvm::outs() << "------------------------------------------------------\n\n";
+
     printAliasInfo();
     printPointerInfoVerbose();
     printVarInfo();
     printCompositeInfo();
+
+    llvm::outs() << "\n------------------------------------------------------\n";
 
 }
 
@@ -175,16 +231,16 @@ void Configuration::printPointerInfoVerbose() {
 
 
     llvm::outs() << "\n" << allPointers.size() << " Pointers:\n";
-    for(auto p : allPointers) {
+    for (auto p : allPointers) {
         llvm::outs() << "\n" << p->getName() << " (level " << p->getPointerLevel() << ") points to: ";
 
-        for(AbstractTarget t : p->getTargets()) {
+        for (AbstractTarget t : p->getTargets()) {
             llvm::outs() << t.toString() << " ";
         }
 
         llvm::outs() << "\n" << p->getName() << " was influenced by the following instructions: \n";
 
-        for (llvm::Instruction* assocInst: p->getAssocInsts()) {
+        for (llvm::Instruction *assocInst: p->getAssocInsts()) {
             llvm::outs() << *assocInst << "\n";
         }
 
@@ -194,26 +250,10 @@ void Configuration::printPointerInfoVerbose() {
 }
 
 
-std::set<AbstractPointer *> Configuration::getAllMemberPointers() {
+Configuration::Configuration() {}
 
-    std::set<AbstractPointer *> result;
 
-    for (auto compPair : composites) {
-        result.merge(compPair.second->getAllPointerMembersRecursively());
-    }
 
-    return result;
 
-}
 
-std::set<AbstractPointer *> Configuration::getAllPointers() {
-
-    std::set<AbstractPointer*> allPointers = getAllMemberPointers();
-    for (auto pointerEntry: pointers) {
-        allPointers.insert(pointerEntry.second);
-    }
-
-    return allPointers;
-
-}
 

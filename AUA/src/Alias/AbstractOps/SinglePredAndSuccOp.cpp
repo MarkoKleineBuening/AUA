@@ -6,15 +6,14 @@
 #include "AUA/Alias/AbstractOps/SinglePredAndSuccOp.h"
 
 
-void SinglePredAndSuccOp::execute(Configuration* in) {
+void SinglePredAndSuccOp::execute(Configuration *in) {
 
 
-    Configuration* result = this->apply(in);
+    Configuration *result = this->apply(in);
 
     this->consume(result);
 
     succ->execute(result);
-
 
 
 }
@@ -32,18 +31,18 @@ void SinglePredAndSuccOp::linkSuccessor(PointerOperation *successor) {
 
 }
 
-std::set<PointerOperation*> SinglePredAndSuccOp::getPredecessors() {
+std::set<PointerOperation *> SinglePredAndSuccOp::getPredecessors() {
 
-    std::set<PointerOperation*> resultSet;
+    std::set<PointerOperation *> resultSet;
     resultSet.insert(pred);
 
     return resultSet;
 
 }
 
-std::set<PointerOperation*> SinglePredAndSuccOp::getSuccessors() {
+std::set<PointerOperation *> SinglePredAndSuccOp::getSuccessors() {
 
-    std::set<PointerOperation*> resultSet;
+    std::set<PointerOperation *> resultSet;
     resultSet.insert(succ);
 
     return resultSet;

@@ -16,11 +16,11 @@ class VarAllocationOp : public SinglePredAndSuccOp {
 private:
     const std::string name;
     const int size;
-    const llvm::AllocaInst* allocaInst;
+    const llvm::AllocaInst *allocaInst;
 
 protected:
 
-    Configuration* apply(Configuration* in) override;
+    Configuration *apply(Configuration *in) override;
 
     std::set<llvm::Instruction *> getAssocInstructions() override;
 

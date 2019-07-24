@@ -14,12 +14,12 @@ struct Alias {
 
     Alias(const AbstractPointer *ptr1, const AbstractPointer *ptr2, const AbstractTarget &target);
 
-    bool operator==(const Alias & rhs) const;
+    bool operator==(const Alias &rhs) const;
 
     const std::string to_String() const;
 
-    const AbstractPointer* ptr1;
-    const AbstractPointer* ptr2;
+    const AbstractPointer *ptr1;
+    const AbstractPointer *ptr2;
     const AbstractTarget target;
 
 };

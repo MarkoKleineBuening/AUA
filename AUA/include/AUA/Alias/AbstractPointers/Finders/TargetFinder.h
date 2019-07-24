@@ -13,7 +13,7 @@ class TargetFinder {
 
 public:
 
-    virtual AbstractTarget findTarget(Configuration* conf) const = 0;
+    virtual std::set<AbstractTarget> findTargets(Configuration *conf) const = 0;
 
 };
 

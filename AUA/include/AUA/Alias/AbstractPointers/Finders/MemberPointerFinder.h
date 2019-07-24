@@ -7,19 +7,21 @@
 
 
 #include "PointerFinder.h"
+#include "CompositeFinder.h"
 
 class MemberPointerFinder : public PointerFinder {
 
 private:
 
-    const std::string compositeName;
-    const std::list<int> memberIndices;
+    const CompositeFinder *compositeFinder;
+    const int memberIndex;
 
 public:
 
-    MemberPointerFinder(const std::string compositeName, const std::list<int> memberIndices);
+    MemberPointerFinder(const CompositeFinder *compositeFinder, const int memberIndex,
+                        const PointerFormat &expectedFormat);
 
-    AbstractPointer * findPointer(Configuration *configuration) const override;
+    PointerSetValue *findPointers(Configuration *configuration) const override;
 
 };
 
