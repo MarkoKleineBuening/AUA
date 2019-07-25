@@ -14,6 +14,10 @@ PointerSetValue *AbstractFunction::execute(std::map<int, PointerSetValue *> ptrP
 
     Configuration *conf = new Configuration();
 
+    for (auto var : *varParams) {
+        conf->vars[var->getName()] = var;
+    }
+
     for (auto PI = ptrParams.begin(), PE = ptrParams.end(); PI != PE; ++PI) {
 
         auto ptrParamPair = *PI;
@@ -60,9 +64,10 @@ PointerSetValue *AbstractFunction::execute(std::map<int, PointerSetValue *> ptrP
 AbstractFunction::AbstractFunction(DummyInitialOp *initialOp, ReturnOp *finalOp, std::string name,
                                    std::map<int, PointerFormat> *ptrParamFormats,
                                    std::map<int, CompositeFormat> *compParamFormats,
+                                   const std::set<AbstractVar*>* varParams,
                                    std::vector<std::string> paramNames)
         : initialOp(initialOp), finalOp(finalOp), name(std::move(name)), ptrParamFormats(ptrParamFormats),
-          compParamFormats(compParamFormats), paramNames(std::move(paramNames)) {
+          compParamFormats(compParamFormats), paramNames(std::move(paramNames)), varParams(varParams) {
 
     assert(initialOp != nullptr);
     assert(finalOp != nullptr);

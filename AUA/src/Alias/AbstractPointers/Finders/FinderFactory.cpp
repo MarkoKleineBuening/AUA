@@ -4,30 +4,42 @@
 
 #include <llvm/IR/Instructions.h>
 #include <AUA/Alias/AbstractPointers/GlobalConfiguration.h>
+#include <AUA/Alias/AbstractPointers/Finders/AnonymousPointerFinder.h>
 #include "AUA/Alias/AbstractPointers/Finders/FinderFactory.h"
 
 // POINTER FINDING -------------------------------------------------------------
 
-PointerFinder *FinderFactory::getPointerFinder(llvm::Value *value) {
+PointerFinder *FinderFactory::getPointerFinder(llvm::Value *value, bool isAdress) {
 
+    llvm::Type* expectedType = value->getType();
 
-    if (!llvm::isa<llvm::PointerType>(value->getType())) throw NotAPointerException();
+    if (!(llvm::isa<llvm::PointerType>(expectedType))) throw NotAPointerException();
 
-    if (auto argument = llvm::dyn_cast<llvm::Argument>(value)) return getBasePointerFinder(argument);
-    if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(value)) return getBasePointerFinder(allocaInst);
-    if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getNestedPointerFinder(loadInst);
-    if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberPointerFinder(gepInst);
-    if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getReturnedPointerFinder(callInst);
+    if (isAdress) {
+        expectedType = llvm::cast<llvm::PointerType>(expectedType)->getElementType();
+        if (!(llvm::isa<llvm::PointerType>(expectedType))) throw NotAPointerException();
+    }
+
+    PointerFormat expectedFormat = getPointerFormat(expectedType);
+
+    if (auto argument = llvm::dyn_cast<llvm::Argument>(value)) return getBasePointerFinder(argument, expectedFormat, isAdress);
+    if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(value)) return getBasePointerFinder(allocaInst, expectedFormat, isAdress);
+    if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getNestedPointerFinder(loadInst, expectedFormat, isAdress);
+    if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberPointerFinder(gepInst, expectedFormat, isAdress);
+    if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getReturnedPointerFinder(callInst, expectedFormat, isAdress);
 
     throw UnknownFinderInstructionException();
 
 }
 
-FromPointerPointerFinder *FinderFactory::getNestedPointerFinder(llvm::LoadInst *loadInst) {
+FromPointerPointerFinder *FinderFactory::getNestedPointerFinder(llvm::LoadInst *loadInst, PointerFormat expectedFormat, bool isAdress) {
+
+    assert(!isAdress);
 
     llvm::Type* inType = loadInst->getType();
-
-    PointerFormat format = getExpectedPointerFormat(inType);
+    PointerFormat actualFormat = getPointerFormat(inType);
+    if (actualFormat != expectedFormat) throw PointerFinderConstructionFormatException(loadInst, expectedFormat,
+                                                                                       actualFormat);
 
     std::list<llvm::LoadInst *> loadInstructions;
     llvm::Value *value;
@@ -41,47 +53,120 @@ FromPointerPointerFinder *FinderFactory::getNestedPointerFinder(llvm::LoadInst *
     int derefDepth = loadInstructions.size() - 1;
 
 
-    return new FromPointerPointerFinder(getPointerFinder(value), derefDepth, format);
+    return new FromPointerPointerFinder(getPointerFinder(value, true), derefDepth, actualFormat);
 
 }
 
-BasePointerFinder *FinderFactory::getBasePointerFinder(llvm::AllocaInst *allocaInst) {
+PointerFinder * FinderFactory::getBasePointerFinder(llvm::AllocaInst *allocaInst, PointerFormat expectedFormat,
+                                                    bool isAdress) {
 
     llvm::Type* inType = allocaInst->getAllocatedType();
-    PointerFormat format = getExpectedPointerFormat(inType);
+    PointerFormat actualFormat = getPointerFormat(inType);
 
-    std::string basePointerName = allocaInst->getName();
-    return new BasePointerFinder(basePointerName, format);
+    if ((!isAdress) && actualFormat.level == expectedFormat.level - 1) {
+
+        // Implicit Referencing of lower level target in llvm IR => Explicit Referencing by anonymous pointer here
+
+        return getAnonymousPointerFinder(allocaInst, expectedFormat, isAdress);
+
+    }
+
+    if (actualFormat == expectedFormat) {
+
+        std::string basePointerName = allocaInst->getName();
+        return new BasePointerFinder(basePointerName, actualFormat);
+    }
+
+    throw PointerFinderConstructionFormatException(allocaInst, expectedFormat, actualFormat);
 
 }
 
-BasePointerFinder *FinderFactory::getBasePointerFinder(llvm::Argument *argument) {
+PointerFinder * FinderFactory::getBasePointerFinder(llvm::Argument *argument, PointerFormat expectedFormat,
+                                                    bool isAdress) {
 
     llvm::Type* inType = argument->getType();
+    PointerFormat actualFormat = getPointerFormat(inType);
 
-    std::string basePointerName = argument->getName();
-    return new BasePointerFinder(basePointerName, getExpectedPointerFormat(inType));
+    if ((!isAdress) && actualFormat.level == expectedFormat.level - 1) {
+
+        // Implicit Referencing of lower level target in llvm IR => Explicit Referencing by anonymous pointer here
+
+        return getAnonymousPointerFinder(argument, expectedFormat, isAdress);
+
+    }
+
+    if (actualFormat == expectedFormat) {
+
+        std::string basePointerName = argument->getName();
+        return new BasePointerFinder(basePointerName, actualFormat);
+    }
+
+    throw PointerFinderConstructionFormatException(argument, expectedFormat, actualFormat);
 
 }
 
-MemberPointerFinder *FinderFactory::getMemberPointerFinder(llvm::GetElementPtrInst *gepInst) {
+AnonymousPointerFinder* FinderFactory::getAnonymousPointerFinder(llvm::AllocaInst* allocaInst, PointerFormat expectedFormat, bool isAdress) {
+
+    assert(!isAdress);
+
+    return new AnonymousPointerFinder(expectedFormat, getBaseTargetFinder(allocaInst));
+
+
+}
+
+AnonymousPointerFinder* FinderFactory::getAnonymousPointerFinder(llvm::Argument* argument, PointerFormat expectedFormat, bool isAdress) {
+
+    assert(!isAdress);
+
+    return new AnonymousPointerFinder(expectedFormat, getBaseTargetFinder(argument));
+
+}
+
+AnonymousPointerFinder* FinderFactory::getAnonymousPointerFinder(llvm::GetElementPtrInst* gepInst, PointerFormat expectedFormat, bool isAdress) {
+
+    assert(!isAdress);
+
+    //llvm::outs() << gepInst->getName() << "\n";
+
+    return new AnonymousPointerFinder(expectedFormat, getMemberTargetFinder(gepInst));
+
+}
+
+PointerFinder *FinderFactory::getMemberPointerFinder(llvm::GetElementPtrInst *gepInst, PointerFormat expectedFormat, bool isAdress) {
 
     llvm::Type* inType = gepInst->getResultElementType();
+    PointerFormat actualFormat = getPointerFormat(inType);
 
-    int memberIndex = getMemberIdx(gepInst);
+    if ((!isAdress) && actualFormat.level == expectedFormat.level - 1) {
 
-    CompositeFinder *parentCompFinder = getCompositeFinder(gepInst->getPointerOperand());
+        // Implicit Referencing of lower level target in llvm IR => Explicit Referencing by anonymous pointer here
 
-    return new MemberPointerFinder(parentCompFinder, memberIndex, getExpectedPointerFormat(inType));
+        return getAnonymousPointerFinder(gepInst, expectedFormat, isAdress);
+
+    }
+
+    if (actualFormat == expectedFormat) {
+
+        int memberIndex = getMemberIdx(gepInst);
+
+        CompositeFinder *parentCompFinder = getCompositeFinder(gepInst->getPointerOperand());
+
+        return new MemberPointerFinder(parentCompFinder, memberIndex, getPointerFormat(inType));
+    }
+
+    throw PointerFinderConstructionFormatException(gepInst, expectedFormat, actualFormat);
+
+
 
 }
 
 
-ReturnedPointerFinder *FinderFactory::getReturnedPointerFinder(llvm::CallInst *callInst) {
+ReturnedPointerFinder *FinderFactory::getReturnedPointerFinder(llvm::CallInst *callInst, PointerFormat expectedFormat, bool isAdress) {
 
     llvm::Type* inType = callInst->getType();
-    PointerFormat format = getExpectedPointerFormat(inType);
-
+    PointerFormat actualFormat = getPointerFormat(inType);
+    if (actualFormat != expectedFormat) throw PointerFinderConstructionFormatException(callInst, expectedFormat,
+                                                                                       actualFormat);
 
     std::map<int, PointerFinder *> pointerParamFinders;
     std::map<int, CompositeFinder *> compositeParamFinders;
@@ -92,7 +177,7 @@ ReturnedPointerFinder *FinderFactory::getReturnedPointerFinder(llvm::CallInst *c
 
         if (param->getType()->isPointerTy()) {
 
-            PointerFinder* ptrFinder = getPointerFinder(param);
+            PointerFinder* ptrFinder = getPointerFinder(param, false);
 
             assert(ptrFinder != nullptr);
 
@@ -108,15 +193,13 @@ ReturnedPointerFinder *FinderFactory::getReturnedPointerFinder(llvm::CallInst *c
     llvm::Function *function = callInst->getCalledFunction();
     FunctionFinder* funcFinder = getFunctionFinder(function);
 
-    return new ReturnedPointerFinder(funcFinder, pointerParamFinders, compositeParamFinders, format);
+    return new ReturnedPointerFinder(funcFinder, pointerParamFinders, compositeParamFinders, actualFormat);
 
 }
 
-PointerFormat FinderFactory::getExpectedPointerFormat(llvm::Type* type) {
+PointerFormat FinderFactory::getPointerFormat(llvm::Type *type) {
 
-    assert(llvm::isa<llvm::PointerType>(type));
-    llvm::PointerType *expectedPtrType = llvm::cast<llvm::PointerType>(type);
-    return PointerFormat(expectedPtrType);
+    return PointerFormat(type);
 
 }
 
@@ -124,7 +207,7 @@ PointerFormat FinderFactory::getExpectedPointerFormat(llvm::Type* type) {
 
 CompositeFinder *FinderFactory::getCompositeFinder(llvm::Value *value) {
 
-    if (!(value->getType()->isArrayTy() || value->getType()->isStructTy())) throw NotACompositeException();
+    //if (!(value->getType()->isArrayTy() || value->getType()->isStructTy())) throw NotACompositeException();
 
     if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(value)) return getBaseCompositeFinder(allocaInst);
     if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getFromPointerCompositeFinder(loadInst);
@@ -139,7 +222,7 @@ BaseCompositeFinder *FinderFactory::getBaseCompositeFinder(llvm::AllocaInst *all
 
     std::string baseCompName = allocaInst->getName();
 
-    auto compositeType = llvm::cast<llvm::CompositeType>(allocaInst->getType());
+    auto compositeType = llvm::cast<llvm::CompositeType>(allocaInst->getAllocatedType());
     CompositeFormat expectedFormat = CompositeFormat(compositeType, dl);
 
     return new BaseCompositeFinder(baseCompName, expectedFormat);
@@ -148,7 +231,7 @@ BaseCompositeFinder *FinderFactory::getBaseCompositeFinder(llvm::AllocaInst *all
 
 FromPointerCompositeFinder *FinderFactory::getFromPointerCompositeFinder(llvm::LoadInst *loadInst) {
 
-    PointerFinder *ptrFinder = getPointerFinder(loadInst->getPointerOperand());
+    PointerFinder *ptrFinder = getPointerFinder(loadInst->getPointerOperand(), true);
 
     auto compositeType = llvm::cast<llvm::CompositeType>(loadInst->getType());
     CompositeFormat expectedFormat = CompositeFormat(compositeType, dl);
@@ -197,9 +280,16 @@ BaseTargetFinder *FinderFactory::getBaseTargetFinder(llvm::AllocaInst *allocaIns
 
 }
 
+BaseTargetFinder *FinderFactory::getBaseTargetFinder(llvm::Argument *argument) {
+
+    std::string varName = argument->getName();
+    return new BaseTargetFinder(varName);
+
+}
+
 FromPointerTargetFinder *FinderFactory::getFromPointerTargetFinder(llvm::LoadInst *loadInst) {
 
-    PointerFinder *ptrFinder = getPointerFinder(loadInst->getPointerOperand());
+    PointerFinder *ptrFinder = getPointerFinder(loadInst->getPointerOperand(), true);
 
     return new FromPointerTargetFinder(ptrFinder);
 

@@ -46,7 +46,11 @@ void JoinOp::execute(Configuration *in) {
 
     this->consume(currentInput);
 
-    succ->execute(currentInput);
+    Configuration* result = currentInput;
+
+    resetState();
+
+    succ->execute(result);
 
 }
 
@@ -80,4 +84,11 @@ std::set<PointerOperation *> JoinOp::getSuccessors() {
 
 std::set<llvm::Instruction *> JoinOp::getAssocInstructions() {
     return std::set<llvm::Instruction *>();
+}
+
+void JoinOp::resetState() {
+
+    numberOfExecuteCalls = 0;
+    currentInput = nullptr;
+
 }

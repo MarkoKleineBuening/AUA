@@ -15,6 +15,8 @@ private:
     int numberOfExecuteCalls;
     Configuration *currentInput;
 
+    void resetState();
+
 protected:
 
     std::set<PointerOperation *> pred;

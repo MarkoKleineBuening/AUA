@@ -12,11 +12,9 @@ struct PointerFormat {
 
     const int level;
 
-    explicit PointerFormat(llvm::PointerType *ptrType);
+    explicit PointerFormat(llvm::Type *type);
 
     explicit PointerFormat(int pointerLevel);
-
-//    PointerFormat();
 
     bool operator==(const PointerFormat &rhs) const;
 
@@ -24,7 +22,7 @@ struct PointerFormat {
 
 private:
 
-    static int getPointerLevel(llvm::PointerType *ptrType);
+    static int getPointerLevel(llvm::Type *type);
 };
 
 

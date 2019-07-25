@@ -71,9 +71,13 @@ std::set<AbstractPointer *> PointerSetValue::asSet() {
 
 }
 
-PointerSetValue::PointerSetValue(PointerFormat format) : format(format) {}
+PointerSetValue::PointerSetValue(PointerFormat format) : format(format) {
+    assert(format.level > 0);
+}
 
 PointerSetValue::PointerSetValue(PointerFormat format, std::set<AbstractPointer *> initial) : format(format) {
+
+    assert(format.level > 0);
 
     for (auto ptr : initial) {
 

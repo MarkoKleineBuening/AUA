@@ -13,6 +13,7 @@
 #include "FromPointerPointerFinder.h"
 #include "MemberPointerFinder.h"
 #include "ReturnedPointerFinder.h"
+#include "AnonymousPointerFinder.h"
 #include "CompositeFinder.h"
 #include "BaseCompositeFinder.h"
 #include "FromPointerCompositeFinder.h"
@@ -30,24 +31,29 @@ private:
     llvm::DataLayout *dl;
 
 
-    static BasePointerFinder *getBasePointerFinder(llvm::AllocaInst *allocaInst);
-    static BasePointerFinder *getBasePointerFinder(llvm::Argument *argument);
+    static PointerFinder * getBasePointerFinder(llvm::AllocaInst *allocaInst, PointerFormat expectedFormat, bool isAdress);
+    static PointerFinder * getBasePointerFinder(llvm::Argument *argument, PointerFormat expectedFormat, bool isAdress);
 
-    FromPointerPointerFinder *getNestedPointerFinder(llvm::LoadInst *loadInst);
+    PointerFinder * getMemberPointerFinder(llvm::GetElementPtrInst *gepInst, PointerFormat expectedFormat, bool isAdress);
 
-    MemberPointerFinder *getMemberPointerFinder(llvm::GetElementPtrInst *gepInst);
+    static AnonymousPointerFinder *getAnonymousPointerFinder(llvm::AllocaInst *allocaInst, PointerFormat expectedFormat, bool isAdress);
+    static AnonymousPointerFinder *getAnonymousPointerFinder(llvm::Argument *argument, PointerFormat expectedFormat, bool isAdress);
+    AnonymousPointerFinder *getAnonymousPointerFinder(llvm::GetElementPtrInst *gepInst, PointerFormat expectedFormat, bool isAdress);
 
-    ReturnedPointerFinder *getReturnedPointerFinder(llvm::CallInst *callInst);
+    FromPointerPointerFinder *getNestedPointerFinder(llvm::LoadInst *loadInst, PointerFormat expectedFormat, bool isAdress);
 
-    static PointerFormat getExpectedPointerFormat(llvm::Type *type);
+    ReturnedPointerFinder *getReturnedPointerFinder(llvm::CallInst *callInst, PointerFormat expectedFormat, bool isAdress);
+
+    static PointerFormat getPointerFormat(llvm::Type *type);
 
     BaseCompositeFinder *getBaseCompositeFinder(llvm::AllocaInst *allocaInst);
 
     FromPointerCompositeFinder *getFromPointerCompositeFinder(llvm::LoadInst *loadInst);
 
     MemberCompositeFinder *getMemberCompositeFinder(llvm::GetElementPtrInst *gepInst);
-
     static BaseTargetFinder *getBaseTargetFinder(llvm::AllocaInst *allocaInst);
+
+    static BaseTargetFinder *getBaseTargetFinder(llvm::Argument *argument);
 
     FromPointerTargetFinder *getFromPointerTargetFinder(llvm::LoadInst *loadInst);
 
@@ -61,7 +67,7 @@ public:
 
     explicit FinderFactory(llvm::DataLayout *dl);
 
-    PointerFinder *getPointerFinder(llvm::Value *value);
+    PointerFinder *getPointerFinder(llvm::Value *value, bool isAdress);
 
     CompositeFinder *getCompositeFinder(llvm::Value *value);
 
@@ -93,6 +99,36 @@ struct UnknownFinderInstructionException : public std::exception {
         return "An unknown instruction was encountered while trying to build a Finder.";
     }
 };
+
+struct PointerFinderConstructionFormatException : public std::exception {
+
+private:
+
+    llvm::Value* value;
+    PointerFormat actualFormat;
+    PointerFormat expectedFormat;
+
+public:
+
+    PointerFinderConstructionFormatException(llvm::Value *value, const PointerFormat &expectedFormat,
+                                             const PointerFormat &actualFormat) : value(value),
+                                                                                    actualFormat(actualFormat),
+                                                                                    expectedFormat(expectedFormat) {}
+
+    const char *what() const throw() {
+
+        std::ostringstream oss;
+        oss << "The return format of the instruction \" " << value->getName().data() << " \" does not match the expected format. ";
+        oss << "(actual level = " << actualFormat.level << " != " << expectedFormat.level << " = expected level)!\n";
+        auto msg = oss.str();
+        char* chars = (char*) std::malloc((msg.length() + 1) * sizeof(char));
+        std::strcpy(chars, msg.c_str());
+        return chars;
+    }
+};
+
+
+
 
 
 #endif //AUA_FINDERFACTORY_H

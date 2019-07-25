@@ -8,7 +8,10 @@
 #include <llvm/IR/DerivedTypes.h>
 
 
-AbstractPointer::AbstractPointer(std::string n, PointerFormat format) : AbstractReference(n), format(format) {}
+AbstractPointer::AbstractPointer(std::string n, PointerFormat format) : AbstractReference(n), format(format) {
+
+    assert(format.level > 0);
+}
 
 
 /**

@@ -75,9 +75,9 @@ private:
 
     PointerOperation *handleAllocation(llvm::AllocaInst *allocaInst);
 
-    PointerOperation *handleCopy(llvm::StoreInst *storeInst);
+    PointerOperation *handleStore(llvm::StoreInst *storeInst);
 
-    PointerOperation *handleAssignment(llvm::StoreInst *storeInst);
+//    PointerOperation *handleAssignment(llvm::StoreInst *storeInst);
 
     PointerOperation *handleCallWithIrrelevantReturn(llvm::CallInst *callInst);
 
@@ -94,6 +94,8 @@ private:
     std::map<int, PointerFormat> * getPointerParamFormats(llvm::Function *function);
 
     std::map<int, CompositeFormat> * getCompositeParamFormats(llvm::Function *function);
+
+    std::set<AbstractVar*>* getVarParams(llvm::Function *function);
 
 public:
 

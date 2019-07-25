@@ -47,6 +47,7 @@ AbstractFunctionFactory *funcFac;
 std::unique_ptr<llvm::Module> readInModule(llvm::LLVMContext &context, std::string inFile);
 
 GlobalConfiguration* Configuration::global = new GlobalConfiguration();
+int AnonymousPointerFinder::anonPointerCounter = 0;
 
 int main(int argc, char **argv) {
 

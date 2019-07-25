@@ -18,7 +18,7 @@ protected:
 
 public:
 
-    PointerFinder(const PointerFormat &expectedFormat);
+    explicit PointerFinder(const PointerFormat &expectedFormat);
 
     virtual PointerSetValue *findPointers(Configuration *configuration) const = 0;
 

@@ -52,10 +52,11 @@ AbstractFunction *AbstractFunctionFactory::buildAbstractFunction(llvm::Function 
 
     std::map<int, PointerFormat>* pointerParamFormats = getPointerParamFormats(function);
     std::map<int, CompositeFormat>* compositeParamFormats = getCompositeParamFormats(function);
+    std::set<AbstractVar*>* varParams = getVarParams(function);
     std::vector<std::string> paramNames = getParamNames(function);
 
     auto resultFunc = new AbstractFunction(initialOp, finalOp, name, pointerParamFormats,
-                                           compositeParamFormats, paramNames);
+                                           compositeParamFormats, varParams, paramNames);
 
     resetAbstractionState();
     return resultFunc;
@@ -101,6 +102,26 @@ std::map<int, CompositeFormat> * AbstractFunctionFactory::getCompositeParamForma
 
 }
 
+std::set<AbstractVar*>* AbstractFunctionFactory::getVarParams(llvm::Function *function) {
+
+    auto result = new std::set<AbstractVar*>();
+
+    for (auto PI = function->arg_begin(), PE = function->arg_end(); PI != PE; ++PI) {
+
+        llvm::Argument *param = PI;
+        llvm::Type *type = param->getType();
+
+        if (!llvm::isa<llvm::CompositeType>(type) && !llvm::isa<llvm::PointerType>(type)) {
+
+            auto var = new AbstractVar(param->getName(), dataLayout->getTypeAllocSize(type));
+            result->insert(var);
+        }
+    }
+
+    return result;
+}
+
+
 std::vector<std::string> AbstractFunctionFactory::getParamNames(llvm::Function *function) {
 
     std::vector<std::string> paramNames;
@@ -114,7 +135,6 @@ std::vector<std::string> AbstractFunctionFactory::getParamNames(llvm::Function *
     return paramNames;
 
 }
-
 
 PointerOperation *AbstractFunctionFactory::abstractBasicBlock(llvm::BasicBlock *BB) {
 
@@ -323,6 +343,7 @@ PointerOperation *AbstractFunctionFactory::abstractIfRejoinBlock(llvm::BasicBloc
 
 }
 
+
 /**
  * Abstracts all pointer relevant instructions from BB into PointerOperations and attaches the resulting CFG to the given previous PointerOperation. It ignores all control flow instructions.
  * @param BB the BasicBlock whose instructions to abstract.
@@ -374,18 +395,11 @@ AbstractFunctionFactory::abstractBlockInstructions(llvm::BasicBlock *BB) {
 
 }
 
-
 PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction *inst) {
 
     if (auto *storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
 
-        llvm::Value *fromValue = storeInst->getValueOperand();
-
-        if (llvm::isa<llvm::AllocaInst>(fromValue)) {
-            return handleAssignment(storeInst);
-        } else {
-            return handleCopy(storeInst);
-        }
+        return handleStore(storeInst);
     }
 
     if (llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst)) {
@@ -406,6 +420,7 @@ PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction
     throw PointerIrrelevantException();
 
 }
+
 
 PointerOperation *AbstractFunctionFactory::handleAllocation(llvm::AllocaInst *allocaInst) {
 
@@ -434,14 +449,13 @@ PointerOperation *AbstractFunctionFactory::handleAllocation(llvm::AllocaInst *al
     return allocOp;
 }
 
-
 /**
  * handles copy instructions. Throws PointerIrrelevantException.
  * @param loadInstructions the load instruction of the copy
  * @param storeInst the store instruction of the copy
  * @return the resulting Copy Pointer Operation
  */
-PointerOperation *AbstractFunctionFactory::handleCopy(llvm::StoreInst *storeInst) {
+PointerOperation *AbstractFunctionFactory::handleStore(llvm::StoreInst *storeInst) {
 
     llvm::Value *fromValue = storeInst->getValueOperand();
     llvm::Value *toValue = storeInst->getPointerOperand();
@@ -457,8 +471,8 @@ PointerOperation *AbstractFunctionFactory::handleCopy(llvm::StoreInst *storeInst
     std::list<llvm::Instruction *> assocInsts;
 
 
-    fromFinder = finderFactory->getPointerFinder(fromValue);
-    toFinder = finderFactory->getPointerFinder(toValue);
+    fromFinder = finderFactory->getPointerFinder(fromValue, false);
+    toFinder = finderFactory->getPointerFinder(toValue, true);
 
     assert(fromFinder != nullptr);
     assert(toFinder != nullptr);
@@ -469,50 +483,52 @@ PointerOperation *AbstractFunctionFactory::handleCopy(llvm::StoreInst *storeInst
     return copyOp;
 }
 
-PointerOperation *AbstractFunctionFactory::handleAssignment(llvm::StoreInst *storeInst) {
-
-    llvm::Value *targetValue = storeInst->getValueOperand();
-    llvm::Value *pointerValue = storeInst->getPointerOperand();
-
-
-    if (!targetValue->getType()->isPointerTy()) { throw PointerIrrelevantException(); }
-
-    auto ptrType = llvm::cast<llvm::PointerType>(pointerValue->getType());
-    if (!ptrType->getElementType()->isPointerTy()) { throw PointerIrrelevantException(); }
-
-
-    PointerFinder *pointerFinder;
-    TargetFinder *targetFinder;
-    std::list<llvm::Instruction *> assocInsts;
-
-
-    targetFinder = finderFactory->getTargetFinder(targetValue);
-    pointerFinder = finderFactory->getPointerFinder(pointerValue);
-
-    assert(pointerFinder != nullptr);
-    assert(targetFinder != nullptr);
-
-    AssignmentOp *assignmentOp = new AssignmentOp(pointerFinder, targetFinder, storeInst,
-                                                  assocInsts);
-
-    return assignmentOp;
-}
+//PointerOperation *AbstractFunctionFactory::handleAssignment(llvm::StoreInst *storeInst) {
+//
+//    llvm::Value *targetValue = storeInst->getValueOperand();
+//    llvm::Value *pointerValue = storeInst->getPointerOperand();
+//
+//
+//    if (!targetValue->getType()->isPointerTy()) { throw PointerIrrelevantException(); }
+//
+//    auto ptrType = llvm::cast<llvm::PointerType>(pointerValue->getType());
+//    if (!ptrType->getElementType()->isPointerTy()) { throw PointerIrrelevantException(); }
+//
+//
+//    PointerFinder *pointerFinder;
+//    TargetFinder *targetFinder;
+//    std::list<llvm::Instruction *> assocInsts;
+//
+//
+//    targetFinder = finderFactory->getTargetFinder(targetValue);
+//    pointerFinder = finderFactory->getPointerFinder(pointerValue, false);
+//
+//    assert(pointerFinder != nullptr);
+//    assert(targetFinder != nullptr);
+//
+//    AssignmentOp *assignmentOp = new AssignmentOp(pointerFinder, targetFinder, storeInst,
+//                                                  assocInsts);
+//
+//    return assignmentOp;
+//}
 
 PointerOperation *AbstractFunctionFactory::handleCallWithIrrelevantReturn(llvm::CallInst *callInst) {
 
-    llvm::Function *function = callInst->getFunction();
+    llvm::Function *function = callInst->getCalledFunction();
     std::string funcName = function->getName();
 
     std::map<int, PointerFinder *> pointerParamFinders;
     std::map<int, CompositeFinder *> compositeParamFinders;
 
-    for (int i = 0; i < callInst->getNumOperands(); ++i) {
+    for (int i = 0; i < function->getNumOperands(); ++i) {
+
+        llvm::outs() << "i = " << i << ", getNumOperands() = " << function->getNumOperands() << "\n";
 
         llvm::Value *param = callInst->getArgOperand(i);
 
         if (param->getType()->isPointerTy()) {
 
-            pointerParamFinders[i] = finderFactory->getPointerFinder(param);
+            pointerParamFinders[i] = finderFactory->getPointerFinder(param, false);
 
         } else if (param->getType()->isStructTy() || param->getType()->isArrayTy()) {
 
@@ -520,7 +536,7 @@ PointerOperation *AbstractFunctionFactory::handleCallWithIrrelevantReturn(llvm::
         }
     }
 
-    FunctionFinder *funcFinder = finderFactory->getFunctionFinder(callInst->getFunction());
+    FunctionFinder *funcFinder = finderFactory->getFunctionFinder(function);
 
     return new CallWithIrrelevantReturnOp(funcFinder, callInst, pointerParamFinders, compositeParamFinders);
 
@@ -536,7 +552,7 @@ ReturnOp *AbstractFunctionFactory::handleReturn(llvm::ReturnInst *returnInst) {
 
     llvm::outs() << "Return value " << returnValue->getName() << "\n";
 
-    PointerFinder *returnFinder = finderFactory->getPointerFinder(returnValue);
+    PointerFinder *returnFinder = finderFactory->getPointerFinder(returnValue, false);
 
     return new ReturnPointerOp(returnFinder, returnInst);
 

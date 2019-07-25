@@ -27,12 +27,18 @@ private:
     ReturnOp *finalOp;
 
     Configuration* lastConfiguration = nullptr;
-public:
-    const std::map<int, PointerFormat>* ptrParamFormats;
 
+    const std::map<int, PointerFormat>* ptrParamFormats;
     const std::map<int, CompositeFormat>* compParamFormats;
+
+    const std::set<AbstractVar*>* varParams;
+
+public:
+
     AbstractFunction(DummyInitialOp *initialOp, ReturnOp *finalOp, std::string name,
-                     std::map<int, PointerFormat> *ptrParamFormats, std::map<int, CompositeFormat> *compParamFormats,
+                     std::map<int, PointerFormat> *ptrParamFormats,
+                     std::map<int, CompositeFormat> *compParamFormats,
+                     const std::set<AbstractVar*>* varParams,
                      std::vector<std::string> paramNames);
 
     const std::string &getName() const;

@@ -21,6 +21,7 @@ nm_add_library(AUA STATIC
         src/Alias/AbstractPointers/Finders/FromPointerPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/MemberPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/ReturnedPointerFinder.cpp
+        src/Alias/AbstractPointers/Finders/AnonymousPointerFinder.cpp
 
         src/Alias/AbstractPointers/Finders/CompositeFinder.cpp
         src/Alias/AbstractPointers/Finders/BaseCompositeFinder.cpp
