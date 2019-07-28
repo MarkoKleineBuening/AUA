@@ -6,7 +6,7 @@
 
 #include "AUA/Alias/AbstractPointers/Finders/GlobalFunctionFinder.h"
 
-AbstractFunction *GlobalFunctionFinder::findFunction(Configuration *configuration) {
+AbstractFunction *GlobalFunctionFinder::findFunction(Configuration *configuration) const {
 
     GlobalConfiguration* globalConf = Configuration::global;
 
@@ -16,4 +16,4 @@ AbstractFunction *GlobalFunctionFinder::findFunction(Configuration *configuratio
 
 }
 
-GlobalFunctionFinder::GlobalFunctionFinder(std::string name) : name(std::move(name)) {}
+GlobalFunctionFinder::GlobalFunctionFinder(const std::string name) : name(name) {}

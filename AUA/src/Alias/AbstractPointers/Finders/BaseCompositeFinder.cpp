@@ -1,4 +1,5 @@
 #include <utility>
+#include <llvm/IR/Instructions.h>
 
 //
 // Created by mlaupichler on 14.07.19.
@@ -17,5 +18,20 @@ CompositeSetValue *BaseCompositeFinder::findComposites(Configuration *configurat
 
 }
 
-BaseCompositeFinder::BaseCompositeFinder(std::string compositeName, const CompositeFormat &expectedFormat)
-        : CompositeFinder(expectedFormat), compositeName(std::move(compositeName)) {}
+BaseCompositeFinder::BaseCompositeFinder(const std::string& compositeName, const CompositeFormat &expectedFormat,
+                                         const llvm::AllocaInst *allocaInst)
+        : CompositeFinder(expectedFormat), compositeName(compositeName), allocaInst(allocaInst) {}
+
+BaseCompositeFinder::BaseCompositeFinder(const std::string& compositeName, const CompositeFormat &expectedFormat)
+        : BaseCompositeFinder(compositeName, expectedFormat, nullptr) {}
+
+
+std::list<const llvm::Instruction *> BaseCompositeFinder::getAssociatedInsts() const {
+
+    auto result = std::list<const llvm::Instruction*>();
+    if (allocaInst != nullptr)
+        result.push_back(allocaInst);
+
+    return result;
+
+}

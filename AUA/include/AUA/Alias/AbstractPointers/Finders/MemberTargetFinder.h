@@ -16,6 +16,8 @@ private:
     const CompositeFinder *compositeFinder;
     const int memberIndex;
 
+    const llvm::GetElementPtrInst* gepInst;
+
 public:
 
     /**
@@ -23,9 +25,12 @@ public:
      * @param compositeFinder the composite of which the target is a member.
      * @param memberIndex a list of indices, one for each level of recursive composites starting at the root composite (the one with the given name).
      */
-    MemberTargetFinder(CompositeFinder *compositeFinder, int memberIndex);
+    MemberTargetFinder(const CompositeFinder *compositeFinder, int memberIndex,
+                       const llvm::GetElementPtrInst *gepInst);
 
     std::set<AbstractTarget> findTargets(Configuration *conf) const override;
+
+    std::list<const llvm::Instruction *> getAssociatedInsts() const override;
 
 };
 

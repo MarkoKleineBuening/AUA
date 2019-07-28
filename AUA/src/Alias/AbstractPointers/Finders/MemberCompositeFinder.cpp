@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <utility>
+
 //
 // Created by mlaupichler on 13.07.19.
 //
@@ -10,9 +12,9 @@
 
 CompositeSetValue *MemberCompositeFinder::findComposites(Configuration *configuration) const {
 
-    assert(memberIndices.size() > 0);
+    assert(!memberIndices.empty());
 
-    CompositeSetValue *baseComposites = baseCompositeFinder->findComposites(configuration);
+    CompositeSetValue *baseComposites = topLevelCompositeFinder->findComposites(configuration);
 
     std::list<int> compMemberIndices = std::list<int>(memberIndices);
     int compositeMemberIndex = compMemberIndices.back();
@@ -31,8 +33,18 @@ CompositeSetValue *MemberCompositeFinder::findComposites(Configuration *configur
 
 }
 
-MemberCompositeFinder::MemberCompositeFinder(CompositeFinder *topLevelCompositeFinder,
-                                             CompositeFormat expectedFormat, std::list<int> memberIndices)
-        : CompositeFinder(expectedFormat), baseCompositeFinder(topLevelCompositeFinder),
-          memberIndices(std::move(memberIndices)) {}
+MemberCompositeFinder::MemberCompositeFinder(const CompositeFinder *topLevelCompositeFinder,
+                                             const CompositeFormat &expectedFormat, const std::list<int>& memberIndices,
+                                             const std::list<llvm::GetElementPtrInst *>& gepInsts)
+        : CompositeFinder(expectedFormat), topLevelCompositeFinder(topLevelCompositeFinder),
+          memberIndices(memberIndices), gepInsts(gepInsts) {}
+
+std::list<const llvm::Instruction *> MemberCompositeFinder::getAssociatedInsts() const {
+
+    auto result = topLevelCompositeFinder->getAssociatedInsts();
+    result.insert(result.end(), gepInsts.begin(), gepInsts.end());
+
+    return result;
+
+}
 

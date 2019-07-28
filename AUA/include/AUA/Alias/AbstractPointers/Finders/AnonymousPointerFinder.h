@@ -15,7 +15,7 @@ private:
 
     const int anonPointerId;
 
-    const TargetFinder* targetFinder;
+    TargetFinder* targetFinder;
     std::string buildAnonPointerName() const;
 
 public:
@@ -25,6 +25,8 @@ public:
     AnonymousPointerFinder(const PointerFormat &expectedFormat, TargetFinder *targetFinder);
 
     PointerSetValue *findPointers(Configuration *configuration) const override;
+
+    std::list<const llvm::Instruction *> getAssociatedInsts() const override;
 
 };
 

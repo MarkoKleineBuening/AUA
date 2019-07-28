@@ -82,10 +82,6 @@ std::set<PointerOperation *> JoinOp::getSuccessors() {
 
 }
 
-std::set<llvm::Instruction *> JoinOp::getAssocInstructions() {
-    return std::set<llvm::Instruction *>();
-}
-
 void JoinOp::resetState() {
 
     numberOfExecuteCalls = 0;

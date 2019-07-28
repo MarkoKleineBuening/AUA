@@ -41,7 +41,7 @@ FromPointerPointerFinder *FinderFactory::getNestedPointerFinder(llvm::LoadInst *
     if (actualFormat != expectedFormat) throw PointerFinderConstructionFormatException(loadInst, expectedFormat,
                                                                                        actualFormat);
 
-    std::list<llvm::LoadInst *> loadInstructions;
+    std::list<const llvm::LoadInst *> loadInstructions;
     llvm::Value *value;
     do {
         loadInstructions.push_front(loadInst);
@@ -53,7 +53,8 @@ FromPointerPointerFinder *FinderFactory::getNestedPointerFinder(llvm::LoadInst *
     int derefDepth = loadInstructions.size() - 1;
 
 
-    return new FromPointerPointerFinder(getPointerFinder(value, true), derefDepth, actualFormat);
+    return new FromPointerPointerFinder(getPointerFinder(value, true), derefDepth, actualFormat,
+                                        loadInstructions);
 
 }
 
@@ -74,7 +75,7 @@ PointerFinder * FinderFactory::getBasePointerFinder(llvm::AllocaInst *allocaInst
     if (actualFormat == expectedFormat) {
 
         std::string basePointerName = allocaInst->getName();
-        return new BasePointerFinder(basePointerName, actualFormat);
+        return new BasePointerFinder(basePointerName, actualFormat, allocaInst);
     }
 
     throw PointerFinderConstructionFormatException(allocaInst, expectedFormat, actualFormat);
@@ -126,8 +127,6 @@ AnonymousPointerFinder* FinderFactory::getAnonymousPointerFinder(llvm::GetElemen
 
     assert(!isAdress);
 
-    //llvm::outs() << gepInst->getName() << "\n";
-
     return new AnonymousPointerFinder(expectedFormat, getMemberTargetFinder(gepInst));
 
 }
@@ -148,10 +147,9 @@ PointerFinder *FinderFactory::getMemberPointerFinder(llvm::GetElementPtrInst *ge
     if (actualFormat == expectedFormat) {
 
         int memberIndex = getMemberIdx(gepInst);
-
         CompositeFinder *parentCompFinder = getCompositeFinder(gepInst->getPointerOperand());
 
-        return new MemberPointerFinder(parentCompFinder, memberIndex, getPointerFormat(inType));
+        return new MemberPointerFinder(parentCompFinder, memberIndex, getPointerFormat(inType), gepInst);
     }
 
     throw PointerFinderConstructionFormatException(gepInst, expectedFormat, actualFormat);
@@ -193,7 +191,7 @@ ReturnedPointerFinder *FinderFactory::getReturnedPointerFinder(llvm::CallInst *c
     llvm::Function *function = callInst->getCalledFunction();
     FunctionFinder* funcFinder = getFunctionFinder(function);
 
-    return new ReturnedPointerFinder(funcFinder, pointerParamFinders, compositeParamFinders, actualFormat);
+    return new ReturnedPointerFinder(funcFinder, pointerParamFinders, compositeParamFinders, actualFormat, callInst);
 
 }
 
@@ -206,8 +204,6 @@ PointerFormat FinderFactory::getPointerFormat(llvm::Type *type) {
 // COMPOSITE FINDING -----------------------------------------------------------------
 
 CompositeFinder *FinderFactory::getCompositeFinder(llvm::Value *value) {
-
-    //if (!(value->getType()->isArrayTy() || value->getType()->isStructTy())) throw NotACompositeException();
 
     if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(value)) return getBaseCompositeFinder(allocaInst);
     if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getFromPointerCompositeFinder(loadInst);
@@ -225,29 +221,40 @@ BaseCompositeFinder *FinderFactory::getBaseCompositeFinder(llvm::AllocaInst *all
     auto compositeType = llvm::cast<llvm::CompositeType>(allocaInst->getAllocatedType());
     CompositeFormat expectedFormat = CompositeFormat(compositeType, dl);
 
-    return new BaseCompositeFinder(baseCompName, expectedFormat);
+    return new BaseCompositeFinder(baseCompName, expectedFormat, allocaInst);
 
 }
 
 FromPointerCompositeFinder *FinderFactory::getFromPointerCompositeFinder(llvm::LoadInst *loadInst) {
 
     PointerFinder *ptrFinder = getPointerFinder(loadInst->getPointerOperand(), true);
+    
+    assert(loadInst->getType()->isPointerTy());
+    auto ptrType = llvm::cast<llvm::PointerType>(loadInst->getType());
 
-    auto compositeType = llvm::cast<llvm::CompositeType>(loadInst->getType());
+    auto compositeType = llvm::cast<llvm::CompositeType>(ptrType->getElementType());
     CompositeFormat expectedFormat = CompositeFormat(compositeType, dl);
 
-    return new FromPointerCompositeFinder(ptrFinder, expectedFormat);
+
+    return new FromPointerCompositeFinder(ptrFinder, expectedFormat, loadInst);
 
 }
 
 MemberCompositeFinder *FinderFactory::getMemberCompositeFinder(llvm::GetElementPtrInst *gepInst) {
 
+    auto compositeType = llvm::cast<llvm::CompositeType>(gepInst->getResultElementType());
+    CompositeFormat actualFormat = CompositeFormat(compositeType, dl);
+
+
     std::list<int> memberIndices;
+    std::list<llvm::GetElementPtrInst*> gepInsts;
     llvm::Value *value;
     do {
 
         int memberIdx = getMemberIdx(gepInst);
         memberIndices.push_front(memberIdx);
+
+        gepInsts.push_front(gepInst);
 
         value = gepInst->getPointerOperand();
         gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value);
@@ -255,10 +262,8 @@ MemberCompositeFinder *FinderFactory::getMemberCompositeFinder(llvm::GetElementP
 
     CompositeFinder *topLevelCompositeFinder = getCompositeFinder(value);
 
-    auto compositeType = llvm::cast<llvm::CompositeType>(gepInst->getType());
-    CompositeFormat expectedFormat = CompositeFormat(compositeType, dl);
-
-    return new MemberCompositeFinder(topLevelCompositeFinder, expectedFormat, memberIndices);
+    return new MemberCompositeFinder(topLevelCompositeFinder, actualFormat, memberIndices,
+                                     gepInsts);
 
 }
 
@@ -276,7 +281,7 @@ TargetFinder *FinderFactory::getTargetFinder(llvm::Value *value) {
 BaseTargetFinder *FinderFactory::getBaseTargetFinder(llvm::AllocaInst *allocaInst) {
 
     std::string varName = allocaInst->getName();
-    return new BaseTargetFinder(varName);
+    return new BaseTargetFinder(varName, allocaInst);
 
 }
 
@@ -291,7 +296,7 @@ FromPointerTargetFinder *FinderFactory::getFromPointerTargetFinder(llvm::LoadIns
 
     PointerFinder *ptrFinder = getPointerFinder(loadInst->getPointerOperand(), true);
 
-    return new FromPointerTargetFinder(ptrFinder);
+    return new FromPointerTargetFinder(ptrFinder, loadInst);
 
 }
 
@@ -301,7 +306,7 @@ MemberTargetFinder *FinderFactory::getMemberTargetFinder(llvm::GetElementPtrInst
 
     CompositeFinder *parentCompFinder = getCompositeFinder(gepInst->getPointerOperand());
 
-    return new MemberTargetFinder(parentCompFinder, memberIndex);
+    return new MemberTargetFinder(parentCompFinder, memberIndex, gepInst);
 
 }
 

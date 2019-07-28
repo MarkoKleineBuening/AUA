@@ -3,7 +3,7 @@
 //
 
 #include <AUA/Alias/AbstractOps/AssignmentOp.h>
-#include <AUA/Alias/AbstractOps/CopyOp.h>
+#include <AUA/Alias/AbstractOps/StoreOp.h>
 #include <AUA/Alias/AbstractPointers/Finders/MemberTargetFinder.h>
 #include <AUA/Alias/AbstractPointers/Finders/BaseTargetFinder.h>
 #include <AUA/Alias/AbstractPointers/Finders/MemberPointerFinder.h>
@@ -467,8 +467,6 @@ PointerOperation *AbstractFunctionFactory::handleStore(llvm::StoreInst *storeIns
 
     PointerFinder *fromFinder = nullptr;
     PointerFinder *toFinder = nullptr;
-    std::list<llvm::LoadInst *> loadInstructions;
-    std::list<llvm::Instruction *> assocInsts;
 
 
     fromFinder = finderFactory->getPointerFinder(fromValue, false);
@@ -477,8 +475,7 @@ PointerOperation *AbstractFunctionFactory::handleStore(llvm::StoreInst *storeIns
     assert(fromFinder != nullptr);
     assert(toFinder != nullptr);
 
-    CopyOp *copyOp = new CopyOp(fromFinder, toFinder, storeInst, loadInstructions,
-                                assocInsts);
+    StoreOp *copyOp = new StoreOp(fromFinder, toFinder, storeInst);
 
     return copyOp;
 }

@@ -28,7 +28,7 @@
 #include <AUA/Alias/AbstractPointers/Configuration.h>
 #include <AUA/Alias/AbstractOps/PointerAllocationOp.h>
 #include <AUA/Alias/AbstractOps/VarAllocationOp.h>
-#include <AUA/Alias/AbstractOps/CopyOp.h>
+#include <AUA/Alias/AbstractOps/StoreOp.h>
 #include <AUA/Alias/AbstractOps/ReturnOp.h>
 #include <AUA/Alias/AbstractOps/JoinOp.h>
 #include <AUA/Alias/AbstractOps/SplitOp.h>

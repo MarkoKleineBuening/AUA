@@ -59,7 +59,7 @@ private:
 
     MemberTargetFinder *getMemberTargetFinder(llvm::GetElementPtrInst *gepInst);
 
-    GlobalFunctionFinder *getGlobalFunctionFinder(llvm::GlobalValue *globalValue);
+    static GlobalFunctionFinder *getGlobalFunctionFinder(llvm::GlobalValue *globalValue);
 
     static int getMemberIdx(llvm::GetElementPtrInst *gepInst);
 

@@ -15,6 +15,8 @@ public:
 
     virtual std::set<AbstractTarget> findTargets(Configuration *conf) const = 0;
 
+    virtual std::list<const llvm::Instruction*> getAssociatedInsts() const  = 0;
+
 };
 
 

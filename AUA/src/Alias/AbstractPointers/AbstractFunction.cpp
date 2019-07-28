@@ -29,7 +29,6 @@ PointerSetValue *AbstractFunction::execute(std::map<int, PointerSetValue *> ptrP
 
         AbstractPointer *param = pointers->mergeToNewPointer(paramNames[paramIndex]);
 
-        //TODO associated instructions
         conf->pointers[param->getName()] = param;
 
     }
@@ -52,10 +51,15 @@ PointerSetValue *AbstractFunction::execute(std::map<int, PointerSetValue *> ptrP
 
     initialOp->execute(conf);
 
+    lastConfiguration = finalOp->getLastConfiguration();
+
+    llvm::outs() << "\n Last configuration of " << name << " is: \n\n";
+    lastConfiguration->printFullInfoVerbose();
+
     llvm::outs() << "\n\n------------------------------ \n\n";
 
-    lastConfiguration = finalOp->getLastConfiguration();
     auto functionReturn = finalOp->getResult();
+
 
     return functionReturn;
 

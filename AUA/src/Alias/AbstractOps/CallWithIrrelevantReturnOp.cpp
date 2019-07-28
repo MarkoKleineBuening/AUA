@@ -34,13 +34,6 @@ Configuration *CallWithIrrelevantReturnOp::apply(Configuration *in) {
 
 }
 
-std::set<llvm::Instruction *> CallWithIrrelevantReturnOp::getAssocInstructions() {
-
-    std::set<llvm::Instruction *> result;
-    result.insert(callInst);
-
-    return result;
-}
 
 CallWithIrrelevantReturnOp::CallWithIrrelevantReturnOp(FunctionFinder *functionFinder, llvm::CallInst *callInst,
                                                        std::map<int, PointerFinder *> pointerParamFinders,

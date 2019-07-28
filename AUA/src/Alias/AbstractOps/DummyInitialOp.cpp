@@ -11,9 +11,7 @@ DummyInitialOp::DummyInitialOp() {
 
 Configuration *DummyInitialOp::apply(Configuration *in) {
 
-    //TODO Exception werfen
-
-    return nullptr;
+    throw UndefinedPointerOperationMethodException();
 
 }
 
@@ -26,7 +24,7 @@ void DummyInitialOp::execute(Configuration *in) {
 
 void DummyInitialOp::addPredecessor(PointerOperation *predecessor) {
 
-    //TODO Exception werfen
+    throw UndefinedPointerOperationMethodException();
 
 }
 
@@ -48,11 +46,8 @@ std::set<PointerOperation *> DummyInitialOp::getSuccessors() {
 std::set<PointerOperation *> DummyInitialOp::getPredecessors() {
 
 
-    //TODO throw Exception
-    return std::set<PointerOperation *>();
+    throw UndefinedPointerOperationMethodException();
 
 }
 
-std::set<llvm::Instruction *> DummyInitialOp::getAssocInstructions() {
-    return std::set<llvm::Instruction *>();
-}
+

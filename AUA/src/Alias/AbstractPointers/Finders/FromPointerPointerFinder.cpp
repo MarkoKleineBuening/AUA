@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by mlaupichler on 17.07.19.
 //
@@ -7,7 +9,6 @@
 PointerSetValue *FromPointerPointerFinder::findPointers(Configuration *configuration) const {
 
     PointerSetValue *topLevelPointers = topLevelPointerFinder->findPointers(configuration);
-
     auto pointerTargets = topLevelPointers->getMergedTargets(derefDepth);
 
     auto result = new PointerSetValue(PointerFormat(expectedFormat));
@@ -25,6 +26,17 @@ PointerSetValue *FromPointerPointerFinder::findPointers(Configuration *configura
 
 }
 
-FromPointerPointerFinder::FromPointerPointerFinder(PointerFinder *topLevelPointerFinder, int derefDepth,
-                                                   const PointerFormat &expectedFormat)
-        : PointerFinder(expectedFormat), derefDepth(derefDepth), topLevelPointerFinder(topLevelPointerFinder) {}
+FromPointerPointerFinder::FromPointerPointerFinder(const PointerFinder *topLevelPointerFinder, const int derefDepth,
+                                                   const PointerFormat &expectedFormat,
+                                                   const std::list<const llvm::LoadInst *>& loadInsts)
+        : PointerFinder(expectedFormat), derefDepth(derefDepth), topLevelPointerFinder(topLevelPointerFinder),
+          loadInsts(loadInsts) {}
+
+std::list<const llvm::Instruction *> FromPointerPointerFinder::getAssociatedInsts() const {
+
+    auto result = topLevelPointerFinder->getAssociatedInsts();
+    result.insert(result.end(), loadInsts.begin(), loadInsts.end());
+
+    return result;
+
+}

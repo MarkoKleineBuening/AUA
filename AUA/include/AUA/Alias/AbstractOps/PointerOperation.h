@@ -8,6 +8,7 @@
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
 #include <AUA/Alias/AbstractPointers/Configuration.h>
 #include <llvm/IR/Instruction.h>
+#include <sstream>
 
 
 /**
@@ -16,12 +17,6 @@
 class PointerOperation {
 
 protected:
-
-    /**
-     * Returns an array of llvm instructions associated with this PointerOperation. Used to return llvm instructions that influenced a pointer.
-     * @return the llvm instructions associated with this PointerOperation.
-     */
-    virtual std::set<llvm::Instruction *> getAssocInstructions() = 0;
 
     /**
     * Consume the result Configuration of this PointerOperation.
@@ -64,10 +59,75 @@ public:
     virtual std::set<PointerOperation *> getSuccessors() = 0;
 
 
+    /**
+     * Returns all preceeding PointerOperations to this operation.
+     * @return the preceeding PointerOperations.
+     */
     virtual std::set<PointerOperation *> getPredecessors() = 0;
 
 
 };
 
+struct PredecessorCountException : public std::exception {
+
+private:
+
+    llvm::Instruction* inst;
+
+public:
+
+    PredecessorCountException(llvm::Instruction *inst) : inst(inst) {}
+
+    const char *what() const throw() {
+
+        std::string instString;
+        llvm::raw_string_ostream rso(instString);
+        inst->print(rso);
+
+        std::ostringstream oss;
+        oss << "The wrong count of predecessors was assigned to the PointerOperation representing \"";
+        oss << instString;
+        oss << "\"!\n";
+
+        auto msg = oss.str();
+        char* chars = (char*) std::malloc((msg.length() + 1) * sizeof(char));
+        std::strcpy(chars, msg.c_str());
+        return chars;
+    }
+};
+
+struct SuccessorCountException : public std::exception {
+
+private:
+
+    llvm::Instruction* inst;
+
+public:
+
+    SuccessorCountException(llvm::Instruction *inst) : inst(inst) {}
+
+    const char *what() const throw() {
+
+        std::string instString;
+        llvm::raw_string_ostream rso(instString);
+        inst->print(rso);
+
+        std::ostringstream oss;
+        oss << "The wrong count of successors was assigned to the PointerOperation representing \"";
+        oss << instString;
+        oss << "\"!\n";
+
+        auto msg = oss.str();
+        char* chars = (char*) std::malloc((msg.length() + 1) * sizeof(char));
+        std::strcpy(chars, msg.c_str());
+        return chars;
+    }
+};
+
+struct UndefinedPointerOperationMethodException : public std::exception {
+    const char *what() const throw() {
+        return "An undefined method has been called on a PointerOperation.";
+    }
+};
 
 #endif //AUA_POINTEROPERATION_H

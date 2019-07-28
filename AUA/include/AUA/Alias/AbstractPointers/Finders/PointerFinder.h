@@ -22,7 +22,12 @@ public:
 
     virtual PointerSetValue *findPointers(Configuration *configuration) const = 0;
 
+    virtual std::list<const llvm::Instruction *> getAssociatedInsts() const = 0;
+
 };
+
+
+
 
 struct PointerFinderFormatException : public std::exception {
 

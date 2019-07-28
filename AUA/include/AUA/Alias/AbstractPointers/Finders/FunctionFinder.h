@@ -12,7 +12,7 @@ class FunctionFinder {
 
 public:
 
-    virtual AbstractFunction *findFunction(Configuration *configuration) = 0;
+    virtual AbstractFunction *findFunction(Configuration *configuration) const = 0;
 
 };
 

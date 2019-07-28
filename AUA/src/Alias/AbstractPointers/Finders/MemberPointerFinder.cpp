@@ -23,5 +23,16 @@ PointerSetValue *MemberPointerFinder::findPointers(Configuration *configuration)
 }
 
 MemberPointerFinder::MemberPointerFinder(const CompositeFinder *compositeFinder, const int memberIndex,
-                                         const PointerFormat &expectedFormat)
-        : PointerFinder(expectedFormat), compositeFinder(compositeFinder), memberIndex(memberIndex) {}
+                                         const PointerFormat &expectedFormat,
+                                         const llvm::GetElementPtrInst *gepInst)
+        : PointerFinder(expectedFormat), compositeFinder(compositeFinder), memberIndex(memberIndex), gepInst(gepInst) {}
+
+std::list<const llvm::Instruction *> MemberPointerFinder::getAssociatedInsts() const {
+
+    auto result = compositeFinder->getAssociatedInsts();
+    auto inst = llvm::cast<llvm::Instruction>(gepInst);
+    result.push_back(inst);
+
+    return result;
+
+}

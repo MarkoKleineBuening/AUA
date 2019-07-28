@@ -18,9 +18,11 @@ protected:
 
 public:
 
-    CompositeFinder(const CompositeFormat &expectedFormat);
+    explicit CompositeFinder(const CompositeFormat &expectedFormat);
 
     virtual CompositeSetValue *findComposites(Configuration *configuration) const = 0;
+
+    virtual std::list<const llvm::Instruction*> getAssociatedInsts() const = 0;
 
 };
 

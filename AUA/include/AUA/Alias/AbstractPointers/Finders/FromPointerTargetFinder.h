@@ -13,13 +13,18 @@ class FromPointerTargetFinder : public TargetFinder {
 
 private:
 
-    PointerFinder *pointerFinder;
+    const PointerFinder *pointerFinder;
+
+    const llvm::LoadInst* loadInst;
+
 
 public:
 
-    explicit FromPointerTargetFinder(PointerFinder *pointerFinder);
+    explicit FromPointerTargetFinder(const PointerFinder *pointerFinder, const llvm::LoadInst *loadInst);
 
     std::set<AbstractTarget> findTargets(Configuration *conf) const override;
+
+    std::list<const llvm::Instruction *> getAssociatedInsts() const override;
 
 };
 

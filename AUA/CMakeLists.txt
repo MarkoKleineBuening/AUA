@@ -52,7 +52,7 @@ nm_add_library(AUA STATIC
         src/Alias/AbstractOps/PointerAllocationOp.cpp
         src/Alias/AbstractOps/VarAllocationOp.cpp
         src/Alias/AbstractOps/CompositeAllocationOp.cpp
-        src/Alias/AbstractOps/CopyOp.cpp
+        src/Alias/AbstractOps/StoreOp.cpp
         src/Alias/AbstractOps/CallWithIrrelevantReturnOp.cpp
         src/Alias/AbstractOps/ReturnOp.cpp
         src/Alias/AbstractOps/ReturnNilOp.cpp

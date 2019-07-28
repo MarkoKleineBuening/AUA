@@ -7,19 +7,25 @@
 
 
 #include <AUA/Alias/AbstractPointers/Finders/PointerFinder.h>
+#include <llvm/IR/Instructions.h>
 #include "CompositeFinder.h"
 
 class FromPointerCompositeFinder : public CompositeFinder {
 
 private:
 
-    PointerFinder *pointerFinder;
+    const PointerFinder *pointerFinder;
+
+    const llvm::LoadInst* loadInst;
 
 public:
 
-    FromPointerCompositeFinder(PointerFinder *pointerFinder, CompositeFormat expectedFormat);
+    FromPointerCompositeFinder(const PointerFinder *pointerFinder, const CompositeFormat& expectedFormat,
+                               const llvm::LoadInst *loadInst);
 
     CompositeSetValue *findComposites(Configuration *configuration) const override;
+
+    std::list<const llvm::Instruction *> getAssociatedInsts() const override;
 };
 
 

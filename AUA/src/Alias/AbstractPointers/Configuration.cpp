@@ -55,8 +55,10 @@ std::set<AbstractPointer *> Configuration::getAllMemberPointers() {
     std::set<AbstractPointer *> result;
 
     for (auto compPair : composites) {
+
         result.merge(compPair.second->getAllPointerMembersRecursively());
     }
+
 
     return result;
 
@@ -65,6 +67,7 @@ std::set<AbstractPointer *> Configuration::getAllMemberPointers() {
 std::set<AbstractPointer *> Configuration::getAllPointers() {
 
     std::set<AbstractPointer *> allPointers = getAllMemberPointers();
+
     for (auto pointerEntry: pointers) {
         allPointers.insert(pointerEntry.second);
     }
@@ -201,6 +204,11 @@ void Configuration::printAliasInfo() {
 
     auto aliases = calculateAliases();
 
+    if (aliases.empty()) {
+        llvm::outs() << "\nNo aliases.\n";
+        return;
+    }
+
     llvm::outs() << "\nThe potential aliases are: \n";
     for (auto alias : aliases) {
 
@@ -214,14 +222,14 @@ void Configuration::printAliasInfo() {
 void Configuration::printFullInfoVerbose() {
 
 
-    llvm::outs() << "------------------------------------------------------\n\n";
+    llvm::outs() << "========================================================\n\n";
 
     printAliasInfo();
     printPointerInfoVerbose();
     printVarInfo();
     printCompositeInfo();
 
-    llvm::outs() << "\n------------------------------------------------------\n";
+    llvm::outs() << "\n========================================================\n";
 
 }
 
@@ -240,7 +248,7 @@ void Configuration::printPointerInfoVerbose() {
 
         llvm::outs() << "\n" << p->getName() << " was influenced by the following instructions: \n";
 
-        for (llvm::Instruction *assocInst: p->getAssocInsts()) {
+        for (const llvm::Instruction *assocInst : p->getAssociatedInsts()) {
             llvm::outs() << *assocInst << "\n";
         }
 
@@ -250,7 +258,7 @@ void Configuration::printPointerInfoVerbose() {
 }
 
 
-Configuration::Configuration() {}
+Configuration::Configuration() = default;
 
 
 

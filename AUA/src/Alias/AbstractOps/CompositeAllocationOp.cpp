@@ -4,12 +4,6 @@
 
 #include "AUA/Alias/AbstractOps/CompositeAllocationOp.h"
 
-std::set<llvm::Instruction *> CompositeAllocationOp::getAssocInstructions() {
-    std::set<llvm::Instruction *> assocInsts;
-    assocInsts.insert(allocaInst);
-
-    return assocInsts;
-}
 
 Configuration *CompositeAllocationOp::apply(Configuration *in) {
 

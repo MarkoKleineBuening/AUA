@@ -43,7 +43,6 @@ public:
                                std::map<int, PointerFinder *> pointerParamFinders,
                                std::map<int, CompositeFinder *> compositeParamFinders);
 
-    std::set<llvm::Instruction *> getAssocInstructions() override;
 
 
 };

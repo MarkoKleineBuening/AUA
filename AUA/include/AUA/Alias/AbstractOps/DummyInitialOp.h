@@ -18,10 +18,12 @@ protected:
 
     Configuration *apply(Configuration *in) override;
 
-    std::set<llvm::Instruction *> getAssocInstructions() override;
 
 public:
 
+    /**
+     * Creates a new DummyInitialOp.
+     */
     DummyInitialOp();
 
     void execute(Configuration *in) override;
@@ -35,6 +37,8 @@ public:
     std::set<PointerOperation *> getSuccessors() override;
 
 };
+
+
 
 
 #endif //AUA_DUMMYINITIALOP_H

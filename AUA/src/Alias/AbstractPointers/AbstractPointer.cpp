@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by mlaupichler on 12.05.19.
 //
@@ -6,9 +8,11 @@
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/IR/DerivedTypes.h>
+#include <bits/unordered_set.h>
+#include <unordered_set>
 
 
-AbstractPointer::AbstractPointer(std::string n, PointerFormat format) : AbstractReference(n), format(format) {
+AbstractPointer::AbstractPointer(std::string n, PointerFormat format) : AbstractReference(std::move(n)), format(format) {
 
     assert(format.level > 0);
 }
@@ -50,9 +54,9 @@ void AbstractPointer::copyTargetsFrom(AbstractPointer *other) {
 
 void AbstractPointer::merge(AbstractPointer *other) {
 
-    assert(this->format.level == other->format.level);
+    assert(this->format == other->format);
 
-    assocInsts.merge(other->getAssocInsts());
+    assocInsts.merge(other->getAssociatedInsts());
 
     targets.merge(other->getTargets());
 
@@ -72,13 +76,13 @@ AbstractPointer *AbstractPointer::getCopy() {
 
 std::set<AbstractTarget> AbstractPointer::derefAndGetTargets(int derefDepth) {
 
-    std::set<llvm::Instruction *> set;
-    return derefAndGetTargets(derefDepth, &set);
+    std::list<const llvm::Instruction *> list;
+    return derefAndGetTargets(derefDepth, &list);
 
 }
 
 std::set<AbstractTarget> AbstractPointer::derefAndGetTargets(int derefDepth,
-                                                             std::set<llvm::Instruction *> *associatedInsts) {
+                                                             std::list<const llvm::Instruction *> *associatedInsts) {
 
     if (derefDepth < 0) throw DerefPointerLevelException();
 
@@ -100,14 +104,15 @@ std::set<AbstractTarget> AbstractPointer::derefAndGetTargets(int derefDepth,
         for (AbstractTarget target : upperTargets) {
 
             assert(target.base->getPointerLevel() > 0 &&
-                   target.base->getPointerLevel() == this->getPointerLevel() - (i + 1));
+                   target.base->getPointerLevel() == this->getPointerLevel() - i);
 
             //technically unsafe. Covered by assertion above
             AbstractPointer *lowerPointer = dynamic_cast<AbstractPointer *>(target.base);
 
             assert(lowerPointer != nullptr);
 
-            associatedInsts->merge(lowerPointer->getAssocInsts());
+            auto lowerAssociatedInsts = lowerPointer->getAssociatedInsts();
+            associatedInsts->insert(associatedInsts->end(), lowerAssociatedInsts.begin(), lowerAssociatedInsts.end());
             lowerTargets.merge(lowerPointer->getTargets());
         }
 
@@ -130,7 +135,7 @@ void AbstractPointer::setTargets(const std::set<AbstractTarget> &newTargets) {
 
 }
 
-std::set<llvm::Instruction *> AbstractPointer::getAssocInsts() {
+std::unordered_set<const llvm::Instruction *> AbstractPointer::getAssociatedInsts() {
     return assocInsts;
 }
 
@@ -140,14 +145,21 @@ void AbstractPointer::addAssocInst(llvm::Instruction *inst) {
 
 }
 
-void AbstractPointer::addAllAssocInsts(std::set<llvm::Instruction *> insts) {
+void AbstractPointer::addAllAssocInsts(std::list<const llvm::Instruction *> insts) {
 
-    assocInsts.merge(insts);
+    for (auto inst : insts) {
+        assocInsts.insert(inst);
+    }
 
 }
 
-void AbstractPointer::setAssocInsts(const std::set<llvm::Instruction *> &newAssocInsts) {
-    AbstractPointer::assocInsts = newAssocInsts;
+void AbstractPointer::setAssocInsts(const std::list<const llvm::Instruction *> &newAssocInsts) {
+
+    assocInsts.clear();
+    for (auto inst : newAssocInsts) {
+        assocInsts.insert(inst);
+    }
+
 }
 
 void AbstractPointer::setOnlyAssocInst(llvm::Instruction *assocInst) {

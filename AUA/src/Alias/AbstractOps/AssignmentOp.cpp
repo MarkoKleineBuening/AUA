@@ -11,10 +11,8 @@
 
 
 AssignmentOp::AssignmentOp(const PointerFinder *pointerFinder, const TargetFinder *targetFinder,
-                           const llvm::StoreInst *storeInstruction,
-                           std::list<llvm::Instruction *> assocInsts)
-        : pointerFinder(pointerFinder), targetFinder(targetFinder), storeInstruction(storeInstruction),
-          assocInsts(std::move(assocInsts)) {}
+                           const llvm::StoreInst *storeInstruction)
+        : pointerFinder(pointerFinder), targetFinder(targetFinder), storeInstruction(storeInstruction) {}
 
 
 Configuration *AssignmentOp::apply(Configuration *in) {
@@ -22,28 +20,27 @@ Configuration *AssignmentOp::apply(Configuration *in) {
     auto pointers = pointerFinder->findPointers(in);
     std::set<AbstractTarget> targets = targetFinder->findTargets(in);
 
+    auto insts = targetFinder->getAssociatedInsts();
+    insts.push_back(storeInstruction);
+
     if (pointers->size() == 1) {
 
         AbstractPointer *pointer = *pointers->asSet().begin();
         pointer->setTargets(targets);
+
+        pointer->setAssocInsts(insts);
 
     } else {
 
         for (auto pointer : pointers->asSet()) {
 
             pointer->addTargets(targets);
+
+            pointer->addAllAssocInsts(insts);
+
         }
     }
 
     return in;
 
-}
-
-std::set<llvm::Instruction *> AssignmentOp::getAssocInstructions() {
-
-    std::set<llvm::Instruction *> result;
-    result.insert(assocInsts.begin(), assocInsts.end());
-    result.insert((llvm::Instruction *) storeInstruction);
-
-    return result;
 }

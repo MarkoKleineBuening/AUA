@@ -65,7 +65,3 @@ std::set<PointerOperation *> SplitOp::getSuccessors() {
     return succ;
 
 }
-
-std::set<llvm::Instruction *> SplitOp::getAssocInstructions() {
-    return std::set<llvm::Instruction *>();
-}

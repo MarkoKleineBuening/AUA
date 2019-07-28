@@ -6,9 +6,12 @@
 #define AUA_ABSTRACTPOINTER_H
 
 #include <string>
+#include <unordered_set>
 #include <set>
+#include <list>
 #include <llvm/IR/Instruction.h>
 #include <llvm/IR/DerivedTypes.h>
+#include <bits/unordered_set.h>
 #include "AbstractVar.h"
 #include "AbstractTarget.h"
 #include "PointerFormat.h"
@@ -21,7 +24,7 @@ private:
     PointerFormat format;
 
     std::set<AbstractTarget> targets;
-    std::set<llvm::Instruction *> assocInsts;
+    std::unordered_set<const llvm::Instruction *> assocInsts;
 
 public:
 
@@ -39,19 +42,19 @@ public:
     std::set<AbstractTarget> getTargets() { return targets; };
 
     /**
-     * Calculates all pointers this pointer points to at (this pointers level - derefDepth - 1)and returns their targets.
+     * Calculates all pointers this pointer points to at (this pointers level - derefDepth)and returns their targets.
      * @param derefDepth the number of times this pointer is virtually dereferenced to get the lower level pointers.
      * @return the targets of the lower level pointers.
      */
     std::set<AbstractTarget> derefAndGetTargets(int derefDepth);
 
     /**
-     * Calculates all pointers this pointer points to at (this pointers level - derefDepth - 1) and returns their targets.
+     * Calculates all pointers this pointer points to at (this pointers level - derefDepth) and returns their targets.
      * @param derefDepth the number of times this pointer is virtually dereferenced to get the lower level pointers.
      * @param associatedInsts all associated instructions of pointers passed in dereferencing this pointer are added to the given set of instructions.
      * @return the targets of the lower level pointers.
      */
-    std::set<AbstractTarget> derefAndGetTargets(int derefDepth, std::set<llvm::Instruction *> *associatedInsts);
+    std::set<AbstractTarget> derefAndGetTargets(int derefDepth, std::list<const llvm::Instruction *> *associatedInsts);
 
     AbstractPointer *getCopy();
 
@@ -73,15 +76,15 @@ public:
 
     void merge(AbstractPointer *other);
 
-    void setAssocInsts(const std::set<llvm::Instruction *> &newAssocInsts);
+    void setAssocInsts(const std::list<const llvm::Instruction *> &newAssocInsts);
 
     void setOnlyAssocInst(llvm::Instruction *assocInst);
 
     void addAssocInst(llvm::Instruction *inst);
 
-    void addAllAssocInsts(std::set<llvm::Instruction *> insts);
+    void addAllAssocInsts(std::list<const llvm::Instruction *> insts);
 
-    std::set<llvm::Instruction *> getAssocInsts();
+    std::unordered_set<const llvm::Instruction *> getAssociatedInsts();
 };
 
 struct DerefPointerLevelException : public std::exception {};

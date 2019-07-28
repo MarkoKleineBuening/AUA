@@ -6,8 +6,10 @@
 
 #include "AUA/Alias/AbstractPointers/Finders/FromPointerCompositeFinder.h"
 
-FromPointerCompositeFinder::FromPointerCompositeFinder(PointerFinder *pointerFinder, CompositeFormat expectedFormat)
-        : CompositeFinder(expectedFormat), pointerFinder(pointerFinder) {}
+FromPointerCompositeFinder::FromPointerCompositeFinder(const PointerFinder *pointerFinder,
+                                                       const CompositeFormat& expectedFormat,
+                                                       const llvm::LoadInst *loadInst)
+        : CompositeFinder(expectedFormat), pointerFinder(pointerFinder), loadInst(loadInst) {}
 
 CompositeSetValue *FromPointerCompositeFinder::findComposites(Configuration *configuration) const {
 
@@ -23,5 +25,14 @@ CompositeSetValue *FromPointerCompositeFinder::findComposites(Configuration *con
 
     return result;
 
+
+}
+
+std::list<const llvm::Instruction *> FromPointerCompositeFinder::getAssociatedInsts() const {
+
+    auto result = pointerFinder->getAssociatedInsts();
+    result.push_back(loadInst);
+
+    return result;
 
 }

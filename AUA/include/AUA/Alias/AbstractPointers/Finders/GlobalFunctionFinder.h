@@ -13,13 +13,13 @@ class GlobalFunctionFinder : public FunctionFinder {
 
 private:
 
-    std::string name;
+    const std::string name;
 
 public:
 
     explicit GlobalFunctionFinder(std::string name);
 
-    AbstractFunction *findFunction(Configuration *configuration) override;
+    AbstractFunction *findFunction(Configuration *configuration) const override;
 
 };
 

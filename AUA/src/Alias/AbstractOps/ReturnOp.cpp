@@ -8,9 +8,7 @@
 
 Configuration *ReturnOp::apply(Configuration *in) {
 
-    //TODO Exception werfen
-
-    return nullptr;
+    throw UndefinedPointerOperationMethodException();
 
 }
 
@@ -23,14 +21,13 @@ void ReturnOp::addPredecessor(PointerOperation *predecessor) {
 
 void ReturnOp::linkSuccessor(PointerOperation *successor) {
 
-    //TODO Exception werfen
+    throw SuccessorCountException(returnInst);
 
 }
 
 std::set<PointerOperation *> ReturnOp::getSuccessors() {
 
-    //TODO throw Exception
-    return std::set<PointerOperation *>();
+    throw SuccessorCountException(returnInst);
 
 }
 
@@ -40,12 +37,6 @@ std::set<PointerOperation *> ReturnOp::getPredecessors() {
     resultSet.insert(pred);
     return resultSet;
 
-}
-
-std::set<llvm::Instruction *> ReturnOp::getAssocInstructions() {
-    std::set<llvm::Instruction *> result;
-    result.insert(returnInst);
-    return result;
 }
 
 Configuration *ReturnOp::getLastConfiguration() {

@@ -15,18 +15,22 @@ class ReturnedPointerFinder : public PointerFinder {
 
 private:
 
-    FunctionFinder *functionFinder;
-    std::map<int, PointerFinder *> pointerParamFinders;
-    std::map<int, CompositeFinder *> compositeParamFinders;
+    const FunctionFinder *functionFinder;
+    const std::map<int, PointerFinder *> pointerParamFinders;
+    const std::map<int, CompositeFinder *> compositeParamFinders;
+
+    const llvm::CallInst* callInst;
 
 public:
 
-    ReturnedPointerFinder(FunctionFinder *functionFinder,
-                          std::map<int, PointerFinder *> pointerParamFinders,
-                          std::map<int, CompositeFinder *> compositeParamFinders,
-                          const PointerFormat &expectedFormat);
+    ReturnedPointerFinder(const FunctionFinder *functionFinder,
+                          const std::map<int, PointerFinder *>& pointerParamFinders,
+                          const std::map<int, CompositeFinder *>& compositeParamFinders,
+                          const PointerFormat &expectedFormat, const llvm::CallInst *callInst);
 
     PointerSetValue *findPointers(Configuration *configuration) const override;
+
+    std::list<const llvm::Instruction *> getAssociatedInsts() const override;
 
 };
 

@@ -94,7 +94,28 @@ const PointerFormat &PointerSetValue::getFormat() const {
 AbstractPointer *PointerSetValue::mergeToNewPointer(std::string name) {
 
     AbstractPointer *result = new AbstractPointer(name, format);
-    result->setTargets(getMergedTargets());
+
+    for (auto ptrPair : contents) {
+
+        result->merge(ptrPair.second);
+
+    }
+
+    return result;
+
+}
+
+std::list<const llvm::Instruction *> PointerSetValue::getMergedAssociatedInsts() {
+
+    std::list<const llvm::Instruction*> result;
+
+    for (auto ptrPair : contents) {
+
+        auto ptrAI = ptrPair.second->getAssociatedInsts();
+        result.insert(result.end(), ptrAI.begin(), ptrAI.end());
+
+    }
+
     return result;
 
 }

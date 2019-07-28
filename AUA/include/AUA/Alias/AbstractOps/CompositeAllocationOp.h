@@ -20,8 +20,6 @@ class CompositeAllocationOp : public SinglePredAndSuccOp {
 
 protected:
 
-    std::set<llvm::Instruction *> getAssocInstructions() override;
-
     Configuration *apply(Configuration *in) override;
 
 public:

@@ -15,10 +15,3 @@ Configuration *VarAllocationOp::apply(Configuration *in) {
 
     return in;
 }
-
-std::set<llvm::Instruction *> VarAllocationOp::getAssocInstructions() {
-    std::set<llvm::Instruction *> result;
-    result.insert((llvm::Instruction *) allocaInst);
-
-    return result;
-}

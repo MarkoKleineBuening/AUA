@@ -76,6 +76,13 @@ public:
     std::set<AbstractTarget> getMergedTargets(int derefDepth);
 
     /**
+     * Returns a list comprising all associated instructions of pointers in this PointerSetValue merged.
+     * The pointers are not regarded in any particular order.
+     * @return the merged associated instructions.
+     */
+    std::list<const llvm::Instruction*> getMergedAssociatedInsts();
+
+    /**
      * Creates new AbstractPointer instance with the same format as this PointerSetValue and with the given name.
      * The new instance will hold all targets from all pointers in this PointerSetValue merged together.
      * @param name the name to give the new AbstractPointer instance.

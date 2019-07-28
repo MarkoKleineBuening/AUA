@@ -37,10 +37,19 @@ PointerSetValue *ReturnedPointerFinder::findPointers(Configuration *configuratio
 
 }
 
-ReturnedPointerFinder::ReturnedPointerFinder(FunctionFinder *functionFinder,
-                                             std::map<int, PointerFinder *> pointerParamFinders,
-                                             std::map<int, CompositeFinder *> compositeParamFinders,
-                                             const PointerFormat &expectedFormat) : PointerFinder(
+ReturnedPointerFinder::ReturnedPointerFinder(const FunctionFinder *functionFinder,
+                                             const std::map<int, PointerFinder *>& pointerParamFinders,
+                                             const std::map<int, CompositeFinder *>& compositeParamFinders,
+                                             const PointerFormat &expectedFormat, const llvm::CallInst *callInst)
+        : PointerFinder(
         expectedFormat), functionFinder(functionFinder),
-        pointerParamFinders(std::move(pointerParamFinders)), compositeParamFinders(
-        std::move(compositeParamFinders)) {}
+          pointerParamFinders(pointerParamFinders), compositeParamFinders(
+        compositeParamFinders), callInst(callInst) {}
+
+std::list<const llvm::Instruction *> ReturnedPointerFinder::getAssociatedInsts() const {
+
+    auto result = std::list<const llvm::Instruction*>();
+    result.push_back(callInst);
+    return result;
+
+}

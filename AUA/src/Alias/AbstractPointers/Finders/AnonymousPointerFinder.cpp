@@ -32,4 +32,10 @@ std::string AnonymousPointerFinder::buildAnonPointerName() const {
 
 }
 
+std::list<const llvm::Instruction *> AnonymousPointerFinder::getAssociatedInsts() const {
+
+    return targetFinder->getAssociatedInsts();
+
+}
+
 

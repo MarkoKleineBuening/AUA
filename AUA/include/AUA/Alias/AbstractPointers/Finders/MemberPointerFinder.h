@@ -6,6 +6,7 @@
 #define AUA_MEMBERPOINTERFINDER_H
 
 
+#include <llvm/IR/Instructions.h>
 #include "PointerFinder.h"
 #include "CompositeFinder.h"
 
@@ -16,12 +17,17 @@ private:
     const CompositeFinder *compositeFinder;
     const int memberIndex;
 
+    const llvm::GetElementPtrInst* gepInst;
+
 public:
 
-    MemberPointerFinder(const CompositeFinder *compositeFinder, const int memberIndex,
-                        const PointerFormat &expectedFormat);
+    MemberPointerFinder(const CompositeFinder *compositeFinder, int memberIndex,
+                        const PointerFormat &expectedFormat,
+                        const llvm::GetElementPtrInst *gepInst);
 
     PointerSetValue *findPointers(Configuration *configuration) const override;
+
+    std::list<const llvm::Instruction *> getAssociatedInsts() const override;
 
 };
 
