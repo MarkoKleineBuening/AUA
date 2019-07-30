@@ -19,8 +19,12 @@ public:
 
     AbstractVar(std::string n, int s);
 
+    AbstractVar(std::string n, int s, ReferenceFlags flags);
+
 
     const int getPointerLevel() override { return 0; };
+
+    const std::string to_string() override;
 
 
     const int getSize() { return size; };

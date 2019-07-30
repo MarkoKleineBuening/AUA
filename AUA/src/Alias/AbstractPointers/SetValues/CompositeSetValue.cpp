@@ -24,9 +24,9 @@ CompositeSetValue::CompositeSetValue(CompositeFormat format, std::set<AbstractCo
 
 }
 
-AbstractComposite *CompositeSetValue::mergeToNewComposite(std::string name) {
+AbstractComposite *CompositeSetValue::mergeToNewComposite(std::string name, ReferenceFlags flags) {
 
-    AbstractComposite *result = new AbstractComposite(name, format);
+    AbstractComposite *result = new AbstractComposite(name, format, flags);
 
     for (auto compPair : contents) {
         result->merge(compPair.second);

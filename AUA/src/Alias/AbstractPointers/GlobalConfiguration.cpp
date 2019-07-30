@@ -69,3 +69,42 @@ AbstractVar *GlobalConfiguration::getGlobalVar(std::string name) {
     return globalVars[name];
 
 }
+
+bool GlobalConfiguration::hasGlobalFunction(std::string name) {
+    return (globalFunctions.find(name) != globalFunctions.end());
+}
+
+bool GlobalConfiguration::hasGlobalPointer(std::string name) {
+    return (globalPointers.find(name) != globalPointers.end());
+}
+
+bool GlobalConfiguration::hasGlobalComposite(std::string name) {
+    return (globalComposites.find(name) != globalComposites.end());
+}
+
+bool GlobalConfiguration::hasGlobalVar(std::string name) {
+    return (globalVars.find(name) != globalVars.end());
+}
+
+std::set<AbstractPointer *> GlobalConfiguration::getAllGlobalPointers() {
+
+    std::set<AbstractPointer *> result;
+    for (auto ptrPair : globalPointers) {
+
+        result.insert(ptrPair.second);
+    }
+
+    return result;
+
+}
+
+std::set<AbstractComposite *> GlobalConfiguration::getAllGlobalComposites() {
+
+    std::set<AbstractComposite *> result;
+    for (auto compPair : globalComposites) {
+
+        result.insert(compPair.second);
+    }
+
+    return result;
+}

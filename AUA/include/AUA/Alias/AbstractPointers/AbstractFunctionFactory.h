@@ -102,6 +102,8 @@ public:
     AbstractFunctionFactory(llvm::DataLayout *dataLayout, FinderFactory *finderFactory);
 
     AbstractFunction *buildAbstractFunction(llvm::Function *function);
+
+
 };
 
 struct MultipleReturnException : public std::exception {

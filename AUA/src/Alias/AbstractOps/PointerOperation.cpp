@@ -4,12 +4,13 @@
 
 #include <AUA/Alias/AbstractOps/PointerOperation.h>
 #include <llvm/Support/raw_ostream.h>
+#include <AUA/Alias/AbstractPointers/ConfigurationPrinter.h>
 
 // PRIVATE
 
 void PointerOperation::consume(Configuration *result) {
 
-    result->printFullInfo();
+    ConfigurationPrinter::printFullInfo(result);
 
     // TODO add consumer that extracts aliases from Configuration. Best in parallel.
 }

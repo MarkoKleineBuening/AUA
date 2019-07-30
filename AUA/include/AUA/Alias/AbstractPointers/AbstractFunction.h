@@ -33,6 +33,10 @@ private:
 
     const std::set<AbstractVar*>* varParams;
 
+    std::map<int, PointerSetValue*> getEmptyInputPointers();
+    std::map<int, CompositeSetValue*> getEmptyInputComposites();
+
+
 public:
 
     AbstractFunction(DummyInitialOp *initialOp, ReturnOp *finalOp, std::string name,
@@ -55,6 +59,11 @@ public:
      */
     PointerSetValue *execute(std::map<int, PointerSetValue *> ptrParams,
                              std::map<int, CompositeSetValue *> compParams);
+
+    /**
+     * Executes alias analysis on this function as the entry function, i.e. all parameters are default set to empty values.
+     */
+    void executeAsEntry();
 };
 
 

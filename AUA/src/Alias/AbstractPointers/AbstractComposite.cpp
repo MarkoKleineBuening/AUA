@@ -3,10 +3,13 @@
 //
 
 #include <AUA/Alias/AbstractPointers/CompositeFormat.h>
+#include <sstream>
 #include "AUA/Alias/AbstractPointers/AbstractComposite.h"
 
 AbstractComposite::AbstractComposite(std::string name, const CompositeFormat format) : AbstractReference(name),
-                                                                                       format(format) {
+                                                                                        format(format) {
+
+    ReferenceFlags memberFlags = ReferenceFlags(false, true, false);
 
     // Create all sub composites immediately (pointers are created lazily)
 
@@ -15,21 +18,36 @@ AbstractComposite::AbstractComposite(std::string name, const CompositeFormat for
         int idx = subCompFormatPair.first;
         CompositeFormat subCompFormat = subCompFormatPair.second;
 
-        composites[idx] = new AbstractComposite(generateMemberName(idx), subCompFormat);
+        composites[idx] = new AbstractComposite(generateMemberName(idx), subCompFormat, memberFlags);
 
     }
 
 }
 
+AbstractComposite::AbstractComposite(std::string name, CompositeFormat format, ReferenceFlags flags) : AbstractReference(name, flags), format(format) {
+
+    // Create all sub composites immediately (pointers are created lazily)
+
+    ReferenceFlags memberFlags = ReferenceFlags(false, true, false);
+
+    for (auto subCompFormatPair : format.compositeMemberFormats) {
+
+        int idx = subCompFormatPair.first;
+        CompositeFormat subCompFormat = subCompFormatPair.second;
+
+        composites[idx] = new AbstractComposite(generateMemberName(idx), subCompFormat, memberFlags);
+
+    }
+
+}
+
+
+
 AbstractComposite::AbstractComposite(const std::string name, CompositeFormat format,
                                      std::map<int, AbstractPointer *> pointers,
-                                     std::map<int, AbstractComposite *> composites) :
-        AbstractReference(name), format(format),
+                                     std::map<int, AbstractComposite *> composites, ReferenceFlags flags) :
+        AbstractReference(name, flags), format(format),
         pointers(pointers), composites(composites) {}
-
-AbstractComposite::AbstractComposite(const std::string &name, llvm::CompositeType *type, llvm::DataLayout *&dl)
-        : AbstractComposite(name, CompositeFormat(type, dl)) {}
-
 
 const int AbstractComposite::getPointerLevel() {
     return 0;
@@ -46,13 +64,14 @@ AbstractPointer *AbstractComposite::getPointerMember(int memberIdx) {
     // Generate pointer object lazily
     if (pointers.find(memberIdx) == pointers.end()) {
         auto ptrFormat = format.pointerMemberFormats.at(memberIdx);
-        AbstractPointer *ptr = new AbstractPointer(generateMemberName(memberIdx), ptrFormat);
+        AbstractPointer *ptr = new AbstractPointer(generateMemberName(memberIdx), ptrFormat, ReferenceFlags(false, true, false));
         pointers[memberIdx] = ptr;
     }
 
     return pointers[memberIdx];
 
 }
+
 
 AbstractComposite *AbstractComposite::getCompositeMember(int memberIdx) {
 
@@ -70,7 +89,6 @@ AbstractComposite *AbstractComposite::getCompositeMember(int memberIdx) {
     return composites[memberIdx];
 
 }
-
 
 std::string AbstractComposite::generateMemberName(int idx) {
     return getName() + "[" + std::to_string(idx) + "]";
@@ -169,6 +187,7 @@ void AbstractComposite::copyContentsTo(AbstractComposite *other) {
 
 }
 
+
 AbstractComposite *AbstractComposite::getDeepCopy() {
 
     std::map<int, AbstractPointer *> pointerCopies;
@@ -181,7 +200,7 @@ AbstractComposite *AbstractComposite::getDeepCopy() {
         compositeCopies[compPair.first] = compPair.second->getDeepCopy();
     }
 
-    AbstractComposite *copy = new AbstractComposite(this->name, this->format, pointerCopies, compositeCopies);
+    AbstractComposite *copy = new AbstractComposite(this->name, this->format, pointerCopies, compositeCopies, this->flags);
 
     return copy;
 
@@ -214,7 +233,15 @@ void AbstractComposite::merge(AbstractComposite *other) {
 
 }
 
-
 const CompositeFormat &AbstractComposite::getFormat() const {
     return format;
+}
+
+const std::string AbstractComposite::to_string() {
+
+    std::ostringstream oss;
+    oss << name << " (member count: " << format.memberCount << ", flags: " << flags.to_string() << ")";
+
+    return oss.str();
+
 }

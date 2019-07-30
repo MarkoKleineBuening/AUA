@@ -105,6 +105,7 @@ std::map<int, CompositeFormat> * AbstractFunctionFactory::getCompositeParamForma
 std::set<AbstractVar*>* AbstractFunctionFactory::getVarParams(llvm::Function *function) {
 
     auto result = new std::set<AbstractVar*>();
+    ReferenceFlags paramFlags = ReferenceFlags(false, false, true);
 
     for (auto PI = function->arg_begin(), PE = function->arg_end(); PI != PE; ++PI) {
 
@@ -113,7 +114,7 @@ std::set<AbstractVar*>* AbstractFunctionFactory::getVarParams(llvm::Function *fu
 
         if (!llvm::isa<llvm::CompositeType>(type) && !llvm::isa<llvm::PointerType>(type)) {
 
-            auto var = new AbstractVar(param->getName(), dataLayout->getTypeAllocSize(type));
+            auto var = new AbstractVar(param->getName(), dataLayout->getTypeAllocSize(type), paramFlags);
             result->insert(var);
         }
     }
@@ -567,3 +568,5 @@ ReturnOp * AbstractFunctionFactory::buildFinalOp(llvm::ReturnInst *returnInst) {
     return op;
 
 }
+
+

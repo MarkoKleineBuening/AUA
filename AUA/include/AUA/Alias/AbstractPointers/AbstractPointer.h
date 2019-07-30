@@ -29,13 +29,23 @@ private:
 public:
 
     /**
-     * Constructor for a pointer with given alphanumerical name and level. Initially the pointer will not reference any targets.
+     * Constructor for a pointer with given name and format. Initially the pointer will not reference any targets. The AbstractPointer will have default ReferenceFlags.
      * @param n the name of the pointer.
      * @param format the level of the pointer.
      */
     AbstractPointer(std::string n, PointerFormat format);
 
+    /**
+     * Constructor for a pointer with given name, format and reference flags. Initially the pointer will not reference any targets.
+     * @param n the name of the pointer.
+     * @param format the level of the pointer.
+     * @param flags the ReferenceFlags for the constructed pointer.
+     */
+    AbstractPointer(std::string n, PointerFormat format, ReferenceFlags flags);
+
     const int getPointerLevel() override { return format.level; };
+
+    const std::string to_string() override;
 
     const PointerFormat &getFormat() const;
 
@@ -63,10 +73,22 @@ public:
 
     bool operator==(const AbstractPointer &other) const { return name == other.name; };
 
+    /**
+     * Makes the pointer point exclusively to the given target. All previous pointers to targets are removed.
+     * @param target the target to make this Pointer exclusively point to.
+     */
     void onlyPointTo(AbstractTarget target);
 
+    /**
+     * Adds a pointer to a target to this Pointer. Keeps previous pointers to targets.
+     * @param target the target to add a pointer to.
+     */
     void alsoPointTo(AbstractTarget target);
 
+    /**
+     * Drops all previous pointers to targets from this Pointer and copies the pointers from another given Pointer.
+     * @param other the Pointer to copy all pointers to targets from.
+     */
     void copyTargetsFrom(AbstractPointer *other);
 
     void setTargets(const std::set<AbstractTarget> &set);

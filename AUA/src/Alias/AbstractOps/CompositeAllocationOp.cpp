@@ -7,7 +7,7 @@
 
 Configuration *CompositeAllocationOp::apply(Configuration *in) {
 
-    AbstractComposite *composite = new AbstractComposite(name, compType, dl);
+    AbstractComposite *composite = new AbstractComposite(name, CompositeFormat(compType, dl));
 
     in->composites.insert_or_assign(name, composite);
 

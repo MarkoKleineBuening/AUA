@@ -88,7 +88,7 @@ public:
      * @param name the name to give the new AbstractPointer instance.
      * @return the new AbstractPointer instance.
      */
-    AbstractPointer *mergeToNewPointer(std::string name);
+    AbstractPointer *mergeToNewPointer(std::string name, ReferenceFlags flags);
 
     /**
      * Returns this PointerSetValue instance as a set of pointers to AbstractPointers.

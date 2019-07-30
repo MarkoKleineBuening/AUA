@@ -10,6 +10,7 @@
 #include <llvm/IR/DerivedTypes.h>
 #include <bits/unordered_set.h>
 #include <unordered_set>
+#include <sstream>
 
 
 AbstractPointer::AbstractPointer(std::string n, PointerFormat format) : AbstractReference(std::move(n)), format(format) {
@@ -18,10 +19,12 @@ AbstractPointer::AbstractPointer(std::string n, PointerFormat format) : Abstract
 }
 
 
-/**
- * Makes the pointer point exclusively to the given target. All previous pointers to targets are removed.
- * @param target the target to make this Pointer exclusively point to.
- */
+AbstractPointer::AbstractPointer(std::string n, PointerFormat format, ReferenceFlags flags) : AbstractReference(std::move(n), flags), format(format) {
+
+    assert(format.level > 0);
+}
+
+
 void AbstractPointer::onlyPointTo(AbstractTarget target) {
 
     assert(target.base->getPointerLevel() == this->format.level - 1);
@@ -30,10 +33,7 @@ void AbstractPointer::onlyPointTo(AbstractTarget target) {
     targets.insert(target);
 }
 
-/**
- * Adds a pointer to a target to this Pointer. Keeps previous pointers to targets.
- * @param target the target to add a pointer to.
- */
+
 void AbstractPointer::alsoPointTo(AbstractTarget target) {
 
     assert(target.base->getPointerLevel() == this->format.level - 1);
@@ -41,10 +41,7 @@ void AbstractPointer::alsoPointTo(AbstractTarget target) {
     targets.insert(target);
 }
 
-/**
- * Drops all previous pointers to targets from this Pointer and copies the pointers from another given Pointer.
- * @param other the Pointer to copy all pointers to targets from.
- */
+
 void AbstractPointer::copyTargetsFrom(AbstractPointer *other) {
 
     assert(this->format.level == other->format.level);
@@ -63,9 +60,10 @@ void AbstractPointer::merge(AbstractPointer *other) {
 
 }
 
+
 AbstractPointer *AbstractPointer::getCopy() {
 
-    AbstractPointer *copy = new AbstractPointer(this->name, this->format);
+    AbstractPointer *copy = new AbstractPointer(this->name, this->format, this->flags);
     copy->copyTargetsFrom(this);
     copy->assocInsts = this->assocInsts;
 
@@ -73,13 +71,13 @@ AbstractPointer *AbstractPointer::getCopy() {
 
 }
 
-
 std::set<AbstractTarget> AbstractPointer::derefAndGetTargets(int derefDepth) {
 
     std::list<const llvm::Instruction *> list;
     return derefAndGetTargets(derefDepth, &list);
 
 }
+
 
 std::set<AbstractTarget> AbstractPointer::derefAndGetTargets(int derefDepth,
                                                              std::list<const llvm::Instruction *> *associatedInsts) {
@@ -123,7 +121,6 @@ std::set<AbstractTarget> AbstractPointer::derefAndGetTargets(int derefDepth,
     return upperTargets;
 
 }
-
 
 void AbstractPointer::setTargets(const std::set<AbstractTarget> &newTargets) {
 
@@ -174,5 +171,14 @@ const PointerFormat &AbstractPointer::getFormat() const {
 void AbstractPointer::addTargets(std::set<AbstractTarget> targetsToAdd) {
 
     this->targets.merge(targetsToAdd);
+
+}
+
+const std::string AbstractPointer::to_string() {
+
+    std::ostringstream oss;
+    oss << name << " (level: " << getPointerLevel() << ", flags: " << flags.to_string() << ")";
+
+    return oss.str();
 
 }

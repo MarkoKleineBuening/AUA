@@ -60,7 +60,7 @@ public:
      * @param name the name to give the new CompositeRef.
      * @return the merged CompositeRef.
      */
-    AbstractComposite *mergeToNewComposite(std::string name);
+    AbstractComposite *mergeToNewComposite(std::string name, ReferenceFlags flags);
 
     /**
      * Returns this CompositeSetValue instance as a set of pointers to CompositeRefs.

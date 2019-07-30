@@ -13,6 +13,7 @@ PointerAllocationOp::PointerAllocationOp(std::string name, PointerFormat ptrForm
 Configuration *PointerAllocationOp::apply(Configuration *in) {
 
     AbstractPointer *pointer = new AbstractPointer(name, pointerFormat);
+
     pointer->setOnlyAssocInst((llvm::Instruction *) allocaInst);
 
     in->pointers.insert_or_assign(name, pointer);

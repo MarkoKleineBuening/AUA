@@ -38,15 +38,14 @@ private:
     /**
      * Constructor for copying.
      * @param name name of the composite.
-     * @param memberCount number of members in the composite.
-     * @param totalSize total Size of the composite.
+     * @param format the format of the composite.
      * @param pointers pointer members in the composite with regarding indices.
      * @param composites composite members in the composite with regarding indices.
-     * @param memberMeta member meta information for the composite.
+     * @param flags the ReferenceFlags to assign to the copy.
      */
     AbstractComposite(std::string name, CompositeFormat format,
                       std::map<int, AbstractPointer *> pointers,
-                      std::map<int, AbstractComposite *> composites);
+                      std::map<int, AbstractComposite *> composites, ReferenceFlags flags);
 
 public:
 
@@ -54,8 +53,10 @@ public:
     const CompositeFormat &getFormat() const;
 
     AbstractComposite(std::string name, CompositeFormat format);
+    AbstractComposite(std::string name, CompositeFormat format, ReferenceFlags flags);
 
-    AbstractComposite(const std::string &name, llvm::CompositeType *type, llvm::DataLayout *&dl);
+    const std::string to_string() override;
+
 
     /**
      * Returns an actual copy at a new place in memory with all members copied too.

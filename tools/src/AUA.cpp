@@ -43,11 +43,14 @@
 
 
 AbstractFunctionFactory *funcFac;
+llvm::DataLayout* dl;
 
 std::unique_ptr<llvm::Module> readInModule(llvm::LLVMContext &context, std::string inFile);
 
 GlobalConfiguration* Configuration::global = new GlobalConfiguration();
 int AnonymousPointerFinder::anonPointerCounter = 0;
+
+void buildGlobals(llvm::Module* module);
 
 int main(int argc, char **argv) {
 
@@ -55,9 +58,11 @@ int main(int argc, char **argv) {
     llvm::LLVMContext context;
     llvm::Module *module = readInModule(context, inFile).release();
 
-    auto dl = new llvm::DataLayout(module);
+    dl = new llvm::DataLayout(module);
     auto finderFactory = new FinderFactory(dl);
     funcFac = new AbstractFunctionFactory(dl, finderFactory);
+
+    buildGlobals(module);
 
     for (auto &F: module->getFunctionList()) {
 
@@ -66,13 +71,43 @@ int main(int argc, char **argv) {
 
     }
 
-    auto mainMethod = Configuration::global->getGlobalFunction("main");
+    std::string entryFunctionName = argv[2];
 
-    auto pointerParams = std::map<int, PointerSetValue*>();
-    auto compositeParams = std::map<int, CompositeSetValue*>();
-    mainMethod->execute(pointerParams, compositeParams);
+    auto entryFunction = Configuration::global->getGlobalFunction(entryFunctionName);
+
+    entryFunction->executeAsEntry();
 
     return 0;
+}
+
+void buildGlobals(llvm::Module* module) {
+
+    ReferenceFlags globalFlags = ReferenceFlags(true, false, false);
+
+    for (auto &global : module->getGlobalList()) {
+
+        llvm::Type* type = global.getValueType();
+        std::string name = global.getName();
+
+        if (auto globalPtrType = llvm::dyn_cast<llvm::PointerType>(type)) {
+
+            AbstractPointer* globalPtr = new AbstractPointer(name, PointerFormat(globalPtrType), globalFlags);
+            Configuration::global->addGlobalPointer(globalPtr->getName(), globalPtr);
+
+        } else if (auto globalCompType = llvm::dyn_cast<llvm::CompositeType>(type)) {
+
+            AbstractComposite* globalComp = new AbstractComposite(name, CompositeFormat(globalCompType, dl), globalFlags);
+            Configuration::global->addGlobalComposite(globalComp->getName(), globalComp);
+
+        } else {
+
+            AbstractVar* globalVar = new AbstractVar(name, dl->getTypeAllocSize(type), globalFlags);
+            Configuration::global->addGlobalVar(globalVar->getName(), globalVar);
+
+        }
+
+    }
+
 }
 
 

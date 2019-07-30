@@ -24,6 +24,7 @@ PointerFinder *FinderFactory::getPointerFinder(llvm::Value *value, bool isAdress
 
     if (auto argument = llvm::dyn_cast<llvm::Argument>(value)) return getBasePointerFinder(argument, expectedFormat, isAdress);
     if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(value)) return getBasePointerFinder(allocaInst, expectedFormat, isAdress);
+    if (auto globalVariable = llvm::dyn_cast<llvm::GlobalVariable>(value)) return getGlobalPointerFinder(globalVariable, expectedFormat, isAdress);
     if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getNestedPointerFinder(loadInst, expectedFormat, isAdress);
     if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberPointerFinder(gepInst, expectedFormat, isAdress);
     if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getReturnedPointerFinder(callInst, expectedFormat, isAdress);
@@ -55,6 +56,30 @@ FromPointerPointerFinder *FinderFactory::getNestedPointerFinder(llvm::LoadInst *
 
     return new FromPointerPointerFinder(getPointerFinder(value, true), derefDepth, actualFormat,
                                         loadInstructions);
+
+}
+
+PointerFinder * FinderFactory::getGlobalPointerFinder(llvm::GlobalVariable *variable, PointerFormat expectedFormat,
+                                                      bool isAdress) {
+
+    llvm::Type* inType = variable->getValueType();
+    PointerFormat actualFormat = getPointerFormat(inType);
+
+    if ((!isAdress) && actualFormat.level == expectedFormat.level - 1) {
+
+        // Implicit Referencing of lower level target in llvm IR => Explicit Referencing by anonymous pointer here
+
+        return getAnonymousPointerFinder(variable, expectedFormat, isAdress);
+
+    }
+
+    if (actualFormat == expectedFormat) {
+
+        std::string basePointerName = variable->getName();
+        return new GlobalPointerFinder(basePointerName, actualFormat);
+    }
+
+    throw PointerFinderConstructionFormatException(variable, expectedFormat, actualFormat);
 
 }
 
@@ -131,6 +156,15 @@ AnonymousPointerFinder* FinderFactory::getAnonymousPointerFinder(llvm::GetElemen
 
 }
 
+
+AnonymousPointerFinder *FinderFactory::getAnonymousPointerFinder(llvm::GlobalVariable *variable, PointerFormat expectedFormat, bool isAdress) {
+
+    assert(!isAdress);
+
+    return new AnonymousPointerFinder(expectedFormat, getGlobalTargetFinder(variable));
+
+}
+
 PointerFinder *FinderFactory::getMemberPointerFinder(llvm::GetElementPtrInst *gepInst, PointerFormat expectedFormat, bool isAdress) {
 
     llvm::Type* inType = gepInst->getResultElementType();
@@ -157,7 +191,6 @@ PointerFinder *FinderFactory::getMemberPointerFinder(llvm::GetElementPtrInst *ge
 
 
 }
-
 
 ReturnedPointerFinder *FinderFactory::getReturnedPointerFinder(llvm::CallInst *callInst, PointerFormat expectedFormat, bool isAdress) {
 
@@ -206,6 +239,7 @@ PointerFormat FinderFactory::getPointerFormat(llvm::Type *type) {
 CompositeFinder *FinderFactory::getCompositeFinder(llvm::Value *value) {
 
     if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(value)) return getBaseCompositeFinder(allocaInst);
+    if (auto globalVariable = llvm::dyn_cast<llvm::GlobalVariable>(value)) return getGlobalCompositeFinder(globalVariable);
     if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getFromPointerCompositeFinder(loadInst);
     if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberCompositeFinder(gepInst);
     //if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getReturnedCompositeFinder(callInst);
@@ -225,10 +259,19 @@ BaseCompositeFinder *FinderFactory::getBaseCompositeFinder(llvm::AllocaInst *all
 
 }
 
+GlobalCompositeFinder *FinderFactory::getGlobalCompositeFinder(llvm::GlobalVariable* variable) {
+
+    std::string compName = variable->getName();
+    auto compType = llvm::cast<llvm::CompositeType>(variable->getValueType());
+
+    return new GlobalCompositeFinder(compName, CompositeFormat(compType, dl));
+
+}
+
 FromPointerCompositeFinder *FinderFactory::getFromPointerCompositeFinder(llvm::LoadInst *loadInst) {
 
     PointerFinder *ptrFinder = getPointerFinder(loadInst->getPointerOperand(), true);
-    
+
     assert(loadInst->getType()->isPointerTy());
     auto ptrType = llvm::cast<llvm::PointerType>(loadInst->getType());
 
@@ -272,6 +315,7 @@ MemberCompositeFinder *FinderFactory::getMemberCompositeFinder(llvm::GetElementP
 TargetFinder *FinderFactory::getTargetFinder(llvm::Value *value) {
 
     if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(value)) return getBaseTargetFinder(allocaInst);
+    if (auto globalVariable = llvm::dyn_cast<llvm::GlobalVariable>(value)) return getGlobalTargetFinder(globalVariable);
     if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getFromPointerTargetFinder(loadInst);
     if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberTargetFinder(gepInst);
 
@@ -285,12 +329,24 @@ BaseTargetFinder *FinderFactory::getBaseTargetFinder(llvm::AllocaInst *allocaIns
 
 }
 
+
 BaseTargetFinder *FinderFactory::getBaseTargetFinder(llvm::Argument *argument) {
 
     std::string varName = argument->getName();
     return new BaseTargetFinder(varName);
 
 }
+
+
+GlobalTargetFinder *FinderFactory::getGlobalTargetFinder(llvm::GlobalVariable *variable) {
+
+    std::string varName = variable->getName();
+    return new GlobalTargetFinder(varName);
+
+}
+
+
+
 
 FromPointerTargetFinder *FinderFactory::getFromPointerTargetFinder(llvm::LoadInst *loadInst) {
 
@@ -310,9 +366,7 @@ MemberTargetFinder *FinderFactory::getMemberTargetFinder(llvm::GetElementPtrInst
 
 }
 
-
 // FUNCTION FINDING ------------------------------------------------------------------------
-
 
 FunctionFinder *FinderFactory::getFunctionFinder(llvm::Value *value) {
 
@@ -323,9 +377,6 @@ FunctionFinder *FinderFactory::getFunctionFinder(llvm::Value *value) {
 
     throw UnknownFinderInstructionException();
 }
-
-
-
 
 GlobalFunctionFinder *FinderFactory::getGlobalFunctionFinder(llvm::GlobalValue *globalValue) {
 

@@ -17,15 +17,7 @@ class GlobalConfiguration;
 
 
 class Configuration {
-
-private:
-
-    std::list<Alias> calculateAliases();
-
-    std::set<AbstractPointer *> getAllMemberPointers();
-
-    std::set<AbstractPointer *> getAllPointers();
-
+    
 public:
 
     static GlobalConfiguration *global;
@@ -36,25 +28,18 @@ public:
 
     explicit Configuration();
 
-
-
     void merge(Configuration *other);
 
     Configuration *getDeepCopy();
 
-    void printFullInfo();
 
-    void printPointerInfo();
+};
 
-    void printVarInfo();
 
-    void printCompositeInfo();
-
-    void printAliasInfo();
-
-    void printFullInfoVerbose();
-
-    void printPointerInfoVerbose();
+struct ConfigurationUnknownTargetNameException : public std::exception {
+    const char *what() const throw() {
+        return "The given name for the desired target was not known in the configuration.";
+    }
 };
 
 

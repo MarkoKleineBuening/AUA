@@ -29,12 +29,15 @@ std::set<AbstractTarget> BaseTargetFinder::findTargets(Configuration *conf) cons
         targetBase = conf->pointers[targetName];
         size = 0;
 
-    } else {
+    } else if (conf->composites.find(targetName) != conf->composites.end()) {
 
         AbstractComposite *targetComp = conf->composites[targetName];
         size = targetComp->getFormat().totalSize;
         targetBase = targetComp;
 
+    } else {
+
+        throw ConfigurationUnknownTargetNameException();
     }
 
 

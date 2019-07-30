@@ -2,6 +2,7 @@ nm_add_library(AUA STATIC
 
         src/Alias/AbstractPointers/Configuration.cpp
         src/Alias/AbstractPointers/GlobalConfiguration.cpp
+        src/Alias/AbstractPointers/ConfigurationPrinter.cpp
         src/Alias/AbstractPointers/Alias.cpp
 
         src/Alias/AbstractPointers/AbstractTarget.cpp
@@ -18,6 +19,7 @@ nm_add_library(AUA STATIC
 
         src/Alias/AbstractPointers/Finders/PointerFinder.cpp
         src/Alias/AbstractPointers/Finders/BasePointerFinder.cpp
+        src/Alias/AbstractPointers/Finders/GlobalPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/FromPointerPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/MemberPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/ReturnedPointerFinder.cpp
@@ -25,11 +27,13 @@ nm_add_library(AUA STATIC
 
         src/Alias/AbstractPointers/Finders/CompositeFinder.cpp
         src/Alias/AbstractPointers/Finders/BaseCompositeFinder.cpp
+        src/Alias/AbstractPointers/Finders/GlobalCompositeFinder.cpp
         src/Alias/AbstractPointers/Finders/FromPointerCompositeFinder.cpp
         src/Alias/AbstractPointers/Finders/MemberCompositeFinder.cpp
 
         src/Alias/AbstractPointers/Finders/TargetFinder.cpp
         src/Alias/AbstractPointers/Finders/BaseTargetFinder.cpp
+        src/Alias/AbstractPointers/Finders/GlobalTargetFinder.cpp
         src/Alias/AbstractPointers/Finders/FromPointerTargetFinder.cpp
         src/Alias/AbstractPointers/Finders/MemberTargetFinder.cpp
 

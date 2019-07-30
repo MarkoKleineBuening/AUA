@@ -91,9 +91,9 @@ const PointerFormat &PointerSetValue::getFormat() const {
     return format;
 }
 
-AbstractPointer *PointerSetValue::mergeToNewPointer(std::string name) {
+AbstractPointer *PointerSetValue::mergeToNewPointer(std::string name, ReferenceFlags flags) {
 
-    AbstractPointer *result = new AbstractPointer(name, format);
+    AbstractPointer *result = new AbstractPointer(name, format, flags);
 
     for (auto ptrPair : contents) {
 

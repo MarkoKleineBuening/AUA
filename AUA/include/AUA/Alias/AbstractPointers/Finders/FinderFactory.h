@@ -23,6 +23,10 @@
 #include "FromPointerTargetFinder.h"
 #include "MemberTargetFinder.h"
 #include "GlobalFunctionFinder.h"
+#include "GlobalPointerFinder.h"
+#include "GlobalTargetFinder.h"
+#include "GlobalCompositeFinder.h"
+#include <llvm/IR/GlobalVariable.h>
 
 class FinderFactory {
 
@@ -33,31 +37,34 @@ private:
 
     static PointerFinder * getBasePointerFinder(llvm::AllocaInst *allocaInst, PointerFormat expectedFormat, bool isAdress);
     static PointerFinder * getBasePointerFinder(llvm::Argument *argument, PointerFormat expectedFormat, bool isAdress);
+    static PointerFinder * getGlobalPointerFinder(llvm::GlobalVariable *variable, PointerFormat expectedFormat,
+                                                  bool isAdress);
 
     PointerFinder * getMemberPointerFinder(llvm::GetElementPtrInst *gepInst, PointerFormat expectedFormat, bool isAdress);
 
     static AnonymousPointerFinder *getAnonymousPointerFinder(llvm::AllocaInst *allocaInst, PointerFormat expectedFormat, bool isAdress);
     static AnonymousPointerFinder *getAnonymousPointerFinder(llvm::Argument *argument, PointerFormat expectedFormat, bool isAdress);
     AnonymousPointerFinder *getAnonymousPointerFinder(llvm::GetElementPtrInst *gepInst, PointerFormat expectedFormat, bool isAdress);
+    static AnonymousPointerFinder *getAnonymousPointerFinder(llvm::GlobalVariable *variable, PointerFormat expectedFormat, bool isAdress);
 
     FromPointerPointerFinder *getNestedPointerFinder(llvm::LoadInst *loadInst, PointerFormat expectedFormat, bool isAdress);
-
     ReturnedPointerFinder *getReturnedPointerFinder(llvm::CallInst *callInst, PointerFormat expectedFormat, bool isAdress);
 
     static PointerFormat getPointerFormat(llvm::Type *type);
 
+
     BaseCompositeFinder *getBaseCompositeFinder(llvm::AllocaInst *allocaInst);
-
+    GlobalCompositeFinder* getGlobalCompositeFinder(llvm::GlobalVariable* variable);
     FromPointerCompositeFinder *getFromPointerCompositeFinder(llvm::LoadInst *loadInst);
-
     MemberCompositeFinder *getMemberCompositeFinder(llvm::GetElementPtrInst *gepInst);
+
+
     static BaseTargetFinder *getBaseTargetFinder(llvm::AllocaInst *allocaInst);
-
     static BaseTargetFinder *getBaseTargetFinder(llvm::Argument *argument);
-
+    static GlobalTargetFinder *getGlobalTargetFinder(llvm::GlobalVariable *variable);
     FromPointerTargetFinder *getFromPointerTargetFinder(llvm::LoadInst *loadInst);
-
     MemberTargetFinder *getMemberTargetFinder(llvm::GetElementPtrInst *gepInst);
+
 
     static GlobalFunctionFinder *getGlobalFunctionFinder(llvm::GlobalValue *globalValue);
 
@@ -126,6 +133,8 @@ public:
         return chars;
     }
 };
+
+
 
 
 
