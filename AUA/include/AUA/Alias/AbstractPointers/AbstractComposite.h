@@ -75,6 +75,8 @@ public:
 
     const int getPointerLevel() override;
 
+    const int getSize() override;
+
 
     /**
      * Returns the pointer object for the member at index memberIdx if this index corresponds to a pointer type member.

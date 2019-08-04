@@ -20,20 +20,18 @@ std::set<AbstractTarget> BaseTargetFinder::findTargets(Configuration *conf) cons
 
     if (conf->vars.find(targetName) != conf->vars.end()) {
 
-        AbstractVar *targetVar = conf->vars[targetName];
-        size = targetVar->getSize();
-        targetBase = targetVar;
+        targetBase = conf->vars[targetName];
+        size = targetBase->getSize();
 
     } else if (conf->pointers.find(targetName) != conf->pointers.end()) {
 
         targetBase = conf->pointers[targetName];
-        size = 0;
+        size = targetBase->getSize();
 
     } else if (conf->composites.find(targetName) != conf->composites.end()) {
 
-        AbstractComposite *targetComp = conf->composites[targetName];
-        size = targetComp->getFormat().totalSize;
-        targetBase = targetComp;
+        targetBase = conf->composites[targetName];
+        size = targetBase->getSize();
 
     } else {
 

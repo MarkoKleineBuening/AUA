@@ -29,7 +29,34 @@
 #include <AUA/Alias/AbstractOps/JoinOp.h>
 #include <AUA/Alias/AbstractPointers/Finders/CompositeFinder.h>
 #include <AUA/Alias/AbstractPointers/Finders/FinderFactory.h>
-#include "AbstractFunction.h"
+#include <AUA/Alias/AbstractPointers/AbstractFunction.h>
+#include <AUA/Alias/AbstractPointers/GlobalConfiguration.h>
+
+
+struct BlockAbstractionState {
+
+    /**
+     * Specifies if a LOOP Latch BasicBlock has been found for this block, making this block a loop condition.
+     */
+    bool loopLatchFound;
+
+    /**
+     * The first PointerOperation that is reachable from the beginning of this block.
+     */
+    PointerOperation* firstReachable;
+
+    /**
+     * The last PointerOperation that is reachable from the beginning of this block. In a loop this holds the last reachable up until the loop latch, until fixLastReachable is called.
+     */
+    PointerOperation* lastReachable;
+
+
+    BlockAbstractionState() : loopLatchFound(false),
+        firstReachable(nullptr), lastReachable(nullptr) {}
+
+};
+
+
 
 class AbstractFunctionFactory {
 
@@ -39,37 +66,15 @@ private:
     FinderFactory *finderFactory;
 
     /**
-    * Used to start the chain of PointerOperations. Is the only PointerOperation allowed to have no predecessors.
-    */
-    DummyInitialOp *initialOp = nullptr;
-
-    /**
-     * Used to collect dangling paths of PointerOperations into one final PointerOperation. Is the only PointerOperation allowed to have no successors.
-     */
-    ReturnOp *finalOp = nullptr;
-
-
-    std::map<std::string, bool> loopLatchFound;
-    std::map<std::string, JoinOp *> loopJoinOps;
-
-    std::map<std::string, JoinOp *> ifJoinOps;
-
-    /**
-     * Resets state of abstracting functions including clearing found CFG joins and new initial and final Ops
-     */
-    void resetAbstractionState();
-
-    /**
      * Abstracts a given BasicBlock into an ordered graph of PointerOperations.
      * Recursively calls abstractBasicBlock for all succeeding BasicBlocks to complete the ordered graph.
      * @param BB the BasicBlock to abstract
      * @return The first PointerOperation of this block if any are abstracted from it or the result of its following block else.
      */
-    PointerOperation *abstractBasicBlock(llvm::BasicBlock *BB);
+    PointerOperation *abstractBasicBlock(llvm::BasicBlock *BB, std::map<std::string, BlockAbstractionState> *state);
+//    PointerOperation *abstractLoopConditionBlock(llvm::BasicBlock *BB, AbstractionState *state);
 
-    PointerOperation *abstractLoopConditionBlock(llvm::BasicBlock *BB);
-
-    PointerOperation *abstractIfRejoinBlock(llvm::BasicBlock *BB);
+//    PointerOperation *abstractIfRejoinBlock(llvm::BasicBlock *BB, AbstractionState *state);
 
     PointerOperation *abstractInstruction(llvm::Instruction *I);
 
@@ -77,15 +82,13 @@ private:
 
     PointerOperation *handleStore(llvm::StoreInst *storeInst);
 
-//    PointerOperation *handleAssignment(llvm::StoreInst *storeInst);
-
     PointerOperation *handleCallWithIrrelevantReturn(llvm::CallInst *callInst);
 
     ReturnOp *handleReturn(llvm::ReturnInst *returnInst);
 
-    ReturnOp * buildFinalOp(llvm::ReturnInst *returnInst);
+    ReturnOp *buildFinalOp(llvm::ReturnInst *returnInst, std::map<std::string, BlockAbstractionState> *state);
 
-    PointerOperation *abstractIfBranchBlock(llvm::BasicBlock *BB);
+//    PointerOperation *abstractIfBranchBlock(llvm::BasicBlock *BB, AbstractionState *state);
 
     std::pair<PointerOperation *, PointerOperation *> *abstractBlockInstructions(llvm::BasicBlock *BB);
 
@@ -101,6 +104,11 @@ public:
 
     AbstractFunctionFactory(llvm::DataLayout *dataLayout, FinderFactory *finderFactory);
 
+    /**
+     * Constructs new AbstractFunction for the given llvm::Function.
+     * @param function an llvm::Function object to abstract.
+     * @return the abstracted function.
+     */
     AbstractFunction *buildAbstractFunction(llvm::Function *function);
 
 

@@ -27,7 +27,7 @@ public:
     const std::string to_string() override;
 
 
-    const int getSize() { return size; };
+    const int getSize() override { return size; };
 };
 
 

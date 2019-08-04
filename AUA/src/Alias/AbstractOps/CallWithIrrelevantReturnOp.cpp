@@ -28,6 +28,7 @@ Configuration *CallWithIrrelevantReturnOp::apply(Configuration *in) {
     PointerSetValue *callResult = function->execute(pointerParams, compositeParams);
 
 
+
     if (callResult != nullptr) throw CallReturnException();
 
     return in;

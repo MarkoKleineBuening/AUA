@@ -182,3 +182,7 @@ const std::string AbstractPointer::to_string() {
     return oss.str();
 
 }
+
+const int AbstractPointer::getSize() {
+    return 0;
+}

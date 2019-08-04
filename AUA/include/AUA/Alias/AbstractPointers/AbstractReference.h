@@ -69,6 +69,12 @@ public:
      */
     virtual const int getPointerLevel() = 0;
 
+    /**
+     * Returns the size of the referenced type.
+     * @return the size.
+     */
+    virtual const int getSize() = 0;
+
     virtual const std::string to_string() = 0;
 
 

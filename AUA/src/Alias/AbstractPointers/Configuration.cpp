@@ -8,6 +8,8 @@
 
 // PRIVATE
 
+GlobalConfiguration* Configuration::global = nullptr;
+
 
 
 // PUBLIC
@@ -91,7 +93,12 @@ Configuration *Configuration::getDeepCopy() {
 
 }
 
+void Configuration::setGlobalConfiguration(GlobalConfiguration *global) {
 
+    if (Configuration::global != nullptr) throw GlobalConfigurationAlreadySetException();
+
+    Configuration::global = global;
+}
 
 
 Configuration::Configuration() = default;

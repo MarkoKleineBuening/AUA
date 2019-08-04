@@ -5,91 +5,80 @@
 #include <llvm/Support/raw_ostream.h>
 #include "AUA/Alias/AbstractPointers/GlobalConfiguration.h"
 
-void GlobalConfiguration::addGlobalFunction(std::string name, AbstractFunction *function) {
+GlobalConfiguration::GlobalConfiguration(GlobalValueFactory *globalValueFactory) : globalValueFactory(
+        globalValueFactory) {}
 
-    if (GlobalConfiguration::globalFunctions.find(name) != GlobalConfiguration::globalFunctions.end())
-        throw GlobalNameAlreadyKnownException();
+AbstractPointer *GlobalConfiguration::getGlobalPointer(const std::string& name) {
 
-    GlobalConfiguration::globalFunctions[name] = function;
+    if (globalPointers.find(name) == globalPointers.end()) {
 
-}
-
-void GlobalConfiguration::addGlobalPointer(std::string name, AbstractPointer *pointer) {
-
-    if (globalPointers.find(name) != globalPointers.end()) throw GlobalNameAlreadyKnownException();
-
-    globalPointers[name] = pointer;
-
-}
-
-void GlobalConfiguration::addGlobalComposite(std::string name, AbstractComposite *composite) {
-
-    if (globalComposites.find(name) != globalComposites.end()) throw GlobalNameAlreadyKnownException();
-
-    globalComposites[name] = composite;
-
-}
-
-void GlobalConfiguration::addGlobalVar(std::string name, AbstractVar *var) {
-
-    if (globalVars.find(name) != globalVars.end()) throw GlobalNameAlreadyKnownException();
-
-    globalVars[name] = var;
-
-}
-
-AbstractFunction *GlobalConfiguration::getGlobalFunction(std::string name) {
-
-    if (globalFunctions.find(name) == globalFunctions.end()) throw UnknownGlobalNameException();
-
-    return globalFunctions[name];
-
-}
-
-AbstractPointer *GlobalConfiguration::getGlobalPointer(std::string name) {
-
-    if (globalPointers.find(name) == globalPointers.end()) throw UnknownGlobalNameException();
+        globalPointers[name] = globalValueFactory->buildGlobalAbstractPointer(name);
+    }
 
     return globalPointers[name];
 
 }
 
-AbstractComposite *GlobalConfiguration::getGlobalComposite(std::string name) {
+AbstractComposite *GlobalConfiguration::getGlobalComposite(const std::string& name) {
 
-    if (globalComposites.find(name) == globalComposites.end()) throw UnknownGlobalNameException();
+    if (globalComposites.find(name) == globalComposites.end()) {
+
+        globalComposites[name] = globalValueFactory->buildGlobalAbstractComposite(name);
+    }
 
     return globalComposites[name];
 
 }
 
-AbstractVar *GlobalConfiguration::getGlobalVar(std::string name) {
+AbstractVar *GlobalConfiguration::getGlobalVar(const std::string& name) {
 
-    if (globalVars.find(name) == globalVars.end()) throw UnknownGlobalNameException();
+    if (globalVars.find(name) == globalVars.end()) {
+
+        globalVars[name] = globalValueFactory->buildGlobalAbstractVar(name);
+    }
 
     return globalVars[name];
 
 }
 
-bool GlobalConfiguration::hasGlobalFunction(std::string name) {
-    return (globalFunctions.find(name) != globalFunctions.end());
-}
+AbstractReference *GlobalConfiguration::getGlobalReference(const std::string &name) {
 
-bool GlobalConfiguration::hasGlobalPointer(std::string name) {
-    return (globalPointers.find(name) != globalPointers.end());
-}
+    if (globalPointers.find(name) != globalPointers.end()) {
+        return globalPointers[name];
+    }
 
-bool GlobalConfiguration::hasGlobalComposite(std::string name) {
-    return (globalComposites.find(name) != globalComposites.end());
-}
+    if (globalComposites.find(name) != globalComposites.end()) {
+        return globalComposites[name];
+    }
 
-bool GlobalConfiguration::hasGlobalVar(std::string name) {
-    return (globalVars.find(name) != globalVars.end());
+    if (globalVars.find(name) != globalVars.end()) {
+        return globalVars[name];
+    }
+
+    if (globalValueFactory->globalPointerExists(name)) {
+
+        return getGlobalPointer(name);
+    }
+
+    if (globalValueFactory->globalCompositeExists(name)) {
+
+        return getGlobalComposite(name);
+    }
+
+    if (globalValueFactory->globalVarExists(name)) {
+
+        return getGlobalVar(name);
+    }
+
+    throw UnknownGlobalNameException();
+
+
 }
 
 std::set<AbstractPointer *> GlobalConfiguration::getAllGlobalPointers() {
 
     std::set<AbstractPointer *> result;
-    for (auto ptrPair : globalPointers) {
+    for (const auto& ptrPair : globalPointers) {
 
         result.insert(ptrPair.second);
     }
@@ -101,10 +90,36 @@ std::set<AbstractPointer *> GlobalConfiguration::getAllGlobalPointers() {
 std::set<AbstractComposite *> GlobalConfiguration::getAllGlobalComposites() {
 
     std::set<AbstractComposite *> result;
-    for (auto compPair : globalComposites) {
+    for (const auto& compPair : globalComposites) {
 
         result.insert(compPair.second);
     }
 
     return result;
+}
+
+AbstractFunction *GlobalConfiguration::getGlobalFunction(const std::string& name) {
+
+    if (!hasGlobalFunction(name)) {
+
+        // Functions are built when abstracting, so AbstractFunction has to exist at this point.
+        throw UnknownGlobalNameException();
+    }
+
+    return globalFunctions[name];
+
+}
+
+bool GlobalConfiguration::hasGlobalFunction(const std::string &name) {
+
+    return globalFunctions.find(name) != globalFunctions.end();
+
+}
+
+void GlobalConfiguration::addGlobalFunction(AbstractFunction *function) {
+
+    if (hasGlobalFunction(function->getName())) throw GlobalNameAlreadyKnownException();
+
+    globalFunctions[function->getName()] = function;
+
 }

@@ -21,33 +21,19 @@
 #include "../../../../tools/src/PointerIrrelevantException.h"
 
 AbstractFunctionFactory::AbstractFunctionFactory(llvm::DataLayout *dataLayout, FinderFactory *finderFactory)
-        : dataLayout(dataLayout), finderFactory(finderFactory) {
+        : dataLayout(dataLayout), finderFactory(finderFactory) {}
 
-    resetAbstractionState();
-
-}
-
-void AbstractFunctionFactory::resetAbstractionState() {
-
-    initialOp = nullptr;
-    finalOp = nullptr;
-
-    loopLatchFound.clear();
-    loopJoinOps.clear();
-    ifJoinOps.clear();
-
-}
 
 AbstractFunction *AbstractFunctionFactory::buildAbstractFunction(llvm::Function *function) {
 
-    resetAbstractionState();
+    auto state = new std::map<std::string, BlockAbstractionState>();
 
     std::string name = function->getName();
 
-    initialOp = new DummyInitialOp();
+    auto initialOp = new DummyInitialOp();
 
+    PointerOperation *firstOp = abstractBasicBlock(&function->getEntryBlock(), state);
 
-    PointerOperation *firstOp = abstractBasicBlock(&function->getEntryBlock());
     initialOp->linkSuccessor(firstOp);
 
     std::map<int, PointerFormat>* pointerParamFormats = getPointerParamFormats(function);
@@ -55,10 +41,10 @@ AbstractFunction *AbstractFunctionFactory::buildAbstractFunction(llvm::Function 
     std::set<AbstractVar*>* varParams = getVarParams(function);
     std::vector<std::string> paramNames = getParamNames(function);
 
-    auto resultFunc = new AbstractFunction(initialOp, finalOp, name, pointerParamFormats,
+
+    auto resultFunc = new AbstractFunction(initialOp, state->finalOp, name, pointerParamFormats,
                                            compositeParamFormats, varParams, paramNames);
 
-    resetAbstractionState();
     return resultFunc;
 
 }
@@ -137,218 +123,242 @@ std::vector<std::string> AbstractFunctionFactory::getParamNames(llvm::Function *
 
 }
 
-PointerOperation *AbstractFunctionFactory::abstractBasicBlock(llvm::BasicBlock *BB) {
-
-    llvm::outs() << "\nAbstracting block " << BB->getName() << "\n";
-
-
-    // Block is loop condition iff it has two predecessors and two successors
-    if (BB->hasNPredecessors(2) && (BB->getTerminator()->getNumSuccessors() == 2)) {
-
-        return abstractLoopConditionBlock(BB);
-
-
-    }
-
-    //Block is if terminated iff it has less than two predecessors and two successors
-    if (!BB->hasNPredecessorsOrMore(2) && (BB->getTerminator()->getNumSuccessors() == 2)) {
-
-        return abstractIfBranchBlock(BB);
-
-
-    }
-
-    //Block is if rejoin iff it has two predecessors and less than two successors
-    if (BB->hasNPredecessors(2) && (BB->getTerminator()->getNumSuccessors() < 2)) {
-
-        return abstractIfRejoinBlock(BB);
-
-
-    }
-
-    PointerOperation *first = nullptr;
-    PointerOperation *last = nullptr;
-
-    auto abstractedOpPair = abstractBlockInstructions(BB);
-    if (abstractedOpPair != nullptr) {
-
-        first = abstractedOpPair->first;
-        last = abstractedOpPair->second;
-    }
-
-    PointerOperation *succOp;
-
-    llvm::Instruction *terminator = BB->getTerminator();
-
-    if (terminator->getNumSuccessors() == 0) {
-
-        assert(llvm::isa<llvm::ReturnInst>(terminator));
-        auto returnInst = llvm::cast<llvm::ReturnInst>(terminator);
-
-        finalOp = buildFinalOp(returnInst);
-        succOp = finalOp;
-
-    } else if (terminator->getNumSuccessors() == 1) {
-
-        succOp = abstractBasicBlock(terminator->getSuccessor(0));
-
-    } else {
-        throw new std::exception();
-    }
-
-
-    if (last == nullptr) {
-        return succOp;
-    }
-
-    last->linkSuccessor(succOp);
-    return first;
-
-}
-
-PointerOperation *AbstractFunctionFactory::abstractLoopConditionBlock(llvm::BasicBlock *BB) {
-
-    assert(BB->hasNPredecessors(2));
-    assert(BB->getTerminator()->getNumSuccessors() == 2);
-
-    if (loopJoinOps.find(BB->getName()) != loopJoinOps.end()) {
-
-        loopLatchFound[BB->getName()] = true;
-        return loopJoinOps[BB->getName()];
-
-    }
-
-    loopLatchFound[BB->getName()] = false;
-
-    PointerOperation *first = nullptr;
-    PointerOperation *last = nullptr;
-
-    auto abstractedOpPair = abstractBlockInstructions(BB);
-    if (abstractedOpPair != nullptr) {
-
-        first = abstractedOpPair->first;
-        last = abstractedOpPair->second;
-    }
-
-
-    SplitOp *splitOp = new SplitOp();
-    JoinOp *joinOp = new JoinOp();
-    splitOp->linkSuccessor(joinOp);
-    loopJoinOps[BB->getName()] = joinOp;
-
-    if (first == nullptr) {
-        first = splitOp;
-    } else {
-        last->linkSuccessor(splitOp);
-    }
-
-    PointerOperation *loopBodySuccOp;
-    PointerOperation *loopExitSuccOp;
-
-    PointerOperation *firstSuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(0));
-
-    if (loopLatchFound[BB->getName()]) {
-        loopBodySuccOp = firstSuccOp;
-        loopExitSuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(1));
-    } else {
-        loopBodySuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(1));
-        loopExitSuccOp = firstSuccOp;
-    }
-
-    splitOp->linkSuccessor(loopBodySuccOp);
-    joinOp->linkSuccessor(loopExitSuccOp);
-
-    return first;
-
-}
-
-PointerOperation *AbstractFunctionFactory::abstractIfBranchBlock(llvm::BasicBlock *BB) {
-
-    assert(!BB->hasNPredecessorsOrMore(2));
-    assert(BB->getTerminator()->getNumSuccessors() == 2);
-
-    PointerOperation *first = nullptr;
-    PointerOperation *last = nullptr;
-
-    auto abstractedOpPair = abstractBlockInstructions(BB);
-    if (abstractedOpPair != nullptr) {
-
-        first = abstractedOpPair->first;
-        last = abstractedOpPair->second;
-    }
-
-    SplitOp *splitOp = new SplitOp();
-    if (first == nullptr) {
-        first = splitOp;
-    } else {
-        last->linkSuccessor(splitOp);
-    }
-
-    PointerOperation *firstSuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(0));
-    splitOp->linkSuccessor(firstSuccOp);
-    PointerOperation *secondSuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(1));
-    splitOp->linkSuccessor(secondSuccOp);
-
-    return first;
-
-}
-
-PointerOperation *AbstractFunctionFactory::abstractIfRejoinBlock(llvm::BasicBlock *BB) {
-
-    assert(BB->hasNPredecessors(2));
-    assert(BB->getTerminator()->getNumSuccessors() < 2);
-
-    if (ifJoinOps.find(BB->getName()) != ifJoinOps.end()) {
-
-        return ifJoinOps[BB->getName()];
-    }
-
-    PointerOperation *first = nullptr;
-    PointerOperation *last = nullptr;
-
-    auto abstractedOpPair = abstractBlockInstructions(BB);
-    if (abstractedOpPair != nullptr) {
-
-        first = abstractedOpPair->first;
-        last = abstractedOpPair->second;
-    }
-
-    JoinOp *joinOp = new JoinOp();
-    ifJoinOps[BB->getName()] = joinOp;
-
-    if (first == nullptr) {
-        last = joinOp;
-    } else {
-        joinOp->linkSuccessor(first);
-    }
-
-    PointerOperation *succOp;
-
-    llvm::Instruction *terminator = BB->getTerminator();
-    if (terminator->getNumSuccessors() == 0) {
-
-        assert(llvm::isa<llvm::ReturnInst>(terminator));
-        auto returnInst = llvm::cast<llvm::ReturnInst>(terminator);
-
-        finalOp = buildFinalOp(returnInst);
-        succOp = finalOp;
-
-    } else {
-        // Only one successor
-        succOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(0));
-    }
-
-    last->linkSuccessor(succOp);
-    return joinOp;
+PointerOperation *AbstractFunctionFactory::abstractBasicBlock(llvm::BasicBlock *BB, std::map<std::string, BlockAbstractionState> *state) {
 
 
 }
 
+//PointerOperation *AbstractFunctionFactory::abstractBasicBlock(llvm::BasicBlock *BB, AbstractionState *state) {
+//
+//
+//
+//    // Block is loop condition iff it has two predecessors and two successors
+//    if (BB->hasNPredecessors(2) && (BB->getTerminator()->getNumSuccessors() == 2)) {
+//
+//        return abstractLoopConditionBlock(BB, state);
+//
+//
+//    }
+//
+//    //Block is if terminated iff it has less than two predecessors and two successors
+//    if (!BB->hasNPredecessorsOrMore(2) && (BB->getTerminator()->getNumSuccessors() == 2)) {
+//
+//        return abstractIfBranchBlock(BB, state);
+//
+//
+//    }
+//
+//    //Block is if rejoin iff it has two predecessors and less than two successors
+//    if (BB->hasNPredecessors(2) && (BB->getTerminator()->getNumSuccessors() < 2)) {
+//
+//        return abstractIfRejoinBlock(BB, state);
+//
+//
+//    }
+//
+//    llvm::outs() << "\nAbstracting regular block " << BB->getName() << "\n";
+//
+//    PointerOperation *first = nullptr;
+//    PointerOperation *last = nullptr;
+//
+//    auto abstractedOpPair = abstractBlockInstructions(BB);
+//    if (abstractedOpPair != nullptr) {
+//
+//        first = abstractedOpPair->first;
+//        last = abstractedOpPair->second;
+//    }
+//
+//    PointerOperation *succOp;
+//
+//    llvm::Instruction *terminator = BB->getTerminator();
+//
+//    if (terminator->getNumSuccessors() == 0) {
+//
+//        assert(llvm::isa<llvm::ReturnInst>(terminator));
+//        auto returnInst = llvm::cast<llvm::ReturnInst>(terminator);
+//
+//        state->finalOp = buildFinalOp(returnInst, state);
+//        succOp = state->finalOp;
+//
+//    } else if (terminator->getNumSuccessors() == 1) {
+//
+//        succOp = abstractBasicBlock(terminator->getSuccessor(0), state);
+//
+//    } else {
+//        throw std::exception();
+//    }
+//
+//
+//    if (last == nullptr) {
+//        return succOp;
+//    }
+//
+//    last->linkSuccessor(succOp);
+//    return first;
+//
+//}
+//
+//PointerOperation *AbstractFunctionFactory::abstractLoopConditionBlock(llvm::BasicBlock *BB, AbstractionState *state) {
+//
+//    assert(BB->hasNPredecessors(2));
+//    assert(BB->getTerminator()->getNumSuccessors() == 2);
+//
+//    if (state->loopJoinOps.find(BB->getName()) != state->loopJoinOps.end()) {
+//
+//        llvm::outs() << "\nLOOP CONDITION block " << BB->getName() << " already abstracted.\n";
+//
+//
+//        state->loopLatchFound[BB->getName()] = true;
+//        return state->loopJoinOps[BB->getName()];
+//
+//    }
+//
+//    llvm::outs() << "\nAbstracting LOOP CONDITION block " << BB->getName() << "\n";
+//
+//    state->loopLatchFound[BB->getName()] = false;
+//
+//    PointerOperation *first = nullptr;
+//    PointerOperation *last = nullptr;
+//
+//    auto abstractedOpPair = abstractBlockInstructions(BB);
+//    if (abstractedOpPair != nullptr) {
+//
+//        first = abstractedOpPair->first;
+//        last = abstractedOpPair->second;
+//    }
+//
+//
+//    auto splitOp = new SplitOp();
+//    auto joinOp = new JoinOp();
+//    splitOp->linkSuccessor(joinOp);
+//    state->loopJoinOps[BB->getName()] = joinOp;
+//
+//    if (first == nullptr) {
+//        first = splitOp;
+//    } else {
+//        last->linkSuccessor(splitOp);
+//    }
+//
+//    PointerOperation *loopBodySuccOp;
+//    PointerOperation *loopExitSuccOp;
+//
+//    PointerOperation *firstSuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(0), state);
+//
+//    if (state->loopLatchFound[BB->getName()]) {
+//        loopBodySuccOp = firstSuccOp;
+//        loopExitSuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(1), state);
+//    } else {
+//        loopBodySuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(1), state);
+//        loopExitSuccOp = firstSuccOp;
+//    }
+//
+//    llvm::outs() << "Loop Condition block name: " << BB->getName() << "\n";
+//    assert(state->loopLatchFound[BB->getName()]);
+//
+//    splitOp->linkSuccessor(loopBodySuccOp);
+//    joinOp->linkSuccessor(loopExitSuccOp);
+//
+//    return first;
+//
+//}
+//
+//PointerOperation *AbstractFunctionFactory::abstractIfBranchBlock(llvm::BasicBlock *BB, AbstractionState *state) {
+//
+//    assert(!BB->hasNPredecessorsOrMore(2));
+//    assert(BB->getTerminator()->getNumSuccessors() == 2);
+//
+//    llvm::outs() << "\nAbstracting IF BRANCH block " << BB->getName() << "\n";
+//
+//    PointerOperation *first = nullptr;
+//    PointerOperation *last = nullptr;
+//
+//    auto abstractedOpPair = abstractBlockInstructions(BB);
+//    if (abstractedOpPair != nullptr) {
+//
+//        first = abstractedOpPair->first;
+//        last = abstractedOpPair->second;
+//    }
+//
+//    auto splitOp = new SplitOp();
+//    if (first == nullptr) {
+//        first = splitOp;
+//    } else {
+//        last->linkSuccessor(splitOp);
+//    }
+//
+//    PointerOperation *firstSuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(0), state);
+//    splitOp->linkSuccessor(firstSuccOp);
+//    PointerOperation *secondSuccOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(1), state);
+//    splitOp->linkSuccessor(secondSuccOp);
+//
+//    return first;
+//
+//}
+//
+//PointerOperation *AbstractFunctionFactory::abstractIfRejoinBlock(llvm::BasicBlock *BB, AbstractionState *state) {
+//
+//    assert(BB->hasNPredecessors(2));
+//    assert(BB->getTerminator()->getNumSuccessors() < 2);
+//
+//    if (state->ifJoinOps.find(BB->getName()) != state->ifJoinOps.end()) {
+//
+//        llvm::outs() << "\nIF REJOIN block " << BB->getName() << " already abstracted.\n";
+//
+//        return state->ifJoinOps[BB->getName()];
+//    }
+//
+//    llvm::outs() << "\nAbstracting IF REJOIN block " << BB->getName() << "\n";
+//
+//    PointerOperation *first = nullptr;
+//    PointerOperation *last = nullptr;
+//
+//    auto abstractedOpPair = abstractBlockInstructions(BB);
+//    if (abstractedOpPair != nullptr) {
+//
+//        first = abstractedOpPair->first;
+//        last = abstractedOpPair->second;
+//    }
+//
+//    auto joinOp = new JoinOp();
+//    state->ifJoinOps[BB->getName()] = joinOp;
+//
+//    if (first == nullptr) {
+//        last = joinOp;
+//    } else {
+//        joinOp->linkSuccessor(first);
+//    }
+//
+//    PointerOperation *succOp;
+//
+//    llvm::Instruction *terminator = BB->getTerminator();
+//    if (terminator->getNumSuccessors() == 0) {
+//
+//        assert(llvm::isa<llvm::ReturnInst>(terminator));
+//        auto returnInst = llvm::cast<llvm::ReturnInst>(terminator);
+//
+//        state->finalOp = buildFinalOp(returnInst, state);
+//        succOp = state->finalOp;
+//
+//    } else {
+//        // Only one successor
+//
+//        succOp = abstractBasicBlock(BB->getTerminator()->getSuccessor(0), state);
+//
+//    }
+//
+//
+//    last->linkSuccessor(succOp);
+//    return joinOp;
+//
+//
+
+
+
+//}
 
 /**
- * Abstracts all pointer relevant instructions from BB into PointerOperations and attaches the resulting CFG to the given previous PointerOperation. It ignores all control flow instructions.
+ * Abstracts all pointer relevant instructions from BB into PointerOperations. It ignores all control flow instructions.
  * @param BB the BasicBlock whose instructions to abstract.
- * @param predExitOp the PointerOperation preceeding this block.
  * @return the first and last PointerOperation abstracted from this block if any or nullptr if none were abstracted from this block.
  */
 std::pair<PointerOperation *, PointerOperation *> *
@@ -362,8 +372,8 @@ AbstractFunctionFactory::abstractBlockInstructions(llvm::BasicBlock *BB) {
     for (auto & BBI : *BB) {
 
         llvm::Instruction *inst = &BBI;
-
         const char *termMsg = (inst->isTerminator()) ? " (Terminator)" : "";
+
         llvm::outs() << *inst << termMsg << "\n";
 
         try {
@@ -396,14 +406,24 @@ AbstractFunctionFactory::abstractBlockInstructions(llvm::BasicBlock *BB) {
 
 }
 
+
 PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction *inst) {
 
-    if (auto *storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
+    if (auto storeInst = llvm::dyn_cast<llvm::StoreInst>(inst)) {
 
         return handleStore(storeInst);
     }
 
-    if (llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst)) {
+    if (auto callInst = llvm::dyn_cast<llvm::CallInst>(inst)) {
+
+        auto calledFunction = callInst->getCalledFunction();
+
+        if (calledFunction == nullptr) throw PointerIrrelevantException();
+
+        if (!Configuration::global->hasGlobalFunction(calledFunction->getName())) {
+
+            Configuration::global->addGlobalFunction(buildAbstractFunction(calledFunction));
+        }
 
         // TODO Change predicate once composite returns are okay
         if (!callInst->getFunctionType()->getReturnType()->isPointerTy()) {
@@ -414,14 +434,13 @@ PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction
 
     }
 
-    if (llvm::AllocaInst *allocaInst = llvm::dyn_cast<llvm::AllocaInst>(inst)) {
+    if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(inst)) {
         return handleAllocation(allocaInst);
     }
 
     throw PointerIrrelevantException();
 
 }
-
 
 PointerOperation *AbstractFunctionFactory::handleAllocation(llvm::AllocaInst *allocaInst) {
 
@@ -450,6 +469,7 @@ PointerOperation *AbstractFunctionFactory::handleAllocation(llvm::AllocaInst *al
     return allocOp;
 }
 
+
 /**
  * handles copy instructions. Throws PointerIrrelevantException.
  * @param loadInstructions the load instruction of the copy
@@ -476,43 +496,15 @@ PointerOperation *AbstractFunctionFactory::handleStore(llvm::StoreInst *storeIns
     assert(fromFinder != nullptr);
     assert(toFinder != nullptr);
 
-    StoreOp *copyOp = new StoreOp(fromFinder, toFinder, storeInst);
+    auto copyOp = new StoreOp(fromFinder, toFinder, storeInst);
 
     return copyOp;
 }
 
-//PointerOperation *AbstractFunctionFactory::handleAssignment(llvm::StoreInst *storeInst) {
-//
-//    llvm::Value *targetValue = storeInst->getValueOperand();
-//    llvm::Value *pointerValue = storeInst->getPointerOperand();
-//
-//
-//    if (!targetValue->getType()->isPointerTy()) { throw PointerIrrelevantException(); }
-//
-//    auto ptrType = llvm::cast<llvm::PointerType>(pointerValue->getType());
-//    if (!ptrType->getElementType()->isPointerTy()) { throw PointerIrrelevantException(); }
-//
-//
-//    PointerFinder *pointerFinder;
-//    TargetFinder *targetFinder;
-//    std::list<llvm::Instruction *> assocInsts;
-//
-//
-//    targetFinder = finderFactory->getTargetFinder(targetValue);
-//    pointerFinder = finderFactory->getPointerFinder(pointerValue, false);
-//
-//    assert(pointerFinder != nullptr);
-//    assert(targetFinder != nullptr);
-//
-//    AssignmentOp *assignmentOp = new AssignmentOp(pointerFinder, targetFinder, storeInst,
-//                                                  assocInsts);
-//
-//    return assignmentOp;
-//}
-
 PointerOperation *AbstractFunctionFactory::handleCallWithIrrelevantReturn(llvm::CallInst *callInst) {
 
     llvm::Function *function = callInst->getCalledFunction();
+
     std::string funcName = function->getName();
 
     std::map<int, PointerFinder *> pointerParamFinders;
@@ -557,9 +549,10 @@ ReturnOp *AbstractFunctionFactory::handleReturn(llvm::ReturnInst *returnInst) {
 
 }
 
-ReturnOp * AbstractFunctionFactory::buildFinalOp(llvm::ReturnInst *returnInst) {
+ReturnOp * AbstractFunctionFactory::buildFinalOp(llvm::ReturnInst *returnInst,
+                                                 std::map<std::string, BlockAbstractionState> *state) {
 
-    if (finalOp != nullptr) throw MultipleReturnException();
+    if (state->finalOp != nullptr) throw MultipleReturnException();
 
     ReturnOp *op = handleReturn(returnInst);
 

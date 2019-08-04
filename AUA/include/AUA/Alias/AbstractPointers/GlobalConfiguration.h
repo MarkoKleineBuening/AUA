@@ -12,11 +12,14 @@
 #include "AbstractPointer.h"
 #include "AbstractComposite.h"
 #include "AbstractVar.h"
+#include "GlobalValueFactory.h"
 
 
 class GlobalConfiguration {
 
 private:
+
+    GlobalValueFactory* globalValueFactory;
 
     std::map<std::string, AbstractFunction *> globalFunctions;
     std::map<std::string, AbstractPointer *> globalPointers;
@@ -25,23 +28,20 @@ private:
 
 public:
 
-    bool hasGlobalFunction(std::string name);
-    bool hasGlobalPointer(std::string name);
-    bool hasGlobalComposite(std::string name);
-    bool hasGlobalVar(std::string name);
+    GlobalConfiguration(GlobalValueFactory *globalValueFactory);
 
-    void addGlobalFunction(std::string name, AbstractFunction *function);
-    void addGlobalPointer(std::string name, AbstractPointer *pointer);
-    void addGlobalComposite(std::string name, AbstractComposite *composite);
-    void addGlobalVar(std::string name, AbstractVar *var);
+    AbstractReference *getGlobalReference(const std::string& name);
 
-    AbstractFunction *getGlobalFunction(std::string name);
-    AbstractPointer *getGlobalPointer(std::string name);
-    AbstractComposite *getGlobalComposite(std::string name);
-    AbstractVar *getGlobalVar(std::string name);
+    AbstractPointer *getGlobalPointer(const std::string& name);
+    AbstractComposite *getGlobalComposite(const std::string& name);
+    AbstractVar *getGlobalVar(const std::string& name);
 
     std::set<AbstractPointer*> getAllGlobalPointers();
     std::set<AbstractComposite*> getAllGlobalComposites();
+
+    bool hasGlobalFunction(const std::string& name);
+    AbstractFunction *getGlobalFunction(const std::string& name);
+    void addGlobalFunction(AbstractFunction* function);
 
 };
 

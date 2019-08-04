@@ -245,3 +245,7 @@ const std::string AbstractComposite::to_string() {
     return oss.str();
 
 }
+
+const int AbstractComposite::getSize() {
+    return format.totalSize;
+}

@@ -45,6 +45,8 @@ public:
 
     const int getPointerLevel() override { return format.level; };
 
+    const int getSize() override;
+
     const std::string to_string() override;
 
     const PointerFormat &getFormat() const;

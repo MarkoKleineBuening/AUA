@@ -32,6 +32,8 @@ public:
 
     Configuration *getDeepCopy();
 
+    static void setGlobalConfiguration(GlobalConfiguration* global);
+
 
 };
 
@@ -42,5 +44,10 @@ struct ConfigurationUnknownTargetNameException : public std::exception {
     }
 };
 
+struct GlobalConfigurationAlreadySetException : public std::exception {
+    const char *what() const throw() {
+        return "The global configuration has already been set once.";
+    }
+};
 
 #endif //AUA_CONFIGURATION_H

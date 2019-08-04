@@ -8,32 +8,8 @@
 
 std::set <AbstractTarget> GlobalTargetFinder::findTargets(Configuration *conf) const {
 
-    AbstractReference *targetBase;
-    int size;
-
-    if (Configuration::global->hasGlobalVar(name)) {
-
-        AbstractVar *targetVar = Configuration::global->getGlobalVar(name);
-        size = targetVar->getSize();
-        targetBase = targetVar;
-
-    } else if (Configuration::global->hasGlobalPointer(name)) {
-
-        targetBase = Configuration::global->getGlobalPointer(name);
-        size = 0;
-
-    } else if (Configuration::global->hasGlobalComposite(name)) {
-
-        AbstractComposite *targetComp = Configuration::global->getGlobalComposite(name);
-        size = targetComp->getFormat().totalSize;
-        targetBase = targetComp;
-
-    } else {
-
-        throw ConfigurationUnknownTargetNameException();
-
-    }
-
+    AbstractReference *targetBase = Configuration::global->getGlobalReference(name);
+    int size = targetBase->getSize();
 
     AbstractTarget target = AbstractTarget(targetBase, 0, size);
 
