@@ -40,27 +40,29 @@ void SplitOp::execute(Configuration *in) {
 
 void SplitOp::addPredecessor(PointerOperation *predecessor) {
 
+    if (pred != nullptr) throw PredecessorCountException();
+
     this->pred = predecessor;
 
 }
 
 void SplitOp::linkSuccessor(PointerOperation *successor) {
 
-    this->succ.insert(successor);
+    this->succ.push_back(successor);
     successor->addPredecessor(this);
 
 }
 
-std::set<PointerOperation *> SplitOp::getPredecessors() {
+std::list<PointerOperation *> SplitOp::getPredecessors() {
 
-    std::set<PointerOperation *> resultSet;
-    resultSet.insert(pred);
+    std::list<PointerOperation *> list;
+    list.push_back(pred);
 
-    return resultSet;
+    return list;
 
 }
 
-std::set<PointerOperation *> SplitOp::getSuccessors() {
+std::list<PointerOperation *> SplitOp::getSuccessors() {
 
     return succ;
 

@@ -12,7 +12,7 @@
 #include "BasePointerFinder.h"
 #include "FromPointerPointerFinder.h"
 #include "MemberPointerFinder.h"
-#include "ReturnedPointerFinder.h"
+#include "DirectCallPointerFinder.h"
 #include "AnonymousPointerFinder.h"
 #include "CompositeFinder.h"
 #include "BaseCompositeFinder.h"
@@ -48,7 +48,7 @@ private:
     static AnonymousPointerFinder *getAnonymousPointerFinder(llvm::GlobalVariable *variable, PointerFormat expectedFormat, bool isAdress);
 
     FromPointerPointerFinder *getNestedPointerFinder(llvm::LoadInst *loadInst, PointerFormat expectedFormat, bool isAdress);
-    ReturnedPointerFinder *getReturnedPointerFinder(llvm::CallInst *callInst, PointerFormat expectedFormat, bool isAdress);
+    CallPointerFinder * getCallPointerFinder(llvm::CallInst *callInst, PointerFormat expectedFormat, bool isAdress);
 
     static PointerFormat getPointerFormat(llvm::Type *type);
 

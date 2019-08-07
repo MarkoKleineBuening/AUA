@@ -25,17 +25,18 @@ void ReturnOp::linkSuccessor(PointerOperation *successor) {
 
 }
 
-std::set<PointerOperation *> ReturnOp::getSuccessors() {
+std::list<PointerOperation *> ReturnOp::getSuccessors() {
 
     throw SuccessorCountException(returnInst);
 
 }
 
-std::set<PointerOperation *> ReturnOp::getPredecessors() {
+std::list<PointerOperation *> ReturnOp::getPredecessors() {
 
-    std::set<PointerOperation *> resultSet;
-    resultSet.insert(pred);
-    return resultSet;
+    std::list<PointerOperation *> list;
+    list.push_back(pred);
+
+    return list;
 
 }
 
@@ -44,6 +45,8 @@ Configuration *ReturnOp::getLastConfiguration() {
 }
 
 void ReturnOp::execute(Configuration *in) {
+
+    llvm::outs() << "Execute on return called.\n";
 
     lastConfiguration = in;
     setResult(in);

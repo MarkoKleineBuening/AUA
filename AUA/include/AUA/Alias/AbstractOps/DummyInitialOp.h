@@ -32,9 +32,9 @@ public:
 
     void addPredecessor(PointerOperation *predecessor) override;
 
-    std::set<PointerOperation *> getPredecessors() override;
+    std::list<PointerOperation *> getPredecessors() override;
 
-    std::set<PointerOperation *> getSuccessors() override;
+    std::list<PointerOperation *> getSuccessors() override;
 
 };
 

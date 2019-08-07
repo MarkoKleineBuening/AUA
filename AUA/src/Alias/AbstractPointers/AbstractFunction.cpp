@@ -36,7 +36,17 @@ PointerSetValue *AbstractFunction::execute(std::map<int, PointerSetValue *> ptrP
     llvm::outs() << "\n\n------------------------------ \n\n";
     llvm::outs() << "Function " << name << " called.\n";
 
-    Configuration *conf = new Configuration();
+
+    for (auto ptrFormatPair : *ptrParamFormats) {
+        assert(ptrParams.find(ptrFormatPair.first) != ptrParams.end());
+    }
+
+    for (const auto& compFormatPair : *compParamFormats) {
+        assert(compParams.find(compFormatPair.first) != compParams.end());
+    }
+
+
+    auto conf = new Configuration();
 
     ReferenceFlags paramFlags = ReferenceFlags(false, false, true);
 
@@ -106,10 +116,10 @@ std::map<int, PointerSetValue*> AbstractFunction::getEmptyInputPointers() {
     std::map<int, PointerSetValue*> emptyPointers;
     for (auto pfp: *ptrParamFormats) {
 
-        std::string name = "emptyInputPtr";
-        name += std::to_string(pfp.first);
+        std::string ptrName = "emptyInputPtr";
+        ptrName += std::to_string(pfp.first);
 
-        auto emptyPointer = new AbstractPointer(name, pfp.second);
+        auto emptyPointer = new AbstractPointer(ptrName, pfp.second);
         auto emptyPointerSV = new PointerSetValue(pfp.second);
         emptyPointerSV->include(emptyPointer);
 
@@ -123,12 +133,12 @@ std::map<int, PointerSetValue*> AbstractFunction::getEmptyInputPointers() {
 std::map<int, CompositeSetValue*> AbstractFunction::getEmptyInputComposites() {
 
     std::map<int, CompositeSetValue*> emptyComposites;
-    for (auto cfp: *compParamFormats) {
+    for (const auto& cfp: *compParamFormats) {
 
-        std::string name = "emptyInputComp";
-        name += std::to_string(cfp.first);
+        std::string compName = "emptyInputComp";
+        compName += std::to_string(cfp.first);
 
-        auto emptyComposite = new AbstractComposite(name, cfp.second);
+        auto emptyComposite = new AbstractComposite(compName, cfp.second);
         auto emptyCompositeSV = new CompositeSetValue(cfp.second);
         emptyCompositeSV->include(emptyComposite);
 

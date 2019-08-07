@@ -4,6 +4,8 @@
 
 #include "AUA/Alias/AbstractPointers/Finders/AnonymousPointerFinder.h"
 
+int AnonymousPointerFinder::anonPointerCounter = 0;
+
 AnonymousPointerFinder::AnonymousPointerFinder(const PointerFormat &expectedFormat, TargetFinder *targetFinder)
     : PointerFinder(expectedFormat), targetFinder(targetFinder), anonPointerId(anonPointerCounter) {
 
@@ -24,7 +26,7 @@ PointerSetValue *AnonymousPointerFinder::findPointers(Configuration *configurati
 
 }
 
-std::string AnonymousPointerFinder::buildAnonPointerName() const {
+const std::string AnonymousPointerFinder::buildAnonPointerName() const {
 
     std::ostringstream oss;
     oss << "Anonymous Pointer (id: " << anonPointerId << ")";

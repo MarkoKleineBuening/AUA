@@ -24,6 +24,8 @@ JoinOp::JoinOp() : currentInput(nullptr) {
 
 void JoinOp::execute(Configuration *in) {
 
+    llvm::outs() << "JoinOp reached.\n";
+
     ++numberOfExecuteCalls;
 
     if (currentInput == nullptr) {
@@ -37,8 +39,14 @@ void JoinOp::execute(Configuration *in) {
         currentInput->merge(in);
     }
 
+    llvm::outs() << "Call number :" << numberOfExecuteCalls <<"\n";
+    llvm::outs() << "Predecessor count :" << pred.size() <<"\n";
 
-    if (numberOfExecuteCalls < pred.size()) return;
+    if (numberOfExecuteCalls < pred.size()) {
+
+        llvm::outs() << "Not going on yet because call number < pred count.\n";
+        return;
+    }
 
     llvm::outs() << "\nJoining.";
 
@@ -56,7 +64,7 @@ void JoinOp::execute(Configuration *in) {
 
 void JoinOp::addPredecessor(PointerOperation *predecessor) {
 
-    this->pred.insert(predecessor);
+    this->pred.push_back(predecessor);
 
 }
 
@@ -67,18 +75,18 @@ void JoinOp::linkSuccessor(PointerOperation *successor) {
 
 }
 
-std::set<PointerOperation *> JoinOp::getPredecessors() {
+std::list<PointerOperation *> JoinOp::getPredecessors() {
 
     return pred;
 
 }
 
-std::set<PointerOperation *> JoinOp::getSuccessors() {
+std::list<PointerOperation *> JoinOp::getSuccessors() {
 
-    std::set<PointerOperation *> resultSet;
-    resultSet.insert(succ);
+    std::list<PointerOperation *> resultList;
+    resultList.push_back(succ);
 
-    return resultSet;
+    return resultList;
 
 }
 

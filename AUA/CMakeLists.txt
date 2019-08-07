@@ -15,6 +15,7 @@ nm_add_library(AUA STATIC
 
         src/Alias/AbstractPointers/AbstractFunction.cpp
         src/Alias/AbstractPointers/AbstractFunctionFactory.cpp
+        src/Alias/AbstractPointers/AbstractLoop.cpp
 
         src/Alias/AbstractPointers/Finders/FinderFactory.cpp
 
@@ -23,7 +24,9 @@ nm_add_library(AUA STATIC
         src/Alias/AbstractPointers/Finders/GlobalPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/FromPointerPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/MemberPointerFinder.cpp
-        src/Alias/AbstractPointers/Finders/ReturnedPointerFinder.cpp
+        src/Alias/AbstractPointers/Finders/CallPointerFinder.cpp
+        src/Alias/AbstractPointers/Finders/DirectCallPointerFinder.cpp
+        src/Alias/AbstractPointers/Finders/IndirectCallPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/AnonymousPointerFinder.cpp
 
         src/Alias/AbstractPointers/Finders/CompositeFinder.cpp

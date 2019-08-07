@@ -5,6 +5,7 @@
 #include <llvm/IR/Instructions.h>
 #include <AUA/Alias/AbstractPointers/GlobalConfiguration.h>
 #include <AUA/Alias/AbstractPointers/Finders/AnonymousPointerFinder.h>
+#include <AUA/Alias/AbstractPointers/Finders/IndirectCallPointerFinder.h>
 #include "AUA/Alias/AbstractPointers/Finders/FinderFactory.h"
 
 // POINTER FINDING -------------------------------------------------------------
@@ -27,7 +28,8 @@ PointerFinder *FinderFactory::getPointerFinder(llvm::Value *value, bool isAdress
     if (auto globalVariable = llvm::dyn_cast<llvm::GlobalVariable>(value)) return getGlobalPointerFinder(globalVariable, expectedFormat, isAdress);
     if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getNestedPointerFinder(loadInst, expectedFormat, isAdress);
     if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberPointerFinder(gepInst, expectedFormat, isAdress);
-    if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getReturnedPointerFinder(callInst, expectedFormat, isAdress);
+    if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getCallPointerFinder(callInst, expectedFormat,
+                                                                                           isAdress);
 
     throw UnknownFinderInstructionException();
 
@@ -64,6 +66,7 @@ PointerFinder * FinderFactory::getGlobalPointerFinder(llvm::GlobalVariable *vari
 
     llvm::Type* inType = variable->getValueType();
     PointerFormat actualFormat = getPointerFormat(inType);
+
 
     if ((!isAdress) && actualFormat.level == expectedFormat.level - 1) {
 
@@ -192,12 +195,21 @@ PointerFinder *FinderFactory::getMemberPointerFinder(llvm::GetElementPtrInst *ge
 
 }
 
-ReturnedPointerFinder *FinderFactory::getReturnedPointerFinder(llvm::CallInst *callInst, PointerFormat expectedFormat, bool isAdress) {
+CallPointerFinder * FinderFactory::getCallPointerFinder(llvm::CallInst *callInst, PointerFormat expectedFormat,
+                                                        bool isAdress) {
 
     llvm::Type* inType = callInst->getType();
     PointerFormat actualFormat = getPointerFormat(inType);
     if (actualFormat != expectedFormat) throw PointerFinderConstructionFormatException(callInst, expectedFormat,
                                                                                        actualFormat);
+
+    if (callInst->isIndirectCall()) {
+
+        //Ignore indirect calls => Return pointer finder that returns dummy pointer.
+
+        return new IndirectCallPointerFinder(actualFormat, callInst);
+    }
+
 
     std::map<int, PointerFinder *> pointerParamFinders;
     std::map<int, CompositeFinder *> compositeParamFinders;
@@ -224,7 +236,7 @@ ReturnedPointerFinder *FinderFactory::getReturnedPointerFinder(llvm::CallInst *c
     llvm::Function *function = callInst->getCalledFunction();
     FunctionFinder* funcFinder = getFunctionFinder(function);
 
-    return new ReturnedPointerFinder(funcFinder, pointerParamFinders, compositeParamFinders, actualFormat, callInst);
+    return new DirectCallPointerFinder(funcFinder, pointerParamFinders, compositeParamFinders, actualFormat, callInst);
 
 }
 

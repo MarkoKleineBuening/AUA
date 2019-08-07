@@ -20,32 +20,36 @@ void SinglePredAndSuccOp::execute(Configuration *in) {
 
 void SinglePredAndSuccOp::addPredecessor(PointerOperation *predecessor) {
 
+    if (pred != nullptr) throw PredecessorCountException();
+
     this->pred = predecessor;
 
 }
 
 void SinglePredAndSuccOp::linkSuccessor(PointerOperation *successor) {
 
+    if (succ != nullptr) throw SuccessorCountException();
+
     this->succ = successor;
     successor->addPredecessor(this);
 
 }
 
-std::set<PointerOperation *> SinglePredAndSuccOp::getPredecessors() {
+std::list<PointerOperation *> SinglePredAndSuccOp::getPredecessors() {
 
-    std::set<PointerOperation *> resultSet;
-    resultSet.insert(pred);
+    std::list<PointerOperation *> list;
+    list.push_back(pred);
 
-    return resultSet;
+    return list;
 
 }
 
-std::set<PointerOperation *> SinglePredAndSuccOp::getSuccessors() {
+std::list<PointerOperation *> SinglePredAndSuccOp::getSuccessors() {
 
-    std::set<PointerOperation *> resultSet;
-    resultSet.insert(succ);
+    std::list<PointerOperation *> list;
+    list.push_back(succ);
 
-    return resultSet;
+    return list;
 
 }
 

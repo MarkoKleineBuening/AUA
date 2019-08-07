@@ -13,7 +13,7 @@ AbstractPointer *GlobalValueFactory::buildGlobalAbstractPointer(const std::strin
 
     if (g == nullptr) throw GlobalVariableNotExistingException(name);
 
-    llvm::Type* type = g->getType();
+    llvm::Type* type = g->getValueType();
 
     if (!llvm::isa<llvm::PointerType>(type)) throw GlobalVariableTypeMatchException(name, "pointer");
 
@@ -29,7 +29,7 @@ AbstractComposite *GlobalValueFactory::buildGlobalAbstractComposite(const std::s
 
     if (g == nullptr) throw GlobalVariableNotExistingException(name);
 
-    llvm::Type* type = g->getType();
+    llvm::Type* type = g->getValueType();
 
     if (!llvm::isa<llvm::CompositeType>(type)) throw GlobalVariableTypeMatchException(name, "composite");
 
@@ -45,7 +45,7 @@ AbstractVar *GlobalValueFactory::buildGlobalAbstractVar(const std::string& name)
 
     if (g == nullptr) throw GlobalVariableNotExistingException(name);
 
-    llvm::Type* type = g->getType();
+    llvm::Type* type = g->getValueType();
 
     if (llvm::isa<llvm::PointerType>(type) || llvm::isa<llvm::CompositeType>(type)) throw GlobalVariableTypeMatchException(name, "plain var (no pointer or composite)");
 
@@ -59,7 +59,7 @@ bool GlobalValueFactory::globalPointerExists(const std::string &name) {
 
     if (g == nullptr) return false;
 
-    llvm::Type* type = g->getType();
+    llvm::Type* type = g->getValueType();
 
     return llvm::isa<llvm::PointerType>(type);
 
@@ -71,7 +71,7 @@ bool GlobalValueFactory::globalCompositeExists(const std::string &name) {
 
     if (g == nullptr) return false;
 
-    llvm::Type* type = g->getType();
+    llvm::Type* type = g->getValueType();
 
     return llvm::isa<llvm::CompositeType>(type);
 
@@ -83,7 +83,7 @@ bool GlobalValueFactory::globalVarExists(const std::string &name) {
 
     if (g == nullptr) return false;
 
-    llvm::Type* type = g->getType();
+    llvm::Type* type = g->getValueType();
 
     return !(llvm::isa<llvm::CompositeType>(type) || llvm::isa<llvm::PointerType>(type));
 

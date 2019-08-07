@@ -67,6 +67,22 @@ std::set<AbstractComposite *> ConfigurationPrinter::getAllComposites(Configurati
 }
 
 
+std::set<AbstractVar *> ConfigurationPrinter::getAllVars(Configuration *configuration) {
+
+    std::set<AbstractVar *> allVars;
+
+    for (const auto& varPair: configuration->vars) {
+
+        allVars.insert(varPair.second);
+    }
+
+    allVars.merge(Configuration::global->getAllGlobalVars());
+
+    return allVars;
+
+}
+
+
 std::set<AbstractPointer *> ConfigurationPrinter::getAllMemberPointers(Configuration *configuration) {
 
     std::set<AbstractPointer *> result;
@@ -81,7 +97,6 @@ std::set<AbstractPointer *> ConfigurationPrinter::getAllMemberPointers(Configura
     return result;
 
 }
-
 
 std::set<AbstractPointer *> ConfigurationPrinter::getAllPointers(Configuration* configuration) {
 
@@ -122,17 +137,21 @@ void ConfigurationPrinter::printPointerInfo(Configuration* configuration) {
 
 void ConfigurationPrinter::printVarInfo(Configuration* configuration) {
 
-    llvm::outs() << "\n" << configuration->vars.size() << " variables:\n";
-    for (std::pair<std::string, AbstractVar *> v : configuration->vars) {
-        llvm::outs() << v.second->to_string() << "\n";
+    auto allVars = getAllVars(configuration);
+
+    llvm::outs() << "\n" << allVars.size() << " variables:\n";
+    for (auto v : allVars) {
+        llvm::outs() << v->to_string() << "\n";
     }
     llvm::outs() << "\n";
 }
 
 void ConfigurationPrinter::printCompositeInfo(Configuration* configuration) {
 
-    llvm::outs() << "\n" << configuration->composites.size() << " composites:\n";
-    for (auto c : getAllComposites(configuration)) {
+    auto allComposites = getAllComposites(configuration);
+
+    llvm::outs() << "\n" << allComposites.size() << " composites:\n";
+    for (auto c : allComposites) {
         llvm::outs() << c->to_string() << "\n";
     }
     llvm::outs() << "\n";

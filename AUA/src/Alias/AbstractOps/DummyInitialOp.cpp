@@ -5,9 +5,7 @@
 #include <llvm/Support/raw_ostream.h>
 #include <AUA/Alias/AbstractOps/DummyInitialOp.h>
 
-DummyInitialOp::DummyInitialOp() {
-
-}
+DummyInitialOp::DummyInitialOp() = default;
 
 Configuration *DummyInitialOp::apply(Configuration *in) {
 
@@ -35,15 +33,15 @@ void DummyInitialOp::linkSuccessor(PointerOperation *successor) {
 
 }
 
-std::set<PointerOperation *> DummyInitialOp::getSuccessors() {
+std::list<PointerOperation *> DummyInitialOp::getSuccessors() {
 
-    std::set<PointerOperation *> resultSet;
-    resultSet.insert(succ);
-    return resultSet;
+    std::list<PointerOperation *> resultList;
+    resultList.push_back(succ);
+    return resultList;
 
 }
 
-std::set<PointerOperation *> DummyInitialOp::getPredecessors() {
+std::list<PointerOperation *> DummyInitialOp::getPredecessors() {
 
 
     throw UndefinedPointerOperationMethodException();

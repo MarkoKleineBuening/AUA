@@ -38,6 +38,7 @@ public:
 
     std::set<AbstractPointer*> getAllGlobalPointers();
     std::set<AbstractComposite*> getAllGlobalComposites();
+    std::set<AbstractVar *> getAllGlobalVars();
 
     bool hasGlobalFunction(const std::string& name);
     AbstractFunction *getGlobalFunction(const std::string& name);

@@ -16,7 +16,7 @@ private:
     const int anonPointerId;
 
     TargetFinder* targetFinder;
-    std::string buildAnonPointerName() const;
+    const std::string buildAnonPointerName() const;
 
 public:
 

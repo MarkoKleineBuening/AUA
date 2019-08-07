@@ -56,14 +56,14 @@ public:
      * Returns all succeeding PointerOperations to this operation.
      * @return the succeeding operations.
      */
-    virtual std::set<PointerOperation *> getSuccessors() = 0;
+    virtual std::list<PointerOperation *> getSuccessors() = 0;
 
 
     /**
      * Returns all preceeding PointerOperations to this operation.
      * @return the preceeding PointerOperations.
      */
-    virtual std::set<PointerOperation *> getPredecessors() = 0;
+    virtual std::list<PointerOperation *> getPredecessors() = 0;
 
 
 };
@@ -76,9 +76,15 @@ private:
 
 public:
 
-    PredecessorCountException(llvm::Instruction *inst) : inst(inst) {}
+    PredecessorCountException() : inst(nullptr) {}
+    explicit PredecessorCountException(llvm::Instruction *inst) : inst(inst) {}
 
     const char *what() const throw() {
+
+        if (inst == nullptr) {
+            llvm::outs() << "Wrong predecessor count!\n";
+        }
+
 
         std::string instString;
         llvm::raw_string_ostream rso(instString);
@@ -104,9 +110,14 @@ private:
 
 public:
 
+    SuccessorCountException() : inst(nullptr) {}
     SuccessorCountException(llvm::Instruction *inst) : inst(inst) {}
 
     const char *what() const throw() {
+
+        if (inst == nullptr) {
+            llvm::outs() << "Wrong successor count!\n";
+        }
 
         std::string instString;
         llvm::raw_string_ostream rso(instString);

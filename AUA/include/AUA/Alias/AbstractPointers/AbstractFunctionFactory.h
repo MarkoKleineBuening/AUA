@@ -20,6 +20,9 @@
 #include <llvm/ADT/Optional.h>
 #include <llvm/ADT/StringRef.h>
 #include <llvm/IR/CFG.h>
+#include <llvm/IR/Dominators.h>
+
+#include <llvm/Analysis/LoopInfo.h>
 
 #include <AUA/Alias/AbstractOps/PointerOperation.h>
 #include <AUA/Alias/AbstractPointers/Finders/TargetFinder.h>
@@ -31,14 +34,15 @@
 #include <AUA/Alias/AbstractPointers/Finders/FinderFactory.h>
 #include <AUA/Alias/AbstractPointers/AbstractFunction.h>
 #include <AUA/Alias/AbstractPointers/GlobalConfiguration.h>
+#include <AUA/Alias/AbstractPointers/AbstractLoop.h>
 
 
 struct BlockAbstractionState {
 
     /**
-     * Specifies if a LOOP Latch BasicBlock has been found for this block, making this block a loop condition.
+     * Specifies if this block and its successors have been fully abstracted.
      */
-    bool loopLatchFound;
+    bool done;
 
     /**
      * The first PointerOperation that is reachable from the beginning of this block.
@@ -46,16 +50,14 @@ struct BlockAbstractionState {
     PointerOperation* firstReachable;
 
     /**
-     * The last PointerOperation that is reachable from the beginning of this block. In a loop this holds the last reachable up until the loop latch, until fixLastReachable is called.
+     * The last PointerOperation that is reachable from the beginning of this block. Has to be the ReturnOp of the function.
      */
-    PointerOperation* lastReachable;
+    ReturnOp* lastReachable;
 
 
-    BlockAbstractionState() : loopLatchFound(false),
-        firstReachable(nullptr), lastReachable(nullptr) {}
+    BlockAbstractionState() : firstReachable(nullptr), lastReachable(nullptr), done(false) {}
 
 };
-
 
 
 class AbstractFunctionFactory {
@@ -71,10 +73,9 @@ private:
      * @param BB the BasicBlock to abstract
      * @return The first PointerOperation of this block if any are abstracted from it or the result of its following block else.
      */
-    PointerOperation *abstractBasicBlock(llvm::BasicBlock *BB, std::map<std::string, BlockAbstractionState> *state);
-//    PointerOperation *abstractLoopConditionBlock(llvm::BasicBlock *BB, AbstractionState *state);
+    void abstractBasicBlock(llvm::BasicBlock *BB, std::map<llvm::BasicBlock *, BlockAbstractionState *> *state,
+                            LoopBlockInfo *loopBlockInfo);
 
-//    PointerOperation *abstractIfRejoinBlock(llvm::BasicBlock *BB, AbstractionState *state);
 
     PointerOperation *abstractInstruction(llvm::Instruction *I);
 
@@ -86,10 +87,6 @@ private:
 
     ReturnOp *handleReturn(llvm::ReturnInst *returnInst);
 
-    ReturnOp *buildFinalOp(llvm::ReturnInst *returnInst, std::map<std::string, BlockAbstractionState> *state);
-
-//    PointerOperation *abstractIfBranchBlock(llvm::BasicBlock *BB, AbstractionState *state);
-
     std::pair<PointerOperation *, PointerOperation *> *abstractBlockInstructions(llvm::BasicBlock *BB);
 
     static std::vector<std::string> getParamNames(llvm::Function *function);
@@ -100,9 +97,12 @@ private:
 
     std::set<AbstractVar*>* getVarParams(llvm::Function *function);
 
+    LoopBlockInfo* getTopLevelLoopBlockInfo(llvm::Function* function);
+
 public:
 
     AbstractFunctionFactory(llvm::DataLayout *dataLayout, FinderFactory *finderFactory);
+
 
     /**
      * Constructs new AbstractFunction for the given llvm::Function.
@@ -110,8 +110,6 @@ public:
      * @return the abstracted function.
      */
     AbstractFunction *buildAbstractFunction(llvm::Function *function);
-
-
 };
 
 struct MultipleReturnException : public std::exception {

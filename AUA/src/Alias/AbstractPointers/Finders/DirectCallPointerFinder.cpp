@@ -4,9 +4,9 @@
 // Created by mlaupichler on 17.07.19.
 //
 
-#include "AUA/Alias/AbstractPointers/Finders/ReturnedPointerFinder.h"
+#include "AUA/Alias/AbstractPointers/Finders/DirectCallPointerFinder.h"
 
-PointerSetValue *ReturnedPointerFinder::findPointers(Configuration *configuration) const {
+PointerSetValue *DirectCallPointerFinder::findPointers(Configuration *configuration) const {
 
     std::map<int, PointerSetValue *> pointerParams;
     std::map<int, CompositeSetValue *> compositeParams;
@@ -37,19 +37,11 @@ PointerSetValue *ReturnedPointerFinder::findPointers(Configuration *configuratio
 
 }
 
-ReturnedPointerFinder::ReturnedPointerFinder(const FunctionFinder *functionFinder,
+DirectCallPointerFinder::DirectCallPointerFinder(const FunctionFinder *functionFinder,
                                              const std::map<int, PointerFinder *>& pointerParamFinders,
                                              const std::map<int, CompositeFinder *>& compositeParamFinders,
                                              const PointerFormat &expectedFormat, const llvm::CallInst *callInst)
-        : PointerFinder(
-        expectedFormat), functionFinder(functionFinder),
+        : CallPointerFinder(expectedFormat, callInst), functionFinder(functionFinder),
           pointerParamFinders(pointerParamFinders), compositeParamFinders(
-        compositeParamFinders), callInst(callInst) {}
+        compositeParamFinders) {}
 
-std::list<const llvm::Instruction *> ReturnedPointerFinder::getAssociatedInsts() const {
-
-    auto result = std::list<const llvm::Instruction*>();
-    result.push_back(callInst);
-    return result;
-
-}

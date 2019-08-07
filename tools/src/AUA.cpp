@@ -15,6 +15,7 @@
 #include <llvm/IR/InstrTypes.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/DataLayout.h>
+#include <llvm/IR/Dominators.h>
 #include <llvm/ADT/Optional.h>
 #include <llvm/ADT/StringRef.h>
 #include <llvm/IR/CFG.h>
@@ -44,13 +45,13 @@
 
 std::unique_ptr<llvm::Module> readInModule(llvm::LLVMContext &context, std::string inputFile);
 
-int AnonymousPointerFinder::anonPointerCounter = 0;
 
 int main(int argc, char **argv) {
 
     std::string inFile = argv[1];
     llvm::LLVMContext context;
     llvm::Module *module = readInModule(context, inFile).release();
+
 
     auto global = new GlobalConfiguration(new GlobalValueFactory(module));
     Configuration::setGlobalConfiguration(global);

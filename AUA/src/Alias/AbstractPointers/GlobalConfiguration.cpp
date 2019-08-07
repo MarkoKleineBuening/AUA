@@ -98,6 +98,18 @@ std::set<AbstractComposite *> GlobalConfiguration::getAllGlobalComposites() {
     return result;
 }
 
+std::set<AbstractVar *> GlobalConfiguration::getAllGlobalVars() {
+
+    std::set<AbstractVar *> vars;
+    for (const auto& varPair : globalVars) {
+
+        vars.insert(varPair.second);
+    }
+
+    return vars;
+
+}
+
 AbstractFunction *GlobalConfiguration::getGlobalFunction(const std::string& name) {
 
     if (!hasGlobalFunction(name)) {

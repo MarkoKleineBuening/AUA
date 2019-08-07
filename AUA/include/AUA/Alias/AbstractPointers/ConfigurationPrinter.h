@@ -22,6 +22,8 @@ private:
 
     static std::set<AbstractPointer *> getAllPointers(Configuration* configuration);
 
+    static std::set<AbstractVar *> getAllVars(Configuration* configuration);
+
 
 public:
 
