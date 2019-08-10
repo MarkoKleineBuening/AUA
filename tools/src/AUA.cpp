@@ -22,10 +22,7 @@
 
 #include <llvm/Analysis/LoopInfo.h>
 
-#include "PointerIrrelevantException.h"
-
 #include <AUA/Alias/AbstractPointers/AbstractPointer.h>
-#include <AUA/Alias/AbstractOps/AssignmentOp.h>
 #include <AUA/Alias/AbstractPointers/Configuration.h>
 #include <AUA/Alias/AbstractOps/PointerAllocationOp.h>
 #include <AUA/Alias/AbstractOps/VarAllocationOp.h>

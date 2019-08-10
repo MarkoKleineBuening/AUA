@@ -90,7 +90,7 @@ PointerSetValue *AbstractFunction::execute(std::map<int, PointerSetValue *> ptrP
 
     lastConfiguration = finalOp->getLastConfiguration();
 
-    llvm::outs() << "\n Last configuration of " << name << " is: \n\n";
+    llvm::outs() << "\nLast configuration of " << name << " is: \n\n";
     ConfigurationPrinter::printFullInfoVerbose(lastConfiguration);
 
     llvm::outs() << "\n\n------------------------------ \n\n";

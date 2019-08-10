@@ -56,7 +56,6 @@ nm_add_library(AUA STATIC
 
 
         src/Alias/AbstractOps/PointerOperation.cpp
-        src/Alias/AbstractOps/AssignmentOp.cpp
         src/Alias/AbstractOps/PointerAllocationOp.cpp
         src/Alias/AbstractOps/VarAllocationOp.cpp
         src/Alias/AbstractOps/CompositeAllocationOp.cpp

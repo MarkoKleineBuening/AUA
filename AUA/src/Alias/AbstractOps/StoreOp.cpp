@@ -23,7 +23,9 @@ Configuration *StoreOp::apply(Configuration *in) {
     assert(fromPointers->getFormat() == toPointers->getFormat());
     auto insts = fromPointers->getMergedAssociatedInsts();
     auto fromAssociatedInsts = fromFinder->getAssociatedInsts();
+    auto toAssociatedInsts = toFinder->getAssociatedInsts();
     insts.insert(insts.end(), fromAssociatedInsts.begin(), fromAssociatedInsts.end());
+    insts.insert(insts.end(), toAssociatedInsts.begin(), toAssociatedInsts.end());
     insts.push_back(storeInstruction);
 
     std::set<AbstractTarget> allTargetsOfFrom = fromPointers->getMergedTargets();

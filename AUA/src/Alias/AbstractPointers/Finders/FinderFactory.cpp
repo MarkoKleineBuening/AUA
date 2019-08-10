@@ -37,9 +37,19 @@ PointerFinder *FinderFactory::getPointerFinder(llvm::Value *value, bool isAdress
 
 FromPointerPointerFinder *FinderFactory::getNestedPointerFinder(llvm::LoadInst *loadInst, PointerFormat expectedFormat, bool isAdress) {
 
-    assert(!isAdress);
-
     llvm::Type* inType = loadInst->getType();
+    if (!(llvm::isa<llvm::PointerType>(inType))) throw NotAPointerException();
+
+    int derefDepth = 0;
+
+    if (isAdress) {
+
+        inType = llvm::cast<llvm::PointerType>(inType)->getElementType();
+        if (!(llvm::isa<llvm::PointerType>(inType))) throw NotAPointerException();
+        ++derefDepth;
+
+    }
+
     PointerFormat actualFormat = getPointerFormat(inType);
     if (actualFormat != expectedFormat) throw PointerFinderConstructionFormatException(loadInst, expectedFormat,
                                                                                        actualFormat);
@@ -53,7 +63,7 @@ FromPointerPointerFinder *FinderFactory::getNestedPointerFinder(llvm::LoadInst *
         loadInst = llvm::dyn_cast<llvm::LoadInst>(value);
     } while (loadInst);
 
-    int derefDepth = loadInstructions.size() - 1;
+    derefDepth += loadInstructions.size() - 1;
 
 
     return new FromPointerPointerFinder(getPointerFinder(value, true), derefDepth, actualFormat,

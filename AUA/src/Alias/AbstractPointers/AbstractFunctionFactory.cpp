@@ -16,9 +16,8 @@
 #include <AUA/Alias/AbstractOps/ReturnPointerOp.h>
 #include <AUA/Alias/AbstractOps/ReturnNilOp.h>
 #include <AUA/Alias/AbstractOps/CallWithIrrelevantReturnOp.h>
-#include <AUA/Alias/AbstractOps/DummyLoopLatchEndOp.h>
 #include "AUA/Alias/AbstractPointers/AbstractFunctionFactory.h"
-#include "../../../../tools/src/PointerIrrelevantException.h"
+#include "AUA/Alias/AbstractPointers/PointerIrrelevantException.h"
 
 AbstractFunctionFactory::AbstractFunctionFactory(llvm::DataLayout *dataLayout, FinderFactory *finderFactory)
         : dataLayout(dataLayout), finderFactory(finderFactory) {}
@@ -421,7 +420,6 @@ PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction
 
     } else if (auto callInst = llvm::dyn_cast<llvm::CallInst>(inst)) {
 
-
         if (callInst->isIndirectCall()) {
 
             // Ignore indirect calls (calls via function pointer)
@@ -443,7 +441,7 @@ PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction
         }
 
         // TODO Change predicate once composite returns are okay
-        if (!callInst->getFunctionType()->getReturnType()->isPointerTy()) {
+        if ((!callInst->getFunctionType()->getReturnType()->isPointerTy()) || (!callInst->hasNUsesOrMore(1))) {
 
 
             return handleCallWithIrrelevantReturn(callInst);
@@ -522,9 +520,6 @@ PointerOperation *AbstractFunctionFactory::handleCallWithIrrelevantReturn(llvm::
 
     llvm::Function *function = callInst->getCalledFunction();
 
-    llvm::outs() << "Called function "<< function->getName() << " has " << function->arg_size() << " parameters.\n";
-    llvm::outs() << "CallInst knows " << callInst->arg_size() << " parameters.\n";
-
     std::string funcName = function->getName();
 
     std::map<int, PointerFinder *> pointerParamFinders;
@@ -535,22 +530,16 @@ PointerOperation *AbstractFunctionFactory::handleCallWithIrrelevantReturn(llvm::
 
         llvm::Value *param = callInst->getArgOperand(i);
 
-        llvm::outs() << "Given param " << param->getName() << " at param index " << i << " is ";
 
         if (param->getType()->isPointerTy()) {
 
-            llvm::outs() << "a pointer.\n";
 
             pointerParamFinders[i] = finderFactory->getPointerFinder(param, false);
 
         } else if (param->getType()->isStructTy() || param->getType()->isArrayTy()) {
 
-            llvm::outs() << "a composite.\n";
 
             compositeParamFinders[i] = finderFactory->getCompositeFinder(param);
-        } else {
-
-            llvm::outs() << " neither a pointer nor a composite (var).\n";
         }
     }
 
@@ -567,6 +556,8 @@ ReturnOp *AbstractFunctionFactory::handleReturn(llvm::ReturnInst *returnInst) {
     if (returnValue == nullptr) return new ReturnNilOp(returnInst);
     // TODO change if predicate when functions can return composites
     if (!returnValue->getType()->isPointerTy()) return new ReturnNilOp(returnInst);
+
+    if (llvm::isa<llvm::ConstantPointerNull>(returnValue)) return new ReturnNilOp(returnInst);
 
     llvm::outs() << "Return value " << returnValue->getName() << "\n";
 

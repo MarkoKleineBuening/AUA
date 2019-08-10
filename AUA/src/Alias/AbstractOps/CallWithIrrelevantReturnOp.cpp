@@ -25,11 +25,8 @@ Configuration *CallWithIrrelevantReturnOp::apply(Configuration *in) {
 
     AbstractFunction *function = functionFinder->findFunction(in);
 
-    PointerSetValue *callResult = function->execute(pointerParams, compositeParams);
+    function->execute(pointerParams, compositeParams);
 
-
-
-    if (callResult != nullptr) throw CallReturnException();
 
     return in;
 
