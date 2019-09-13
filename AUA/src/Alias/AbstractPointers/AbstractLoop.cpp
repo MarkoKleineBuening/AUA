@@ -15,12 +15,28 @@ llvm::BasicBlock *AbstractLoop::getEntry(const llvm::Loop *l) {
     auto term = l->getHeader()->getTerminator();
     assert(term->getNumSuccessors() == 2);
 
-    if (term->getSuccessor(0) == l->getExitBlock()) {
-        return term->getSuccessor(1);
+    if (!l->isLoopExiting(term->getSuccessor(0))) {
+        assert(term->getSuccessor(0) != nullptr);
+        return term->getSuccessor(0);
     }
 
-    assert(term->getSuccessor(1) == l->getExitBlock());
-    return term->getSuccessor(0);
+    assert(!l->isLoopExiting(term->getSuccessor(1)));
+    assert(term->getSuccessor(1) != nullptr);
+    return term->getSuccessor(1);
+
+    BBSmallVector exitBlocks = BBSmallVector(0);
+    l->getExitBlocks(exitBlocks);
+
+    llvm::outs() << "Exit blocks: ";
+    for (auto bb : exitBlocks) {
+        llvm::outs() << bb->getName() << " ";
+    }
+    llvm::outs() << "\n";
+
+
+    llvm::outs() << "Second successor: " << term->getSuccessor(1)->getName() << "\n";
+    llvm::outs() << "Exit block: " << l->getExitBlock() << "\n";
+
 
 }
 
@@ -56,3 +72,5 @@ std::map<llvm::BasicBlock *, AbstractLoop *> AbstractLoop::getSubAbstractLoopsBy
 LoopLatchInfo::LoopLatchInfo(JoinOp *headerJoin, ReturnOp *headerLastReachable) : headerJoin(headerJoin),
                                                                                   headerLastReachable(
                                                                                           headerLastReachable) {}
+
+BBSmallVector::BBSmallVector(unsigned int n) : SmallVectorImpl(n) {}

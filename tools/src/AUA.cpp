@@ -68,6 +68,10 @@ int main(int argc, char **argv) {
 
     entryFunction->executeAsEntry();
 
+    llvm::outs() << "\nNumber of LLVM instructions: " << functionFactory->totalInstructionCount << "\n";
+    llvm::outs() << "Number of pointers: " << functionFactory->totalPointerCount<< "\n";
+    llvm::outs() << "Number of calls: " << functionFactory->totalCallCount << "\n";
+
     return 0;
 }
 

@@ -67,6 +67,8 @@ private:
     llvm::DataLayout *dataLayout;
     FinderFactory *finderFactory;
 
+
+
     /**
      * Abstracts a given BasicBlock into an ordered graph of PointerOperations.
      * Recursively calls abstractBasicBlock for all succeeding BasicBlocks to complete the ordered graph.
@@ -100,6 +102,10 @@ private:
     LoopBlockInfo* getTopLevelLoopBlockInfo(llvm::Function* function);
 
 public:
+
+    int totalInstructionCount = 0;
+    int totalPointerCount = 0;
+    int totalCallCount = 0;
 
     AbstractFunctionFactory(llvm::DataLayout *dataLayout, FinderFactory *finderFactory);
 

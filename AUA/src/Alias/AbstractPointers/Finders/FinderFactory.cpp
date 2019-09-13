@@ -30,6 +30,7 @@ PointerFinder *FinderFactory::getPointerFinder(llvm::Value *value, bool isAdress
     if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberPointerFinder(gepInst, expectedFormat, isAdress);
     if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getCallPointerFinder(callInst, expectedFormat,
                                                                                            isAdress);
+    if(auto bitCastInst = llvm::dyn_cast<llvm::BitCastInst>(value)) return getBitCastPointerFinder(bitCastInst, isAdress);
 
     throw UnknownFinderInstructionException();
 
@@ -250,6 +251,13 @@ CallPointerFinder * FinderFactory::getCallPointerFinder(llvm::CallInst *callInst
 
 }
 
+PointerFinder *FinderFactory::getBitCastPointerFinder(llvm::BitCastInst *bitCastInst, bool isAdress) {
+
+    llvm::Value* sourceValue = bitCastInst->getOperand(0);
+    return getPointerFinder(sourceValue, isAdress);
+
+}
+
 PointerFormat FinderFactory::getPointerFormat(llvm::Type *type) {
 
     return PointerFormat(type);
@@ -272,6 +280,8 @@ CompositeFinder *FinderFactory::getCompositeFinder(llvm::Value *value) {
 
 BaseCompositeFinder *FinderFactory::getBaseCompositeFinder(llvm::AllocaInst *allocaInst) {
 
+    llvm::outs() << "Constructing BaseCompositeFinder.\n";
+
     std::string baseCompName = allocaInst->getName();
 
     auto compositeType = llvm::cast<llvm::CompositeType>(allocaInst->getAllocatedType());
@@ -283,6 +293,8 @@ BaseCompositeFinder *FinderFactory::getBaseCompositeFinder(llvm::AllocaInst *all
 
 GlobalCompositeFinder *FinderFactory::getGlobalCompositeFinder(llvm::GlobalVariable* variable) {
 
+    llvm::outs() << "Constructing GlobalCompositeFinder.\n";
+
     std::string compName = variable->getName();
     auto compType = llvm::cast<llvm::CompositeType>(variable->getValueType());
 
@@ -291,6 +303,9 @@ GlobalCompositeFinder *FinderFactory::getGlobalCompositeFinder(llvm::GlobalVaria
 }
 
 FromPointerCompositeFinder *FinderFactory::getFromPointerCompositeFinder(llvm::LoadInst *loadInst) {
+
+    llvm::outs() << "Constructing FromPointerCompositeFinder.\n";
+    llvm::outs() << "Pointer Name: " << loadInst->getPointerOperand()->getName() << "\n";
 
     PointerFinder *ptrFinder = getPointerFinder(loadInst->getPointerOperand(), true);
 
@@ -306,6 +321,8 @@ FromPointerCompositeFinder *FinderFactory::getFromPointerCompositeFinder(llvm::L
 }
 
 MemberCompositeFinder *FinderFactory::getMemberCompositeFinder(llvm::GetElementPtrInst *gepInst) {
+
+    llvm::outs() << "Constructing MemberCompositeFinder.\n";
 
     auto compositeType = llvm::cast<llvm::CompositeType>(gepInst->getResultElementType());
     CompositeFormat actualFormat = CompositeFormat(compositeType, dl);
@@ -344,6 +361,7 @@ TargetFinder *FinderFactory::getTargetFinder(llvm::Value *value) {
     throw UnknownFinderInstructionException();
 }
 
+
 BaseTargetFinder *FinderFactory::getBaseTargetFinder(llvm::AllocaInst *allocaInst) {
 
     std::string varName = allocaInst->getName();
@@ -360,15 +378,14 @@ BaseTargetFinder *FinderFactory::getBaseTargetFinder(llvm::Argument *argument) {
 }
 
 
+
+
 GlobalTargetFinder *FinderFactory::getGlobalTargetFinder(llvm::GlobalVariable *variable) {
 
     std::string varName = variable->getName();
     return new GlobalTargetFinder(varName);
 
 }
-
-
-
 
 FromPointerTargetFinder *FinderFactory::getFromPointerTargetFinder(llvm::LoadInst *loadInst) {
 

@@ -25,6 +25,10 @@ AbstractFunctionFactory::AbstractFunctionFactory(llvm::DataLayout *dataLayout, F
 
 AbstractFunction *AbstractFunctionFactory::buildAbstractFunction(llvm::Function *function) {
 
+    llvm::outs() << "Abstracting function " << function->getName() << ":\n";
+
+    totalInstructionCount += function->getInstructionCount();
+
     auto state = new std::map<llvm::BasicBlock*, BlockAbstractionState*>();
 
     std::string name = function->getName();
@@ -420,6 +424,8 @@ PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction
 
     } else if (auto callInst = llvm::dyn_cast<llvm::CallInst>(inst)) {
 
+        totalCallCount += 1;
+
         if (callInst->isIndirectCall()) {
 
             // Ignore indirect calls (calls via function pointer)
@@ -432,6 +438,11 @@ PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction
 
         if (calledFunction == nullptr) {
             // Ignore indirect calls that haven't been caught above
+            throw PointerIrrelevantException();
+        }
+
+        if (calledFunction->isIntrinsic()) {
+
             throw PointerIrrelevantException();
         }
 
@@ -448,10 +459,43 @@ PointerOperation *AbstractFunctionFactory::abstractInstruction(llvm::Instruction
         }
 
     } else if (auto allocaInst = llvm::dyn_cast<llvm::AllocaInst>(inst)) {
+
         return handleAllocation(allocaInst);
     }
 
     throw PointerIrrelevantException();
+
+}
+
+int countPointerMembersRecursively(llvm::CompositeType* compType) {
+
+    int pointerMemberCount = 0;
+
+    int memberCount;
+    if (llvm::ArrayType *arrayType = llvm::dyn_cast<llvm::ArrayType>(compType)) {
+        memberCount = arrayType->getNumElements();
+    } else if (llvm::StructType *structType = llvm::dyn_cast<llvm::StructType>(compType)) {
+        memberCount = structType->getNumElements();
+    } else {
+        throw NoCompositeTypeException();
+    }
+
+    for (int i = 0; i < memberCount; ++i) {
+
+        auto memberType = compType->getTypeAtIndex(i);
+
+        if (memberType->isPointerTy()) {
+
+            pointerMemberCount += 1;
+
+        } else if (memberType->isStructTy() || memberType->isArrayTy()) {
+
+            auto compType = llvm::cast<llvm::CompositeType>(memberType);
+            pointerMemberCount += countPointerMembersRecursively(compType);
+        }
+    }
+
+    return pointerMemberCount;
 
 }
 
@@ -466,10 +510,15 @@ PointerOperation *AbstractFunctionFactory::handleAllocation(llvm::AllocaInst *al
 
         allocOp = new PointerAllocationOp(name, PointerFormat(ptrType), allocaInst);
 
+        totalPointerCount += 1;
+
     } else if (type->isStructTy() || type->isArrayTy()) {
 
+        llvm::outs() << type->getTypeID() << "\n";
         auto compType = llvm::cast<llvm::CompositeType>(type);
         allocOp = new CompositeAllocationOp(compType, dataLayout, name, allocaInst);
+
+        totalPointerCount += countPointerMembersRecursively(compType);
 
     } else {
 
@@ -516,11 +565,12 @@ PointerOperation *AbstractFunctionFactory::handleStore(llvm::StoreInst *storeIns
 
 PointerOperation *AbstractFunctionFactory::handleCallWithIrrelevantReturn(llvm::CallInst *callInst) {
 
-    llvm::outs() << "Handling non pointer return function call.\n";
 
     llvm::Function *function = callInst->getCalledFunction();
 
     std::string funcName = function->getName();
+
+    llvm::outs() << "Handling non pointer return function call to " << funcName << ".\n";
 
     std::map<int, PointerFinder *> pointerParamFinders;
     std::map<int, CompositeFinder *> compositeParamFinders;
@@ -545,8 +595,11 @@ PointerOperation *AbstractFunctionFactory::handleCallWithIrrelevantReturn(llvm::
 
     FunctionFinder *funcFinder = finderFactory->getFunctionFinder(function);
 
-    return new CallWithIrrelevantReturnOp(funcFinder, callInst, pointerParamFinders, compositeParamFinders);
+    auto op = new CallWithIrrelevantReturnOp(funcFinder, callInst, pointerParamFinders, compositeParamFinders);
 
+    llvm::outs() << "Finished building non pointer return function call to " << funcName << ".\n";
+
+    return op;
 }
 
 ReturnOp *AbstractFunctionFactory::handleReturn(llvm::ReturnInst *returnInst) {

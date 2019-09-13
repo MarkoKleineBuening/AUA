@@ -50,5 +50,11 @@ struct LoopBlockInfo {
 
 };
 
+class BBSmallVector : public llvm::SmallVectorImpl<llvm::BasicBlock*> {
+
+public:
+    BBSmallVector(unsigned int n);
+};
+
 
 #endif //AUA_ABSTRACTLOOP_H
