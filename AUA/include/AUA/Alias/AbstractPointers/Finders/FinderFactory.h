@@ -58,17 +58,22 @@ private:
     FromPointerCompositeFinder *getFromPointerCompositeFinder(llvm::LoadInst *loadInst);
 
 
-    MemberCompositeFinder *getMemberCompositeFinder(llvm::GetElementPtrInst *gepInst);
+    CompositeFinder * getMemberCompositeFinder(llvm::GetElementPtrInst *gepInst);
     static BaseTargetFinder *getBaseTargetFinder(llvm::AllocaInst *allocaInst);
     static BaseTargetFinder *getBaseTargetFinder(llvm::Argument *argument);
     static GlobalTargetFinder *getGlobalTargetFinder(llvm::GlobalVariable *variable);
     FromPointerTargetFinder *getFromPointerTargetFinder(llvm::LoadInst *loadInst);
 
 
-    MemberTargetFinder *getMemberTargetFinder(llvm::GetElementPtrInst *gepInst);
+    TargetFinder * getMemberTargetFinder(llvm::GetElementPtrInst *gepInst);
 
     static GlobalFunctionFinder *getGlobalFunctionFinder(llvm::GlobalValue *globalValue);
 
+    /**
+     * Gets the member index of a getelementptr instruction if it is constant. Returns -1 if the index is a variable value.
+     * @param gepInst the getelementptr instruction.
+     * @return the constant member index or -1 if it is not constant.
+     */
     static int getMemberIdx(llvm::GetElementPtrInst *gepInst);
 
 public:
@@ -103,7 +108,13 @@ struct NotAFunctionException : public std::exception {
 };
 
 struct UnknownFinderInstructionException : public std::exception {
+
+    llvm::Value* value;
+
+    UnknownFinderInstructionException(llvm::Value *value) : value(value) {}
+
     const char *what() const throw() {
+        llvm::outs() << *value <<"\n";
         return "An unknown instruction was encountered while trying to build a Finder.";
     }
 };

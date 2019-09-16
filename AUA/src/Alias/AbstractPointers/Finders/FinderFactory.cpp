@@ -6,7 +6,11 @@
 #include <AUA/Alias/AbstractPointers/GlobalConfiguration.h>
 #include <AUA/Alias/AbstractPointers/Finders/AnonymousPointerFinder.h>
 #include <AUA/Alias/AbstractPointers/Finders/IndirectCallPointerFinder.h>
+#include <AUA/Alias/AbstractPointers/Finders/CompleteArrayTargetFinder.h>
+#include <AUA/Alias/AbstractPointers/Finders/CompleteArrayPointerFinder.h>
+#include <AUA/Alias/AbstractPointers/Finders/CompleteArrayCompositeFinder.h>
 #include "AUA/Alias/AbstractPointers/Finders/FinderFactory.h"
+#include "AUA/Alias/AbstractPointers/Finders/NullPointerFinder.h"
 
 // POINTER FINDING -------------------------------------------------------------
 
@@ -30,9 +34,10 @@ PointerFinder *FinderFactory::getPointerFinder(llvm::Value *value, bool isAdress
     if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberPointerFinder(gepInst, expectedFormat, isAdress);
     if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getCallPointerFinder(callInst, expectedFormat,
                                                                                            isAdress);
-    if(auto bitCastInst = llvm::dyn_cast<llvm::BitCastInst>(value)) return getBitCastPointerFinder(bitCastInst, isAdress);
+    if (auto bitCastInst = llvm::dyn_cast<llvm::BitCastInst>(value)) return getBitCastPointerFinder(bitCastInst, isAdress);
+    if (llvm::isa<llvm::ConstantPointerNull>(value)) return new NullPointerFinder(expectedFormat);
 
-    throw UnknownFinderInstructionException();
+    throw UnknownFinderInstructionException(value);
 
 }
 
@@ -194,8 +199,14 @@ PointerFinder *FinderFactory::getMemberPointerFinder(llvm::GetElementPtrInst *ge
 
     if (actualFormat == expectedFormat) {
 
-        int memberIndex = getMemberIdx(gepInst);
         CompositeFinder *parentCompFinder = getCompositeFinder(gepInst->getPointerOperand());
+        int memberIndex = getMemberIdx(gepInst);
+
+        if (memberIndex < 0) {
+            // memberIndex is not a constant => Composite is array. Overapproximate by returning all members of the array.
+           // assert(llvm::cast<llvm::PointerType>(gepInst->getPointerOperand()->getType())->getElementType()->isArrayTy());
+            return new CompleteArrayPointerFinder(parentCompFinder, getPointerFormat(inType), gepInst);
+        }
 
         return new MemberPointerFinder(parentCompFinder, memberIndex, getPointerFormat(inType), gepInst);
     }
@@ -274,7 +285,7 @@ CompositeFinder *FinderFactory::getCompositeFinder(llvm::Value *value) {
     if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberCompositeFinder(gepInst);
     //if (auto callInst = llvm::dyn_cast<llvm::CallInst>(value)) return getReturnedCompositeFinder(callInst);
 
-    throw UnknownFinderInstructionException();
+    throw UnknownFinderInstructionException(value);
 
 }
 
@@ -320,7 +331,7 @@ FromPointerCompositeFinder *FinderFactory::getFromPointerCompositeFinder(llvm::L
 
 }
 
-MemberCompositeFinder *FinderFactory::getMemberCompositeFinder(llvm::GetElementPtrInst *gepInst) {
+CompositeFinder * FinderFactory::getMemberCompositeFinder(llvm::GetElementPtrInst *gepInst) {
 
     llvm::outs() << "Constructing MemberCompositeFinder.\n";
 
@@ -334,6 +345,21 @@ MemberCompositeFinder *FinderFactory::getMemberCompositeFinder(llvm::GetElementP
     do {
 
         int memberIdx = getMemberIdx(gepInst);
+
+        if (memberIdx < 0) {
+            // This gepInst has non constant index => overapproximate by CompleteArrayCompositeFinder
+            //assert(llvm::cast<llvm::PointerType>(gepInst->getPointerOperand()->getType())->getElementType()->isArrayTy());
+
+            auto lastFormat = CompositeFormat(llvm::cast<llvm::CompositeType>(gepInst->getResultElementType()), dl);
+            auto completeArrayFinder = new CompleteArrayCompositeFinder(getCompositeFinder(
+                    gepInst->getPointerOperand()), lastFormat, gepInst);
+
+            if (memberIndices.empty()) return completeArrayFinder;
+            return new MemberCompositeFinder(completeArrayFinder, actualFormat, memberIndices,
+                                             gepInsts);
+        }
+
+
         memberIndices.push_front(memberIdx);
 
         gepInsts.push_front(gepInst);
@@ -358,7 +384,7 @@ TargetFinder *FinderFactory::getTargetFinder(llvm::Value *value) {
     if (auto loadInst = llvm::dyn_cast<llvm::LoadInst>(value)) return getFromPointerTargetFinder(loadInst);
     if (auto gepInst = llvm::dyn_cast<llvm::GetElementPtrInst>(value)) return getMemberTargetFinder(gepInst);
 
-    throw UnknownFinderInstructionException();
+    throw UnknownFinderInstructionException(value);
 }
 
 
@@ -395,11 +421,18 @@ FromPointerTargetFinder *FinderFactory::getFromPointerTargetFinder(llvm::LoadIns
 
 }
 
-MemberTargetFinder *FinderFactory::getMemberTargetFinder(llvm::GetElementPtrInst *gepInst) {
+TargetFinder * FinderFactory::getMemberTargetFinder(llvm::GetElementPtrInst *gepInst) {
+
+    CompositeFinder *parentCompFinder = getCompositeFinder(gepInst->getPointerOperand());
 
     int memberIndex = getMemberIdx(gepInst);
 
-    CompositeFinder *parentCompFinder = getCompositeFinder(gepInst->getPointerOperand());
+    if (memberIndex < 0) {
+        // memberIndex is not a constant => Compsite is array. Overapproximate by returning all members of the array.
+        //assert(llvm::cast<llvm::PointerType>(gepInst->getPointerOperand()->getType())->getElementType()->isArrayTy());
+        return new CompleteArrayTargetFinder(parentCompFinder, gepInst);
+    }
+
 
     return new MemberTargetFinder(parentCompFinder, memberIndex, gepInst);
 
@@ -414,7 +447,7 @@ FunctionFinder *FinderFactory::getFunctionFinder(llvm::Value *value) {
 
     if (auto globalValue = llvm::dyn_cast<llvm::GlobalValue>(value)) return getGlobalFunctionFinder(globalValue);
 
-    throw UnknownFinderInstructionException();
+    throw UnknownFinderInstructionException(value);
 }
 
 GlobalFunctionFinder *FinderFactory::getGlobalFunctionFinder(llvm::GlobalValue *globalValue) {
@@ -428,8 +461,10 @@ GlobalFunctionFinder *FinderFactory::getGlobalFunctionFinder(llvm::GlobalValue *
 int FinderFactory::getMemberIdx(llvm::GetElementPtrInst *gepInst) {
 
     int opCount = gepInst->getNumOperands();
-    auto *CI = llvm::cast<llvm::ConstantInt>(gepInst->getOperand(opCount - 1));
-    assert(CI != nullptr);
+    auto *CI = llvm::dyn_cast<llvm::ConstantInt>(gepInst->getOperand(opCount - 1));
+
+    if (!CI) return -1;
+
     int memberIdx = CI->getZExtValue();
 
     return memberIdx;

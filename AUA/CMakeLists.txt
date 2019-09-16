@@ -28,18 +28,24 @@ nm_add_library(AUA STATIC
         src/Alias/AbstractPointers/Finders/DirectCallPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/IndirectCallPointerFinder.cpp
         src/Alias/AbstractPointers/Finders/AnonymousPointerFinder.cpp
+        src/Alias/AbstractPointers/Finders/CompleteArrayPointerFinder.cpp
+        src/Alias/AbstractPointers/Finders/NullPointerFinder.cpp
 
         src/Alias/AbstractPointers/Finders/CompositeFinder.cpp
         src/Alias/AbstractPointers/Finders/BaseCompositeFinder.cpp
         src/Alias/AbstractPointers/Finders/GlobalCompositeFinder.cpp
         src/Alias/AbstractPointers/Finders/FromPointerCompositeFinder.cpp
         src/Alias/AbstractPointers/Finders/MemberCompositeFinder.cpp
+        src/Alias/AbstractPointers/Finders/CompleteArrayCompositeFinder.cpp
+        src/Alias/AbstractPointers/Finders/NullCompositeFinder.cpp
 
         src/Alias/AbstractPointers/Finders/TargetFinder.cpp
         src/Alias/AbstractPointers/Finders/BaseTargetFinder.cpp
         src/Alias/AbstractPointers/Finders/GlobalTargetFinder.cpp
         src/Alias/AbstractPointers/Finders/FromPointerTargetFinder.cpp
         src/Alias/AbstractPointers/Finders/MemberTargetFinder.cpp
+        src/Alias/AbstractPointers/Finders/CompleteArrayTargetFinder.cpp
+        src/Alias/AbstractPointers/Finders/NullTargetFinder.cpp
 
 
         src/Alias/AbstractPointers/Finders/FunctionFinder.cpp
